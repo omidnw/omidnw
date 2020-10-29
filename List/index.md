@@ -6,7 +6,7 @@ English :
 
 What is web core?
 
-Web Core is a library For C Programming Language. Web Core Can be Created Web Page Or Edit Web Page With Web Core. (You can use web core only in C Programming Language!)
+Web Core is a library For C Programming Language. Web core can be used to create and edit web pages. (C Programming Language Exclusive!)
 
 <div dir="rtl">
 
