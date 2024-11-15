@@ -17,6 +17,8 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 ## 📊 GitHub Stats
 
+### Personal Account (@omidnw)
+
 <div align="center">
 
 ![GitHub Stats](https://github-readme-stats.vercel.app/api?username=omidnw&show_icons=true&theme=onedark)
@@ -25,7 +27,19 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 </div>
 
+### Work Account (@omidrezakeshtkar)
+
+<div align="center">
+
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=omidrezakeshtkar&show_icons=true&theme=onedark)
+&nbsp;&nbsp;&nbsp;&nbsp;
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=omidrezakeshtkar&layout=compact&theme=onedark)
+
+</div>
+
 ## 🔥 Activity Graph
+
+### Personal Account (@omidnw)
 
 <div align="center">
 
@@ -33,11 +47,29 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 </div>
 
+### Work Account (@omidrezakeshtkar)
+
+<div align="center">
+
+![GitHub Activity Graph](https://github-readme-activity-graph.vercel.app/graph?username=omidrezakeshtkar&theme=dracula)
+
+</div>
+
 ## 🏆 GitHub Trophies
+
+### Personal Account (@omidnw)
 
 <div align="center">
 
 ![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidnw&theme=onedark&no-frame=false&no-bg=true&margin-w=4)
+
+</div>
+
+### Work Account (@omidrezakeshtkar)
+
+<div align="center">
+
+![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidrezakeshtkar&theme=onedark&no-frame=false&no-bg=true&margin-w=4)
 
 </div>
 
