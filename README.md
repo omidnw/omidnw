@@ -37,7 +37,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidnw&theme=radical&no-frame=false&no-bg=true&margin-w=4)
+![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidnw&theme=dracula&no-frame=false&no-bg=true&margin-w=4)
 
 </div>
 
