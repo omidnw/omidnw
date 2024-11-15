@@ -19,9 +19,9 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=omidnw&show_icons=true&theme=dracula)
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=omidnw&show_icons=true&theme=onedark)
 &nbsp;&nbsp;&nbsp;&nbsp;
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=omidnw&layout=compact&theme=dracula)
+![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=omidnw&layout=compact&theme=onedark)
 
 </div>
 
@@ -37,7 +37,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidnw&theme=dracula&no-frame=false&no-bg=true&margin-w=4)
+![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidnw&theme=onedark&no-frame=false&no-bg=true&margin-w=4)
 
 </div>
 
