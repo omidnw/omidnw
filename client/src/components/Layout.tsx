@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Terminal } from "lucide-react";
 import HamburgerMenu from "@/components/HamburgerMenu";
+import GlobalMusicPlayer from "@/components/GlobalMusicPlayer";
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -125,6 +126,15 @@ function SkipLink() {
 	);
 }
 
+const formatTime = (timeInSeconds: number): string => {
+	const minutes = Math.floor(timeInSeconds / 60);
+	const seconds = Math.floor(timeInSeconds % 60);
+	return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(
+		2,
+		"0"
+	)}`;
+};
+
 function Navigation() {
 	return (
 		<nav
@@ -151,8 +161,11 @@ function Navigation() {
 						</motion.div>
 					</Link>
 
-					{/* Hamburger Menu */}
-					<HamburgerMenu />
+					{/* Right side controls */}
+					<div className="flex items-center gap-2">
+						<GlobalMusicPlayer />
+						<HamburgerMenu />
+					</div>
 				</div>
 			</Card>
 		</nav>

@@ -20,6 +20,18 @@ import {
 	Rss,
 	Smartphone,
 } from "lucide-react";
+import type { LucideProps } from "lucide-react";
+
+// Define a type for interest items
+interface InterestItem {
+	name: string;
+	icon: React.ForwardRefExoticComponent<
+		Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+	>;
+	description: string;
+	href?: string; // Optional property
+	linkText?: string; // Optional property
+}
 
 const timeline = [
 	{
@@ -114,9 +126,22 @@ const techStack = [
 		],
 		level: 70, // Estimated average
 	},
+	{
+		category: "AI & Next-Gen Tools",
+		skills: ["Vibe Coding (Cursor) (Expert)", "Prompt Engineering (Advanced)"],
+		level: 95,
+	},
 ] as const;
 
-const interests = [
+const interests: readonly InterestItem[] = [
+	{
+		name: "Anime & Manga",
+		icon: Film,
+		description:
+			"Deeply immersed in captivating anime series and manga. This is my world! Explore my Anime-Planet profile.",
+		href: "https://anime-planet.com/users/omidnw",
+		linkText: "My Anime-Planet →",
+	},
 	{
 		name: "Sci-Fi & Marvel",
 		icon: Film,
@@ -380,6 +405,19 @@ const Interests = React.memo(() => {
 									<p className="text-sm text-muted-foreground font-mono leading-relaxed">
 										{interest.description}
 									</p>
+									{interest.href && interest.linkText && (
+										<div className="mt-3">
+											<a
+												href={interest.href}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="block w-full sm:inline-block sm:w-auto text-xs font-mono text-primary hover:text-secondary transition-colors px-3 py-2 rounded bg-primary/10 hover:bg-secondary/10 text-center"
+												aria-label={`Visit ${interest.name} profile`}
+											>
+												{interest.linkText}
+											</a>
+										</div>
+									)}
 								</CardContent>
 							</Card>
 						</div>

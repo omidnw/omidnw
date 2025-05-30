@@ -25,28 +25,85 @@ import {
 	Palette,
 } from "lucide-react";
 
-const skills = [
-	{ name: "TypeScript", icon: Terminal, level: 90 },
-	{ name: "JavaScript", icon: Leaf, level: 90 },
-	{ name: "React", icon: Code, level: 50 },
-	{ name: "Node.js", icon: Leaf, level: 65 },
-	{ name: "Rust", icon: Cog, level: 20 },
-	{ name: "C", icon: Cog, level: 40 },
-	{ name: "C++", icon: Cog, level: 20 },
-	{ name: "HTML5", icon: FileCode, level: 100 },
-	{ name: "CSS3", icon: Palette, level: 50 },
-	{ name: "YAML", icon: FileCode, level: 90 },
-	{ name: "XML", icon: FileCode, level: 50 },
-	{ name: "Bash", icon: GitMerge, level: 60 },
-	{ name: "Docker", icon: Anchor, level: 30 },
-	{ name: "AWS", icon: Cloud, level: 25 },
-	{ name: "Linux (Debian/Fedora)", icon: HardDrive, level: 75 },
-	{ name: "FreeBSD", icon: HardDrive, level: 45 },
-	{ name: "Jest", icon: TestTube2, level: 60 },
-	{ name: "Playwright", icon: TestTube2, level: 100 },
-	{ name: "Selenium", icon: TestTube2, level: 60 },
-	{ name: "Remix", icon: Rocket, level: 30 },
-] as const;
+const getProficiencyWord = (level: number): string => {
+	if (level >= 90) return "Expert";
+	if (level >= 70) return "Advanced";
+	if (level >= 40) return "Middle";
+	return "Junior";
+};
+
+const categorizedSkills = [
+	{
+		categoryName: "Imperative Programming",
+		skills: [
+			{ name: "TypeScript", icon: Terminal, level: 90 },
+			{ name: "JavaScript", icon: Leaf, level: 90 },
+			{ name: "React", icon: Code, level: 50 },
+			{ name: "Node.js", icon: Leaf, level: 65 },
+			{ name: "Bash", icon: GitMerge, level: 60 },
+			{ name: "Rust", icon: Cog, level: 20 },
+			{ name: "C", icon: Cog, level: 40 },
+			{ name: "C++", icon: Cog, level: 20 },
+		].map((skill) => ({
+			...skill,
+			proficiencyWord: getProficiencyWord(skill.level),
+		})),
+	},
+	{
+		categoryName: "Declarative Programming",
+		skills: [
+			{ name: "HTML5", icon: FileCode, level: 100 },
+			{ name: "CSS3", icon: Palette, level: 50 },
+			{ name: "YAML", icon: FileCode, level: 90 },
+			{ name: "XML", icon: FileCode, level: 50 },
+		].map((skill) => ({
+			...skill,
+			proficiencyWord: getProficiencyWord(skill.level),
+		})),
+	},
+	{
+		categoryName: "Frameworks & Testing",
+		skills: [
+			{ name: "Playwright", icon: TestTube2, level: 100 },
+			{ name: "Jest", icon: TestTube2, level: 60 },
+			{ name: "Selenium", icon: TestTube2, level: 60 },
+			{ name: "Remix", icon: Rocket, level: 30 },
+		].map((skill) => ({
+			...skill,
+			proficiencyWord: getProficiencyWord(skill.level),
+		})),
+	},
+	{
+		categoryName: "Orchestration & Cloud",
+		skills: [
+			{ name: "Docker", icon: Anchor, level: 30 },
+			{ name: "AWS", icon: Cloud, level: 25 },
+		].map((skill) => ({
+			...skill,
+			proficiencyWord: getProficiencyWord(skill.level),
+		})),
+	},
+	{
+		categoryName: "System Administration",
+		skills: [
+			{ name: "Linux (Debian/Fedora)", icon: HardDrive, level: 75 },
+			{ name: "FreeBSD", icon: HardDrive, level: 45 },
+		].map((skill) => ({
+			...skill,
+			proficiencyWord: getProficiencyWord(skill.level),
+		})),
+	},
+	{
+		categoryName: "AI & Next-Gen Tools",
+		skills: [
+			{ name: "Vibe Coding (Cursor)", icon: Zap, level: 100 },
+			{ name: "Prompt Engineering", icon: Brain, level: 90 },
+		].map((skill) => ({
+			...skill,
+			proficiencyWord: getProficiencyWord(skill.level),
+		})),
+	},
+];
 
 const glitchText = [
 	"DEVELOPER",
@@ -267,56 +324,77 @@ function SkillsGrid() {
 				</p>
 			</motion.div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{skills.map((skill, index) => {
-					const Icon = skill.icon;
-					return (
-						<motion.div
-							key={skill.name}
-							initial={{ opacity: 0, y: 50 }}
-							whileInView={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.5, delay: index * 0.1 }}
-							viewport={{ once: true }}
-						>
-							<Card variant="hologram" className="h-full">
-								<CardHeader className="text-center">
-									<Icon
-										className="w-12 h-12 mx-auto mb-4 text-primary neon-glow"
-										aria-hidden="true"
-									/>
-									<CardTitle className="font-heading text-primary">
-										{skill.name}
-									</CardTitle>
-								</CardHeader>
-								<CardContent>
-									<div className="space-y-2">
-										<div className="flex justify-between text-sm font-mono">
-											<span>Proficiency</span>
-											<span aria-label={`${skill.level} percent`}>
-												{skill.level}%
-											</span>
-										</div>
-										<div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-											<motion.div
-												className="h-full bg-gradient-to-r from-primary to-secondary neon-border"
-												initial={{ width: 0 }}
-												whileInView={{ width: `${skill.level}%` }}
-												transition={{ duration: 1, delay: index * 0.1 }}
-												viewport={{ once: true }}
-												role="progressbar"
-												aria-valuenow={skill.level}
-												aria-valuemin={0}
-												aria-valuemax={100}
-												aria-label={`${skill.name} proficiency: ${skill.level}%`}
+			{categorizedSkills.map((category) => (
+				<div key={category.categoryName} className="mb-12">
+					<motion.h3
+						initial={{ opacity: 0, x: -50 }}
+						whileInView={{ opacity: 1, x: 0 }}
+						transition={{ duration: 0.5 }}
+						viewport={{ once: true }}
+						className="text-3xl md:text-4xl font-heading font-semibold mb-8 text-secondary neon-glow text-center"
+					>
+						{category.categoryName.toUpperCase().replace(/ /g, "_")}
+					</motion.h3>
+					<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+						{category.skills.map((skill, index) => {
+							const Icon = skill.icon;
+							return (
+								<motion.div
+									key={skill.name}
+									initial={{ opacity: 0, y: 50 }}
+									whileInView={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.5, delay: index * 0.1 }}
+									viewport={{ once: true }}
+								>
+									<Card variant="hologram" className="h-full">
+										<CardHeader className="text-center">
+											<Icon
+												className="w-12 h-12 mx-auto mb-4 text-primary neon-glow"
+												aria-hidden="true"
 											/>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</motion.div>
-					);
-				})}
-			</div>
+											<CardTitle className="font-heading text-primary">
+												{skill.name}
+											</CardTitle>
+										</CardHeader>
+										<CardContent>
+											<div className="space-y-2">
+												<div className="flex justify-between items-center text-sm font-mono">
+													<span>
+														Proficiency:{" "}
+														<span className="text-accent">
+															{skill.proficiencyWord}
+														</span>
+													</span>
+													<span aria-label={`${skill.level} percent`}>
+														{skill.level}%
+													</span>
+												</div>
+												<div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+													<motion.div
+														className="h-full bg-gradient-to-r from-primary to-secondary neon-border"
+														initial={{ width: 0 }}
+														whileInView={{ width: `${skill.level}%` }}
+														transition={{
+															duration: 1,
+															delay: index * 0.1 + 0.2,
+														}}
+														viewport={{ once: true }}
+														role="progressbar"
+														aria-valuenow={skill.level}
+														aria-valuemin={0}
+														aria-valuemax={100}
+														aria-label={`${skill.name} proficiency: ${skill.level}%`}
+													/>
+												</div>
+											</div>
+										</CardContent>
+									</Card>
+								</motion.div>
+							);
+						})}
+					</div>
+				</div>
+			))}
 		</section>
 	);
 }

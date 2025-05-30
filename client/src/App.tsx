@@ -13,6 +13,7 @@ import Contact from "@/pages/Contact";
 import BlogPost from "@/pages/BlogPost";
 import ProjectPost from "@/pages/ProjectPost";
 import NotFound from "@/pages/not-found";
+import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
 
 function Router() {
 	return (
@@ -34,14 +35,16 @@ function Router() {
 function App() {
 	return (
 		<ErrorBoundary>
-			<QueryClientProvider client={queryClient}>
-				<TooltipProvider>
-					<Layout>
-						<Toaster />
-						<Router />
-					</Layout>
-				</TooltipProvider>
-			</QueryClientProvider>
+			<MusicPlayerProvider>
+				<QueryClientProvider client={queryClient}>
+					<TooltipProvider>
+						<Layout>
+							<Toaster />
+							<Router />
+						</Layout>
+					</TooltipProvider>
+				</QueryClientProvider>
+			</MusicPlayerProvider>
 		</ErrorBoundary>
 	);
 }
