@@ -297,7 +297,7 @@ export default function Blog() {
 				className="text-center py-12 mb-8"
 			>
 				<h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-4 neon-glow text-primary">
-					NEURAL_BLOG.exe
+					NEURAL_BLOG.sh
 				</h1>
 				<p className="text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto">
 					Transmissions from the digital frontier - insights, tutorials, and

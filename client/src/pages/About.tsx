@@ -440,7 +440,7 @@ export default function About() {
 					transition={{ duration: 0.6 }}
 					className="text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-4 neon-glow text-primary"
 				>
-					ABOUT_ME.exe
+					ABOUT_ME.sh
 				</motion.h1>
 				<motion.p
 					initial={{ opacity: 0 }}

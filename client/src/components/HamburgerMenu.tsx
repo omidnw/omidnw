@@ -339,7 +339,7 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 														}}
 														transition={{ duration: 2, repeat: Infinity }}
 													>
-														&gt; NAVIGATION.exe
+														&gt; NAVIGATION.sh
 													</motion.h2>
 													<div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
 												</div>

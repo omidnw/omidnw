@@ -156,7 +156,7 @@ function Navigation() {
 								aria-hidden="true"
 							/>
 							<span className="text-2xl font-heading font-bold neon-glow text-primary">
-								PortFolio.exe
+								PortFolio.sh
 							</span>
 						</motion.div>
 					</Link>
