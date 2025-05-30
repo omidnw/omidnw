@@ -1,0 +1,612 @@
+import React, { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+	Mail,
+	MapPin,
+	Github,
+	Linkedin,
+	Twitter,
+	Send,
+	Terminal,
+	Zap,
+	Globe,
+	MessageSquare,
+	User,
+	CheckCircle,
+	AlertCircle,
+	Loader2,
+	Gitlab,
+	Code,
+} from "lucide-react";
+import CyberpunkDubaiMap from "@/components/CyberpunkDubaiMap";
+
+interface ContactForm {
+	name: string;
+	email: string;
+	subject: string;
+	message: string;
+}
+
+interface FormErrors {
+	name?: string;
+	email?: string;
+	subject?: string;
+	message?: string;
+}
+
+export default function Contact() {
+	const [formData, setFormData] = useState<ContactForm>({
+		name: "",
+		email: "",
+		subject: "",
+		message: "",
+	});
+	const [errors, setErrors] = useState<FormErrors>({});
+	const [isSubmitting, setIsSubmitting] = useState(false);
+	const [isSubmitted, setIsSubmitted] = useState(false);
+
+	// Validate form
+	const validateForm = (): boolean => {
+		const newErrors: FormErrors = {};
+
+		if (!formData.name.trim()) {
+			newErrors.name = "Name is required";
+		}
+
+		if (!formData.email.trim()) {
+			newErrors.email = "Email is required";
+		} else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+			newErrors.email = "Invalid email format";
+		}
+
+		if (!formData.subject.trim()) {
+			newErrors.subject = "Subject is required";
+		}
+
+		if (!formData.message.trim()) {
+			newErrors.message = "Message is required";
+		} else if (formData.message.trim().length < 10) {
+			newErrors.message = "Message must be at least 10 characters";
+		}
+
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
+	// Handle form submission
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		if (!validateForm()) return;
+
+		setIsSubmitting(true);
+
+		// Simulate API call
+		setTimeout(() => {
+			setIsSubmitting(false);
+			setIsSubmitted(true);
+			setFormData({ name: "", email: "", subject: "", message: "" });
+			setErrors({});
+
+			// Reset success message after 5 seconds
+			setTimeout(() => {
+				setIsSubmitted(false);
+			}, 5000);
+		}, 2000);
+	};
+
+	// Handle input changes
+	const handleChange = (
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+	) => {
+		const { name, value } = e.target;
+		setFormData((prev) => ({ ...prev, [name]: value }));
+
+		// Clear error when user starts typing
+		if (errors[name as keyof FormErrors]) {
+			setErrors((prev) => ({ ...prev, [name]: undefined }));
+		}
+	};
+
+	// Contact information
+	const contactInfo = [
+		{
+			icon: Mail,
+			label: "Email",
+			value: "omidrezakeshtkar@icloud.com",
+			href: "mailto:omidrezakeshtkar@icloud.com",
+		},
+		{
+			icon: MapPin,
+			label: "Location",
+			value: "Dubai, UAE",
+			href: "https://maps.google.com/?q=Dubai, UAE",
+		},
+		{
+			icon: Linkedin,
+			label: "LinkedIn Profile",
+			value: "linkedin.com/in/omid-reza-keshtkar",
+			href: "https://www.linkedin.com/in/omid-reza-keshtkar",
+		},
+	];
+
+	// Social links
+	const socialLinks = [
+		{
+			icon: Github,
+			label: "GitHub",
+			value: "Work: @omidrezakeshtkar | Personal: @omidnw",
+			href: "https://github.com/omidrezakeshtkar",
+			secondaryHref: "https://github.com/omidnw",
+			color: "text-white",
+		},
+		{
+			icon: Gitlab,
+			label: "GitLab",
+			value: "Work: @omidrezakeshtkar | Personal: @omidnw",
+			href: "https://gitlab.com/omidrezakeshtkar",
+			secondaryHref: "https://gitlab.com/omidnw",
+			color: "text-orange-400",
+		},
+		{
+			icon: Linkedin,
+			label: "LinkedIn",
+			value: "Omid Reza Keshtkar",
+			href: "https://www.linkedin.com/in/omid-reza-keshtkar",
+			color: "text-blue-400",
+		},
+		{
+			icon: MessageSquare,
+			label: "Discord",
+			value: "omidnw",
+			href: "#",
+			color: "text-indigo-400",
+		},
+	];
+
+	return (
+		<div className="min-h-screen">
+			{/* Hero Section */}
+			<motion.header
+				initial={{ opacity: 0, y: 30 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.8 }}
+				className="text-center py-8 mb-6"
+			>
+				<h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-black mb-3 neon-glow text-primary">
+					CONTACT_MATRIX.init()
+				</h1>
+				<p className="text-base md:text-lg text-muted-foreground font-mono max-w-2xl mx-auto">
+					Initiate connection protocol - let's build something extraordinary
+					together
+				</p>
+			</motion.header>
+
+			<div className="grid grid-cols-1 xl:grid-cols-7 gap-4 lg:gap-6">
+				{/* Contact Form */}
+				<motion.div
+					initial={{ opacity: 0, x: -30 }}
+					animate={{ opacity: 1, x: 0 }}
+					transition={{ duration: 0.6, delay: 0.2 }}
+					className="order-2 xl:order-1 xl:col-span-4 relative space-y-4"
+				>
+					{/* Background decorative elements */}
+					<div className="absolute inset-0 opacity-5 pointer-events-none">
+						<div className="absolute top-4 left-4 w-16 h-16 border border-primary/30 rounded-lg rotate-12"></div>
+						<div className="absolute top-1/3 right-8 w-8 h-8 border border-secondary/40 rounded-full"></div>
+						<div className="absolute bottom-1/4 left-8 w-12 h-12 border border-accent/30 rounded-lg -rotate-12"></div>
+						<div className="absolute bottom-8 right-12 w-6 h-6 border border-primary/20 rounded-full"></div>
+					</div>
+
+					{/* Contact Form Card */}
+					<Card variant="cyberpunk" className="relative z-10">
+						<CardHeader className="pb-2">
+							<CardTitle className="text-primary font-heading flex items-center text-lg md:text-xl">
+								<Terminal className="w-5 h-5 md:w-6 md:h-6 mr-2 neon-glow" />
+								NEURAL_INTERFACE.transmit()
+							</CardTitle>
+							<p className="text-muted-foreground font-mono text-sm">
+								Send me a message through the secure neural link
+							</p>
+
+							{/* Connection status indicator */}
+							<div className="flex items-center gap-2 mt-1">
+								<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+								<span className="text-xs font-mono text-green-400">
+									Neural link established
+								</span>
+							</div>
+						</CardHeader>
+
+						<CardContent className="pt-0">
+							{/* Form completion progress */}
+							<div className="mb-3">
+								<div className="flex justify-between items-center mb-1">
+									<span className="text-xs font-mono text-muted-foreground">
+										Form completion
+									</span>
+									<span className="text-xs font-mono text-primary">
+										{Math.round(
+											(Object.values(formData).filter(
+												(value) => value.trim().length > 0
+											).length /
+												4) *
+												100
+										)}
+										%
+									</span>
+								</div>
+								<div className="w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+									<motion.div
+										className="h-full bg-gradient-to-r from-primary to-secondary"
+										initial={{ width: 0 }}
+										animate={{
+											width: `${
+												(Object.values(formData).filter(
+													(value) => value.trim().length > 0
+												).length /
+													4) *
+												100
+											}%`,
+										}}
+										transition={{ duration: 0.3 }}
+									/>
+								</div>
+							</div>
+
+							{/* Success Message */}
+							<AnimatePresence>
+								{isSubmitted && (
+									<motion.div
+										initial={{ opacity: 0, scale: 0.8 }}
+										animate={{ opacity: 1, scale: 1 }}
+										exit={{ opacity: 0, scale: 0.8 }}
+										className="mb-3 p-2.5 rounded-lg bg-green-500/10 border border-green-500/30"
+									>
+										<div className="flex items-center gap-2 text-green-400">
+											<CheckCircle className="w-4 h-4" />
+											<span className="font-mono text-sm">
+												Message transmitted successfully! I'll respond soon.
+											</span>
+										</div>
+									</motion.div>
+								)}
+							</AnimatePresence>
+
+							<form onSubmit={handleSubmit} className="space-y-3">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+									{/* Name Field */}
+									<div className="space-y-1">
+										<Label
+											htmlFor="name"
+											className="font-mono text-primary text-sm font-medium"
+										>
+											<User className="w-4 h-4 inline mr-2" />
+											Name
+										</Label>
+										<Input
+											id="name"
+											name="name"
+											value={formData.name}
+											onChange={handleChange}
+											placeholder="Your neural ID..."
+											className={`font-mono bg-background/50 h-9 transition-all duration-200 ${
+												errors.name
+													? "border-red-500 focus:border-red-500 shadow-red-500/25"
+													: "border-primary/30 focus:border-primary hover:border-primary/50"
+											}`}
+										/>
+										{errors.name && (
+											<motion.div
+												initial={{ opacity: 0, y: -10 }}
+												animate={{ opacity: 1, y: 0 }}
+												className="flex items-center gap-1 text-red-400 text-xs font-mono"
+											>
+												<AlertCircle className="w-3 h-3" />
+												{errors.name}
+											</motion.div>
+										)}
+									</div>
+
+									{/* Email Field */}
+									<div className="space-y-1">
+										<Label
+											htmlFor="email"
+											className="font-mono text-primary text-sm font-medium"
+										>
+											<Mail className="w-4 h-4 inline mr-2" />
+											Email
+										</Label>
+										<Input
+											id="email"
+											name="email"
+											type="email"
+											value={formData.email}
+											onChange={handleChange}
+											placeholder="your@email.protocol"
+											className={`font-mono bg-background/50 h-9 transition-all duration-200 ${
+												errors.email
+													? "border-red-500 focus:border-red-500 shadow-red-500/25"
+													: "border-primary/30 focus:border-primary hover:border-primary/50"
+											}`}
+										/>
+										{errors.email && (
+											<motion.div
+												initial={{ opacity: 0, y: -10 }}
+												animate={{ opacity: 1, y: 0 }}
+												className="flex items-center gap-1 text-red-400 text-xs font-mono"
+											>
+												<AlertCircle className="w-3 h-3" />
+												{errors.email}
+											</motion.div>
+										)}
+									</div>
+								</div>
+
+								{/* Subject Field */}
+								<div className="space-y-1">
+									<Label
+										htmlFor="subject"
+										className="font-mono text-primary text-sm font-medium"
+									>
+										<Zap className="w-4 h-4 inline mr-2" />
+										Subject
+									</Label>
+									<Input
+										id="subject"
+										name="subject"
+										value={formData.subject}
+										onChange={handleChange}
+										placeholder="Project collaboration, job opportunity, general inquiry..."
+										className={`font-mono bg-background/50 h-9 transition-all duration-200 ${
+											errors.subject
+												? "border-red-500 focus:border-red-500 shadow-red-500/25"
+												: "border-primary/30 focus:border-primary hover:border-primary/50"
+										}`}
+									/>
+									{errors.subject && (
+										<motion.div
+											initial={{ opacity: 0, y: -10 }}
+											animate={{ opacity: 1, y: 0 }}
+											className="flex items-center gap-1 text-red-400 text-xs font-mono"
+										>
+											<AlertCircle className="w-3 h-3" />
+											{errors.subject}
+										</motion.div>
+									)}
+								</div>
+
+								{/* Message Field */}
+								<div className="space-y-1">
+									<Label
+										htmlFor="message"
+										className="font-mono text-primary text-sm font-medium"
+									>
+										<MessageSquare className="w-4 h-4 inline mr-2" />
+										Message
+									</Label>
+									<Textarea
+										id="message"
+										name="message"
+										value={formData.message}
+										onChange={handleChange}
+										placeholder="Transmit your message through the neural network..."
+										rows={4}
+										className={`font-mono bg-background/50 resize-none transition-all duration-200 ${
+											errors.message
+												? "border-red-500 focus:border-red-500 shadow-red-500/25"
+												: "border-primary/30 focus:border-primary hover:border-primary/50"
+										}`}
+									/>
+									{errors.message && (
+										<motion.div
+											initial={{ opacity: 0, y: -10 }}
+											animate={{ opacity: 1, y: 0 }}
+											className="flex items-center gap-1 text-red-400 text-xs font-mono"
+										>
+											<AlertCircle className="w-3 h-3" />
+											{errors.message}
+										</motion.div>
+									)}
+									<div className="text-xs text-muted-foreground font-mono text-right">
+										{formData.message.length}/1000 characters
+									</div>
+								</div>
+
+								{/* Submit Button */}
+								<div className="pt-1">
+									<Button
+										type="submit"
+										variant="neon"
+										size="lg"
+										disabled={isSubmitting}
+										className="w-full font-mono h-10 text-base"
+									>
+										{isSubmitting ? (
+											<>
+												<Loader2 className="w-5 h-5 mr-2 animate-spin" />
+												Transmitting...
+											</>
+										) : (
+											<>
+												<Send className="w-5 h-5 mr-2" />
+												TRANSMIT_MESSAGE()
+											</>
+										)}
+									</Button>
+								</div>
+							</form>
+						</CardContent>
+					</Card>
+
+					{/* Interactive Cyberpunk Dubai Map */}
+					<div className="mt-4">
+						<CyberpunkDubaiMap />
+					</div>
+				</motion.div>
+
+				{/* Contact Information & Social Links */}
+				<motion.div
+					initial={{ opacity: 0, x: 30 }}
+					animate={{ opacity: 1, x: 0 }}
+					transition={{ duration: 0.6, delay: 0.4 }}
+					className="space-y-4 order-1 xl:order-2 xl:col-span-3"
+				>
+					{/* Contact Information */}
+					<Card variant="hologram">
+						<CardHeader className="pb-2">
+							<CardTitle className="text-primary font-heading flex items-center text-base md:text-lg">
+								<Zap className="w-4 h-4 md:w-5 md:h-5 mr-2 neon-glow" />
+								DIRECT_CHANNELS.list()
+							</CardTitle>
+							<p className="text-muted-foreground font-mono text-xs">
+								Primary communication protocols
+							</p>
+						</CardHeader>
+
+						<CardContent className="space-y-2">
+							{contactInfo.map((item, index) => (
+								<motion.a
+									key={item.label}
+									href={item.href}
+									target={item.href.startsWith("http") ? "_blank" : undefined}
+									rel={
+										item.href.startsWith("http")
+											? "noopener noreferrer"
+											: undefined
+									}
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
+									className="flex items-center gap-2 md:gap-3 p-2 rounded-lg bg-background/50 hover:bg-primary/10 transition-all duration-200 group border border-transparent hover:border-primary/30"
+								>
+									<div className="p-1.5 rounded-lg bg-primary/20 text-primary group-hover:bg-primary/30 transition-colors flex-shrink-0">
+										<item.icon className="w-3 h-3 md:w-4 md:h-4" />
+									</div>
+									<div className="flex-1 min-w-0">
+										<div className="text-xs font-mono text-muted-foreground">
+											{item.label}
+										</div>
+										<div className="font-mono text-xs md:text-sm text-foreground group-hover:text-primary transition-colors truncate">
+											{item.value}
+										</div>
+									</div>
+								</motion.a>
+							))}
+						</CardContent>
+					</Card>
+
+					{/* Social Links */}
+					<Card variant="cyberpunk">
+						<CardHeader className="pb-2">
+							<CardTitle className="text-primary font-heading flex items-center text-base md:text-lg">
+								<Globe className="w-4 h-4 md:w-5 md:h-5 mr-2 neon-glow" />
+								SOCIAL_NETWORK.connect()
+							</CardTitle>
+							<p className="text-muted-foreground font-mono text-xs">
+								Find me across the digital realm
+							</p>
+						</CardHeader>
+
+						<CardContent className="space-y-3">
+							{socialLinks.map((social, index) => (
+								<motion.div
+									key={social.label}
+									initial={{ opacity: 0, y: 20 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
+									className="p-2.5 rounded-lg bg-background/50 border border-transparent hover:border-secondary/30 transition-all duration-200 group"
+								>
+									<div className="flex items-center gap-2 md:gap-3 mb-2">
+										<div
+											className={`p-1.5 rounded-lg bg-secondary/20 ${social.color} group-hover:bg-secondary/30 transition-colors flex-shrink-0`}
+										>
+											<social.icon className="w-3 h-3 md:w-4 md:h-4" />
+										</div>
+										<div className="flex-1 min-w-0">
+											<div className="text-xs font-mono text-muted-foreground">
+												{social.label}
+											</div>
+											<div className="font-mono text-xs text-foreground group-hover:text-secondary transition-colors">
+												{social.value}
+											</div>
+										</div>
+										<Badge
+											variant="outline"
+											className="font-mono text-xs flex-shrink-0"
+										>
+											ACTIVE
+										</Badge>
+									</div>
+
+									{/* Show clickable links for GitHub and GitLab */}
+									{social.secondaryHref && (
+										<div className="flex flex-col sm:flex-row gap-1.5 ml-0 sm:ml-8">
+											<a
+												href={social.href}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-xs font-mono text-primary hover:text-secondary transition-colors px-2.5 py-1.5 rounded bg-primary/10 hover:bg-secondary/10 text-center"
+											>
+												Work Account →
+											</a>
+											<a
+												href={social.secondaryHref}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-xs font-mono text-accent hover:text-secondary transition-colors px-2.5 py-1.5 rounded bg-accent/10 hover:bg-secondary/10 text-center"
+											>
+												Personal Account →
+											</a>
+										</div>
+									)}
+
+									{/* Single link for LinkedIn and Discord */}
+									{!social.secondaryHref && (
+										<div className="ml-0 sm:ml-8">
+											<a
+												href={social.href}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="text-xs font-mono text-primary hover:text-secondary transition-colors px-2.5 py-1.5 rounded bg-primary/10 hover:bg-secondary/10 inline-block w-full sm:w-auto text-center"
+											>
+												Visit Profile →
+											</a>
+										</div>
+									)}
+								</motion.div>
+							))}
+						</CardContent>
+					</Card>
+
+					{/* Quick Info */}
+					<Card variant="cyberpunk">
+						<CardContent className="p-3 md:p-4">
+							<div className="text-center space-y-2">
+								<div className="text-xs font-mono text-muted-foreground">
+									Response Time Protocol
+								</div>
+								<div className="text-xl font-heading text-primary neon-glow">
+									&lt; 24 HOURS
+								</div>
+								<div className="text-xs font-mono text-muted-foreground">
+									Average response time for all neural transmissions
+								</div>
+								<Badge variant="secondary" className="font-mono text-xs">
+									<Zap className="w-3 h-3 mr-1" />
+									NEURAL_LINK_ACTIVE
+								</Badge>
+							</div>
+						</CardContent>
+					</Card>
+				</motion.div>
+			</div>
+		</div>
+	);
+}

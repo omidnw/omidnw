@@ -1,0 +1,485 @@
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+	/* Cyberpunk Color Palette */
+	--background: 220 20% 6%;
+	--foreground: 290 80% 95%;
+	--muted: 220 15% 12%;
+	--muted-foreground: 290 30% 65%;
+	--popover: 220 25% 8%;
+	--popover-foreground: 290 80% 95%;
+	--card: 220 20% 10%;
+	--card-foreground: 290 80% 95%;
+	--border: 290 50% 25%;
+	--input: 220 15% 15%;
+
+	/* Neon Colors */
+	--primary: 290 100% 75%; /* Hot Pink */
+	--primary-foreground: 220 20% 6%;
+	--secondary: 190 100% 65%; /* Cyber Blue */
+	--secondary-foreground: 220 20% 6%;
+	--accent: 270 100% 70%; /* Electric Purple */
+	--accent-foreground: 220 20% 6%;
+
+	--destructive: 0 84% 60%;
+	--destructive-foreground: 0 0% 98%;
+	--ring: 290 100% 75%;
+	--radius: 0.5rem;
+
+	/* Sidebar colors */
+	--sidebar-background: 220 25% 8%;
+	--sidebar-foreground: 290 80% 95%;
+	--sidebar-primary: 290 100% 75%;
+	--sidebar-primary-foreground: 220 20% 6%;
+	--sidebar-accent: 270 100% 70%;
+	--sidebar-accent-foreground: 220 20% 6%;
+	--sidebar-border: 290 50% 25%;
+	--sidebar-ring: 290 100% 75%;
+
+	/* Chart colors */
+	--chart-1: 290 100% 75%;
+	--chart-2: 190 100% 65%;
+	--chart-3: 270 100% 70%;
+	--chart-4: 340 100% 70%;
+	--chart-5: 60 100% 70%;
+}
+
+.dark {
+	/* Same as root for cyberpunk theme */
+	--background: 220 20% 6%;
+	--foreground: 290 80% 95%;
+	--muted: 220 15% 12%;
+	--muted-foreground: 290 30% 65%;
+	--popover: 220 25% 8%;
+	--popover-foreground: 290 80% 95%;
+	--card: 220 20% 10%;
+	--card-foreground: 290 80% 95%;
+	--border: 290 50% 25%;
+	--input: 220 15% 15%;
+	--primary: 290 100% 75%;
+	--primary-foreground: 220 20% 6%;
+	--secondary: 190 100% 65%;
+	--secondary-foreground: 220 20% 6%;
+	--accent: 270 100% 70%;
+	--accent-foreground: 220 20% 6%;
+	--destructive: 0 62.8% 50.6%;
+	--destructive-foreground: 0 0% 98%;
+	--ring: 290 100% 75%;
+}
+
+@layer base {
+	* {
+		@apply border-border;
+	}
+
+	html {
+		scroll-behavior: smooth;
+		scroll-padding-top: 6rem; /* Account for fixed navigation */
+	}
+
+	body {
+		@apply font-sans antialiased bg-background text-foreground;
+		font-family: "Orbitron", monospace;
+		overflow-x: hidden; /* Prevent horizontal scroll */
+	}
+
+	.font-mono {
+		font-family: "Share Tech Mono", monospace;
+	}
+
+	.font-heading {
+		font-family: "Orbitron", monospace;
+		font-weight: 700;
+	}
+
+	/* Optimize scroll performance */
+	main {
+		transform: translateZ(0);
+		will-change: transform;
+	}
+}
+
+@layer components {
+	/* Cyberpunk Animations */
+	.neon-glow {
+		text-shadow: 0 0 5px currentColor, 0 0 10px currentColor,
+			0 0 15px currentColor;
+	}
+
+	.neon-border {
+		box-shadow: 0 0 5px hsl(var(--primary)), 0 0 10px hsl(var(--primary)),
+			0 0 15px hsl(var(--primary)), inset 0 0 5px hsl(var(--primary));
+	}
+
+	.glitch-text {
+		animation: glitch 2s infinite;
+	}
+
+	.cyber-grid {
+		background-image: linear-gradient(
+				rgba(255, 0, 255, 0.1) 1px,
+				transparent 1px
+			),
+			linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+		background-size: 50px 50px;
+	}
+
+	.hologram {
+		background: linear-gradient(
+			45deg,
+			transparent 30%,
+			rgba(255, 255, 255, 0.1) 50%,
+			transparent 70%
+		);
+		background-size: 200% 200%;
+		animation: hologram 3s ease-in-out infinite;
+	}
+
+	.scan-lines {
+		background: linear-gradient(transparent 50%, rgba(0, 255, 255, 0.03) 50%);
+		background-size: 100% 4px;
+		animation: scan 2s linear infinite;
+	}
+
+	/* Cyberpunk Syntax Highlighting */
+	.hljs {
+		background: rgba(0, 0, 0, 0.8) !important;
+		color: #00ff41;
+		padding: 1rem;
+		border-radius: 0.5rem;
+		border: 1px solid rgba(255, 20, 147, 0.3);
+		position: relative;
+		overflow-x: auto;
+	}
+
+	/* Enhanced Cyberpunk Code Blocks */
+	.cyberpunk-code-block {
+		position: relative;
+		background: rgba(0, 0, 0, 0.9);
+		border: 1px solid rgba(255, 20, 147, 0.3);
+		box-shadow: 0 0 10px rgba(255, 20, 147, 0.2),
+			inset 0 0 10px rgba(0, 255, 255, 0.1);
+	}
+
+	.cyberpunk-code-block:hover {
+		border-color: rgba(255, 20, 147, 0.5);
+		box-shadow: 0 0 15px rgba(255, 20, 147, 0.3),
+			inset 0 0 15px rgba(0, 255, 255, 0.15);
+		transition: all 0.3s ease;
+	}
+
+	.cyberpunk-code-block code {
+		background: transparent !important;
+		border: none !important;
+		padding: 0 !important;
+		color: #00ff41;
+	}
+
+	/* Override default hljs styles for our cyberpunk theme */
+	.cyberpunk-code-block .hljs,
+	.cyberpunk-code-block code.hljs {
+		background: transparent !important;
+		padding: 0 !important;
+		border: none !important;
+		color: #00ff41;
+	}
+
+	.hljs-keyword {
+		color: #ff1493; /* Hot pink for keywords */
+		font-weight: bold;
+	}
+
+	.hljs-string {
+		color: #00ffff; /* Cyan for strings */
+	}
+
+	.hljs-comment {
+		color: #808080; /* Gray for comments */
+		font-style: italic;
+	}
+
+	.hljs-number {
+		color: #ff6b35; /* Orange for numbers */
+	}
+
+	.hljs-function {
+		color: #ffd700; /* Gold for functions */
+	}
+
+	.hljs-variable {
+		color: #9370db; /* Purple for variables */
+	}
+
+	.hljs-operator {
+		color: #ff1493; /* Hot pink for operators */
+	}
+
+	.hljs-type {
+		color: #00ff7f; /* Spring green for types */
+	}
+
+	.hljs-class {
+		color: #ffd700; /* Gold for classes */
+	}
+
+	.hljs-property {
+		color: #40e0d0; /* Turquoise for properties */
+	}
+
+	.hljs-tag {
+		color: #ff1493; /* Hot pink for HTML tags */
+	}
+
+	.hljs-attribute {
+		color: #ffd700; /* Gold for attributes */
+	}
+
+	.hljs-value {
+		color: #00ffff; /* Cyan for values */
+	}
+
+	.hljs-selector-tag {
+		color: #ff1493; /* Hot pink for CSS selectors */
+	}
+
+	.hljs-selector-class {
+		color: #ffd700; /* Gold for CSS classes */
+	}
+
+	.hljs-selector-id {
+		color: #00ff7f; /* Spring green for CSS IDs */
+	}
+
+	/* Language-specific styling */
+	.language-javascript .hljs-function,
+	.language-js .hljs-function {
+		color: #ffd700;
+	}
+
+	.language-typescript .hljs-type,
+	.language-ts .hljs-type {
+		color: #00ff7f;
+	}
+
+	.language-python .hljs-keyword {
+		color: #ff6b35;
+	}
+
+	.language-css .hljs-selector-tag {
+		color: #ff1493;
+	}
+
+	.language-html .hljs-tag {
+		color: #00ffff;
+	}
+
+	/* Cyberpunk code block enhancements */
+	pre.hljs::before {
+		content: "";
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: linear-gradient(90deg, #ff1493, #00ffff, #ffd700);
+		opacity: 0.8;
+	}
+
+	pre.hljs::after {
+		content: "EXECUTE";
+		position: absolute;
+		top: 0.5rem;
+		right: 0.5rem;
+		font-size: 0.6rem;
+		color: #ff1493;
+		font-family: "JetBrains Mono", "Fira Code", monospace;
+		opacity: 0.5;
+	}
+
+	/* Scrollbar styling for code blocks */
+	.hljs::-webkit-scrollbar,
+	.cyberpunk-code-block code::-webkit-scrollbar {
+		height: 8px;
+		width: 8px;
+	}
+
+	.hljs::-webkit-scrollbar-track,
+	.cyberpunk-code-block code::-webkit-scrollbar-track {
+		background: rgba(0, 0, 0, 0.3);
+		border-radius: 4px;
+	}
+
+	.hljs::-webkit-scrollbar-thumb,
+	.cyberpunk-code-block code::-webkit-scrollbar-thumb {
+		background: linear-gradient(90deg, #ff1493, #00ffff);
+		border-radius: 4px;
+	}
+
+	.hljs::-webkit-scrollbar-thumb:hover,
+	.cyberpunk-code-block code::-webkit-scrollbar-thumb:hover {
+		background: linear-gradient(90deg, #ffd700, #ff1493);
+	}
+
+	/* Cyberpunk Markdown Container */
+	.cyberpunk-markdown {
+		animation: fade-in 0.8s ease-out;
+	}
+
+	.cyberpunk-markdown > *:first-child {
+		margin-top: 0 !important;
+	}
+
+	.cyberpunk-markdown > *:last-child {
+		margin-bottom: 0 !important;
+	}
+
+	/* Animation for markdown elements */
+	@keyframes fade-in {
+		from {
+			opacity: 0;
+			transform: translateY(10px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes fade-in-up {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	@keyframes slide-in-left {
+		from {
+			opacity: 0;
+			transform: translateX(-20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateX(0);
+		}
+	}
+
+	/* Animate elements with data attributes */
+	[data-animate="fade-in-up"] {
+		animation: fade-in-up 0.6s ease-out forwards;
+	}
+
+	[data-animate="fade-in"] {
+		animation: fade-in 0.8s ease-out forwards;
+	}
+
+	[data-animate="slide-in-left"] {
+		animation: slide-in-left 0.6s ease-out forwards;
+	}
+
+	[data-delay="100"] {
+		animation-delay: 0.1s;
+	}
+
+	/* Line clamping utilities for consistent card layouts */
+	.line-clamp-2 {
+		display: -webkit-box;
+		-webkit-line-clamp: 2;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-3 {
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+
+	.line-clamp-4 {
+		display: -webkit-box;
+		-webkit-line-clamp: 4;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+}
+
+@layer utilities {
+	@keyframes glitch {
+		0%,
+		100% {
+			transform: translate(0);
+		}
+		20% {
+			transform: translate(-2px, 2px);
+		}
+		40% {
+			transform: translate(-2px, -2px);
+		}
+		60% {
+			transform: translate(2px, 2px);
+		}
+		80% {
+			transform: translate(2px, -2px);
+		}
+	}
+
+	@keyframes hologram {
+		0% {
+			background-position: 0% 50%;
+		}
+		50% {
+			background-position: 100% 50%;
+		}
+		100% {
+			background-position: 0% 50%;
+		}
+	}
+
+	@keyframes scan {
+		0% {
+			background-position: 0 0;
+		}
+		100% {
+			background-position: 0 4px;
+		}
+	}
+
+	@keyframes float {
+		0%,
+		100% {
+			transform: translateY(0px) scale(1);
+			opacity: 0.6;
+		}
+		50% {
+			transform: translateY(-20px) scale(1.1);
+			opacity: 1;
+		}
+	}
+
+	@keyframes pulse-neon {
+		0%,
+		100% {
+			text-shadow: 0 0 5px currentColor, 0 0 10px currentColor,
+				0 0 15px currentColor, 0 0 20px currentColor;
+		}
+		50% {
+			text-shadow: 0 0 2px currentColor, 0 0 5px currentColor,
+				0 0 8px currentColor, 0 0 12px currentColor;
+		}
+	}
+
+	.animate-float {
+		animation: float 3s ease-in-out infinite;
+	}
+
+	.animate-pulse-neon {
+		animation: pulse-neon 2s ease-in-out infinite;
+	}
+}

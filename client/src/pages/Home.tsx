@@ -1,0 +1,425 @@
+import React, { useState, useEffect, useMemo, useCallback } from "react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+	Download,
+	Code,
+	Zap,
+	Cpu,
+	Database,
+	Globe,
+	Terminal,
+	ChevronDown,
+	FileCode,
+	Cog,
+	Brain,
+	Leaf,
+	Anchor,
+	Cloud,
+	HardDrive,
+	TestTube2,
+	GitMerge,
+	Rocket,
+	Palette,
+} from "lucide-react";
+
+const skills = [
+	{ name: "TypeScript", icon: Terminal, level: 90 },
+	{ name: "JavaScript", icon: Leaf, level: 90 },
+	{ name: "React", icon: Code, level: 50 },
+	{ name: "Node.js", icon: Leaf, level: 65 },
+	{ name: "Rust", icon: Cog, level: 20 },
+	{ name: "C", icon: Cog, level: 40 },
+	{ name: "C++", icon: Cog, level: 20 },
+	{ name: "HTML5", icon: FileCode, level: 100 },
+	{ name: "CSS3", icon: Palette, level: 50 },
+	{ name: "YAML", icon: FileCode, level: 90 },
+	{ name: "XML", icon: FileCode, level: 50 },
+	{ name: "Bash", icon: GitMerge, level: 60 },
+	{ name: "Docker", icon: Anchor, level: 30 },
+	{ name: "AWS", icon: Cloud, level: 25 },
+	{ name: "Linux (Debian/Fedora)", icon: HardDrive, level: 75 },
+	{ name: "FreeBSD", icon: HardDrive, level: 45 },
+	{ name: "Jest", icon: TestTube2, level: 60 },
+	{ name: "Playwright", icon: TestTube2, level: 100 },
+	{ name: "Selenium", icon: TestTube2, level: 60 },
+	{ name: "Remix", icon: Rocket, level: 30 },
+] as const;
+
+const glitchText = [
+	"DEVELOPER",
+	"D3V3L0P3R",
+	"CODER",
+	"C0D3R",
+	"SOFTWARE QA",
+	"S0FTWARE Q4",
+	"FULL STACK DEV",
+	"FULL ST4CK D3V",
+	"PROBLEM SOLVER",
+	"PR0BL3M S0LV3R",
+] as const;
+
+const stats = [
+	{ label: "PROJECTS", value: 5, suffix: "+" },
+	{ label: "EXPERIENCE", value: 5, suffix: "+ Years" },
+	{ label: "BLOGS", value: 1, suffix: "" },
+] as const;
+
+function GlitchText() {
+	const [currentText, setCurrentText] = useState(0);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			setCurrentText((prev) => (prev + 1) % glitchText.length);
+		}, 2000);
+
+		return () => clearInterval(interval);
+	}, []);
+
+	return (
+		<motion.span
+			key={currentText}
+			initial={{ opacity: 0 }}
+			animate={{ opacity: 1 }}
+			className="text-accent font-bold glitch-text"
+			aria-live="polite"
+			aria-label={`Current role: ${glitchText[currentText]}`}
+		>
+			{glitchText[currentText]}
+		</motion.span>
+	);
+}
+
+// Memoized MatrixRain component to prevent unnecessary re-renders
+const MatrixRain = React.memo(() => {
+	const rainDrops = useMemo(
+		() =>
+			Array.from({ length: 50 }, (_, i) => ({
+				id: i,
+				left: Math.random() * 100,
+				duration: Math.random() * 10 + 5,
+				delay: Math.random() * 5,
+				characters: Array.from({ length: 20 }, () =>
+					String.fromCharCode(0x30a0 + Math.random() * 96)
+				),
+			})),
+		[]
+	);
+
+	return (
+		<div
+			className="fixed inset-0 z-0 opacity-10 pointer-events-none"
+			aria-hidden="true"
+			role="presentation"
+		>
+			{rainDrops.map((drop) => (
+				<motion.div
+					key={drop.id}
+					className="absolute text-primary font-mono text-sm"
+					style={{ left: `${drop.left}%` }}
+					animate={{ y: ["0vh", "100vh"] }}
+					transition={{
+						duration: drop.duration,
+						repeat: Infinity,
+						delay: drop.delay,
+					}}
+				>
+					{drop.characters.map((char, j) => (
+						<div key={j}>{char}</div>
+					))}
+				</motion.div>
+			))}
+		</div>
+	);
+});
+MatrixRain.displayName = "MatrixRain";
+
+function Hero() {
+	const handleDownloadResume = useCallback(() => {
+		// Add actual resume download logic here
+		console.log("Download resume clicked");
+	}, []);
+
+	const handleViewProjects = useCallback(() => {
+		// Navigate to projects section
+		window.location.href = "/projects";
+	}, []);
+
+	return (
+		<section
+			className="min-h-screen flex items-center justify-center relative"
+			aria-label="Hero section"
+		>
+			<MatrixRain />
+
+			<div className="text-center z-10 max-w-4xl mx-auto px-4">
+				<motion.div
+					initial={{ opacity: 0, y: 50 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1 }}
+				>
+					<motion.h1
+						className="text-6xl md:text-8xl font-heading font-black mb-6 neon-glow"
+						animate={{
+							textShadow: [
+								"0 0 20px #ff00ff",
+								"0 0 40px #ff00ff, 0 0 60px #ff00ff",
+								"0 0 20px #ff00ff",
+							],
+						}}
+						transition={{ duration: 2, repeat: Infinity }}
+					>
+						CYBER
+						<br />
+						<span className="text-secondary">PORTFOLIO</span>
+					</motion.h1>
+				</motion.div>
+
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1, delay: 0.5 }}
+					className="text-2xl md:text-4xl font-mono mb-8"
+				>
+					<span className="text-foreground">I'M A </span>
+					<GlitchText />
+				</motion.div>
+
+				<motion.p
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1, delay: 1 }}
+					className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-mono"
+				>
+					Welcome to my digital realm. I craft immersive web experiences using
+					cutting-edge technologies in the cyberpunk era.
+				</motion.p>
+
+				<motion.div
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 1, delay: 1.5 }}
+					className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+				>
+					<Button
+						variant="cyberpunk"
+						size="lg"
+						className="w-full sm:w-auto"
+						onClick={handleDownloadResume}
+						aria-label="Download my resume (coming soon)"
+						disabled={true}
+					>
+						<Download className="w-5 h-5 mr-2" aria-hidden="true" />
+						Download Resume
+					</Button>
+					<Button
+						variant="neon"
+						size="lg"
+						className="w-full sm:w-auto"
+						onClick={handleViewProjects}
+						aria-label="View my projects"
+					>
+						<Code className="w-5 h-5 mr-2" aria-hidden="true" />
+						View Projects
+					</Button>
+				</motion.div>
+
+				<motion.div
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 1, delay: 2 }}
+					className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+				>
+					<motion.button
+						animate={{ y: [0, 10, 0] }}
+						transition={{ duration: 2, repeat: Infinity }}
+						className="text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md p-2"
+						onClick={() =>
+							window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
+						}
+						aria-label="Scroll to next section"
+					>
+						<ChevronDown className="w-8 h-8" aria-hidden="true" />
+					</motion.button>
+				</motion.div>
+			</div>
+		</section>
+	);
+}
+
+function SkillsGrid() {
+	return (
+		<section className="py-20" aria-label="Technical skills">
+			<motion.div
+				initial={{ opacity: 0, y: 50 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.8 }}
+				viewport={{ once: true }}
+				className="text-center mb-16"
+			>
+				<h2 className="text-4xl md:text-6xl font-heading font-bold mb-4 neon-glow text-primary">
+					TECH_STACK
+				</h2>
+				<p className="text-lg text-muted-foreground font-mono">
+					My arsenal of cybernetic enhancements
+				</p>
+			</motion.div>
+
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				{skills.map((skill, index) => {
+					const Icon = skill.icon;
+					return (
+						<motion.div
+							key={skill.name}
+							initial={{ opacity: 0, y: 50 }}
+							whileInView={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.5, delay: index * 0.1 }}
+							viewport={{ once: true }}
+						>
+							<Card variant="hologram" className="h-full">
+								<CardHeader className="text-center">
+									<Icon
+										className="w-12 h-12 mx-auto mb-4 text-primary neon-glow"
+										aria-hidden="true"
+									/>
+									<CardTitle className="font-heading text-primary">
+										{skill.name}
+									</CardTitle>
+								</CardHeader>
+								<CardContent>
+									<div className="space-y-2">
+										<div className="flex justify-between text-sm font-mono">
+											<span>Proficiency</span>
+											<span aria-label={`${skill.level} percent`}>
+												{skill.level}%
+											</span>
+										</div>
+										<div className="w-full bg-muted rounded-full h-2 overflow-hidden">
+											<motion.div
+												className="h-full bg-gradient-to-r from-primary to-secondary neon-border"
+												initial={{ width: 0 }}
+												whileInView={{ width: `${skill.level}%` }}
+												transition={{ duration: 1, delay: index * 0.1 }}
+												viewport={{ once: true }}
+												role="progressbar"
+												aria-valuenow={skill.level}
+												aria-valuemin={0}
+												aria-valuemax={100}
+												aria-label={`${skill.name} proficiency: ${skill.level}%`}
+											/>
+										</div>
+									</div>
+								</CardContent>
+							</Card>
+						</motion.div>
+					);
+				})}
+			</div>
+		</section>
+	);
+}
+
+// Memoized StatusBar component with proper cleanup
+const StatusBar = React.memo(() => {
+	const [animatedStats, setAnimatedStats] = useState(stats.map(() => 0));
+
+	const animateStats = useCallback(() => {
+		stats.forEach((stat, index) => {
+			let current = 0;
+			const increment = stat.value / 100;
+			const timer = setInterval(() => {
+				current += increment;
+				if (current >= stat.value) {
+					current = stat.value;
+					clearInterval(timer);
+				}
+				setAnimatedStats((prev) => {
+					const newStats = [...prev];
+					newStats[index] = Math.floor(current);
+					return newStats;
+				});
+			}, 20);
+		});
+	}, []);
+
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) {
+					animateStats();
+					observer.disconnect();
+				}
+			},
+			{ threshold: 0.5 }
+		);
+
+		const element = document.getElementById("status-bar");
+		if (element) {
+			observer.observe(element);
+		}
+
+		return () => observer.disconnect();
+	}, [animateStats]);
+
+	return (
+		<section
+			id="status-bar"
+			className="py-20"
+			aria-label="Professional statistics"
+		>
+			<motion.div
+				initial={{ opacity: 0, y: 50 }}
+				whileInView={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.8 }}
+				viewport={{ once: true }}
+				className="text-center mb-16"
+			>
+				<h2 className="text-4xl md:text-6xl font-heading font-bold mb-4 neon-glow text-primary">
+					STATUS_BAR
+				</h2>
+				<p className="text-lg text-muted-foreground font-mono">
+					System performance metrics
+				</p>
+			</motion.div>
+
+			<div className="grid grid-cols-2 gap-6 lg:flex lg:justify-center">
+				{stats.map((stat, index) => (
+					<motion.div
+						key={stat.label}
+						initial={{ opacity: 0, scale: 0.5 }}
+						whileInView={{ opacity: 1, scale: 1 }}
+						transition={{ duration: 0.5, delay: index * 0.1 }}
+						viewport={{ once: true }}
+					>
+						<Card variant="cyberpunk" className="text-center p-6">
+							<div className="text-4xl md:text-6xl font-heading font-bold text-primary neon-glow mb-2">
+								<span
+									aria-label={`${animatedStats[index]}${stat.suffix} ${stat.label}`}
+								>
+									{animatedStats[index]}
+									{stat.suffix}
+								</span>
+							</div>
+							<div className="text-sm font-mono text-muted-foreground uppercase tracking-wider">
+								{stat.label}
+							</div>
+						</Card>
+					</motion.div>
+				))}
+			</div>
+		</section>
+	);
+});
+StatusBar.displayName = "StatusBar";
+
+export default function Home() {
+	return (
+		<div className="space-y-0">
+			<Hero />
+			<SkillsGrid />
+			<StatusBar />
+		</div>
+	);
+}
