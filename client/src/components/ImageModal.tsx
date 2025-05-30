@@ -70,7 +70,7 @@ export default function ImageModal({
 						animate={{ scale: 1, opacity: 1 }}
 						exit={{ scale: 0.8, opacity: 0 }}
 						transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
-						className="relative bg-background/80 border border-primary/50 rounded-lg shadow-2xl shadow-primary/30 overflow-hidden max-w-4xl max-h-[90vh] flex flex-col"
+						className="relative bg-background/80 border border-primary/50 rounded-lg shadow-2xl shadow-primary/30 overflow-hidden w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl max-h-[90vh] flex flex-col"
 						onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal content
 					>
 						{/* Terminal-style Header */}

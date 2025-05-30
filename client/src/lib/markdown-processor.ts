@@ -184,7 +184,7 @@ function applyCyberpunkStyling(html: string): string {
 									<div class="relative">
 										<img src="${src}" alt="${
 					alt || ""
-				}" class="cyberpunk-image-thumbnail rounded-md border border-primary/20 group-hover:border-primary/50 transition-all duration-300 max-w-md group-hover:shadow-lg group-hover:shadow-primary/20 block" loading="lazy">
+				}" class="cyberpunk-image-thumbnail rounded-md border border-primary/20 group-hover:border-primary/50 transition-all duration-300 w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl group-hover:shadow-lg group-hover:shadow-primary/20 block" loading="lazy">
 										<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
 											<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-white lucide lucide-zoom-in"><circle cx="11" cy="11" r="8"/><line x1="21" x2="17.65" y1="21" y2="17.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
 										</div>
@@ -272,7 +272,7 @@ function processMarkdownFallback(content: string): string {
 								<div class="relative">
 									<img src="${src}" alt="${
 				alt || ""
-			}" class="cyberpunk-image-thumbnail rounded-md border border-primary/20 group-hover:border-primary/50 transition-all duration-300 max-w-md group-hover:shadow-lg group-hover:shadow-primary/20 block" loading="lazy">
+			}" class="cyberpunk-image-thumbnail rounded-md border border-primary/20 group-hover:border-primary/50 transition-all duration-300 w-full sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl group-hover:shadow-lg group-hover:shadow-primary/20 block" loading="lazy">
 									<div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity duration-300 pointer-events-none">
 										<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-10 h-10 text-white lucide lucide-zoom-in"><circle cx="11" cy="11" r="8"/><line x1="21" x2="17.65" y1="21" y2="17.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
 									</div>
