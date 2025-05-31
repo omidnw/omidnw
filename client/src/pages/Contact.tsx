@@ -23,6 +23,9 @@ import {
 	Loader2,
 	Gitlab,
 	Code,
+	ExternalLink,
+	Building,
+	Phone,
 } from "lucide-react";
 import CyberpunkDubaiMap from "@/components/CyberpunkDubaiMap";
 
@@ -171,30 +174,30 @@ export default function Contact() {
 	];
 
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 			{/* Hero Section */}
 			<motion.header
 				initial={{ opacity: 0, y: 30 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
-				className="text-center py-8 mb-6"
+				className="text-center py-6 sm:py-8 mb-6 sm:mb-8"
 			>
-				<h1 className="text-3xl md:text-5xl lg:text-6xl font-heading font-black mb-3 neon-glow text-primary">
+				<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
 					CONTACT_MATRIX.init()
 				</h1>
-				<p className="text-base md:text-lg text-muted-foreground font-mono max-w-2xl mx-auto">
+				<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-2 sm:px-4">
 					Initiate connection protocol - let's build something extraordinary
 					together
 				</p>
 			</motion.header>
 
-			<div className="grid grid-cols-1 xl:grid-cols-7 gap-4 lg:gap-6">
+			<div className="grid grid-cols-1 xl:grid-cols-7 gap-4 sm:gap-6 lg:gap-8">
 				{/* Contact Form */}
 				<motion.div
 					initial={{ opacity: 0, x: -30 }}
 					animate={{ opacity: 1, x: 0 }}
 					transition={{ duration: 0.6, delay: 0.2 }}
-					className="order-2 xl:order-1 xl:col-span-4 relative space-y-4"
+					className="order-2 xl:order-1 xl:col-span-4 relative space-y-4 sm:space-y-6"
 				>
 					{/* Background decorative elements */}
 					<div className="absolute inset-0 opacity-5 pointer-events-none">
@@ -206,32 +209,32 @@ export default function Contact() {
 
 					{/* Contact Form Card */}
 					<Card variant="cyberpunk" className="relative z-10">
-						<CardHeader className="pb-2">
-							<CardTitle className="text-primary font-heading flex items-center text-lg md:text-xl">
-								<Terminal className="w-5 h-5 md:w-6 md:h-6 mr-2 neon-glow" />
+						<CardHeader className="pb-4 sm:pb-6">
+							<CardTitle className="text-primary font-heading flex items-center text-lg sm:text-xl md:text-2xl">
+								<Terminal className="w-5 h-5 sm:w-6 sm:h-6 mr-2 neon-glow" />
 								NEURAL_INTERFACE.transmit()
 							</CardTitle>
-							<p className="text-muted-foreground font-mono text-sm">
+							<p className="text-muted-foreground font-mono text-sm sm:text-base">
 								Send me a message through the secure neural link
 							</p>
 
 							{/* Connection status indicator */}
-							<div className="flex items-center gap-2 mt-1">
+							<div className="flex items-center gap-2 mt-2">
 								<div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-								<span className="text-xs font-mono text-green-400">
+								<span className="text-xs sm:text-sm font-mono text-green-400">
 									Neural link established
 								</span>
 							</div>
 						</CardHeader>
 
-						<CardContent className="pt-0">
+						<CardContent className="pt-0 space-y-4 sm:space-y-6">
 							{/* Form completion progress */}
-							<div className="mb-3">
-								<div className="flex justify-between items-center mb-1">
-									<span className="text-xs font-mono text-muted-foreground">
+							<div className="mb-4 sm:mb-6">
+								<div className="flex justify-between items-center mb-2">
+									<span className="text-xs sm:text-sm font-mono text-muted-foreground">
 										Form completion
 									</span>
-									<span className="text-xs font-mono text-primary">
+									<span className="text-xs sm:text-sm font-mono text-primary">
 										{Math.round(
 											(Object.values(formData).filter(
 												(value) => value.trim().length > 0
@@ -242,7 +245,7 @@ export default function Contact() {
 										%
 									</span>
 								</div>
-								<div className="w-full bg-muted/30 rounded-full h-1.5 overflow-hidden">
+								<div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
 									<motion.div
 										className="h-full bg-gradient-to-r from-primary to-secondary"
 										initial={{ width: 0 }}
@@ -267,11 +270,11 @@ export default function Contact() {
 										initial={{ opacity: 0, scale: 0.8 }}
 										animate={{ opacity: 1, scale: 1 }}
 										exit={{ opacity: 0, scale: 0.8 }}
-										className="mb-3 p-2.5 rounded-lg bg-green-500/10 border border-green-500/30"
+										className="mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-green-500/10 border border-green-500/30"
 									>
 										<div className="flex items-center gap-2 text-green-400">
-											<CheckCircle className="w-4 h-4" />
-											<span className="font-mono text-sm">
+											<CheckCircle className="w-4 h-4 sm:w-5 sm:h-5" />
+											<span className="font-mono text-sm sm:text-base">
 												Message transmitted successfully! I'll respond soon.
 											</span>
 										</div>
@@ -279,13 +282,13 @@ export default function Contact() {
 								)}
 							</AnimatePresence>
 
-							<form onSubmit={handleSubmit} className="space-y-3">
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+							<form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
 									{/* Name Field */}
-									<div className="space-y-1">
+									<div className="space-y-2">
 										<Label
 											htmlFor="name"
-											className="font-mono text-primary text-sm font-medium"
+											className="font-mono text-primary text-sm sm:text-base font-medium"
 										>
 											<User className="w-4 h-4 inline mr-2" />
 											Name
@@ -296,7 +299,7 @@ export default function Contact() {
 											value={formData.name}
 											onChange={handleChange}
 											placeholder="Your neural ID..."
-											className={`font-mono bg-background/50 h-9 transition-all duration-200 ${
+											className={`font-mono bg-background/50 h-10 sm:h-12 text-sm sm:text-base transition-all duration-200 touch-manipulation ${
 												errors.name
 													? "border-red-500 focus:border-red-500 shadow-red-500/25"
 													: "border-primary/30 focus:border-primary hover:border-primary/50"
@@ -306,19 +309,19 @@ export default function Contact() {
 											<motion.div
 												initial={{ opacity: 0, y: -10 }}
 												animate={{ opacity: 1, y: 0 }}
-												className="flex items-center gap-1 text-red-400 text-xs font-mono"
+												className="flex items-center gap-1 text-red-400 text-xs sm:text-sm font-mono"
 											>
-												<AlertCircle className="w-3 h-3" />
+												<AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
 												{errors.name}
 											</motion.div>
 										)}
 									</div>
 
 									{/* Email Field */}
-									<div className="space-y-1">
+									<div className="space-y-2">
 										<Label
 											htmlFor="email"
-											className="font-mono text-primary text-sm font-medium"
+											className="font-mono text-primary text-sm sm:text-base font-medium"
 										>
 											<Mail className="w-4 h-4 inline mr-2" />
 											Email
@@ -330,7 +333,7 @@ export default function Contact() {
 											value={formData.email}
 											onChange={handleChange}
 											placeholder="your@email.protocol"
-											className={`font-mono bg-background/50 h-9 transition-all duration-200 ${
+											className={`font-mono bg-background/50 h-10 sm:h-12 text-sm sm:text-base transition-all duration-200 touch-manipulation ${
 												errors.email
 													? "border-red-500 focus:border-red-500 shadow-red-500/25"
 													: "border-primary/30 focus:border-primary hover:border-primary/50"
@@ -340,9 +343,9 @@ export default function Contact() {
 											<motion.div
 												initial={{ opacity: 0, y: -10 }}
 												animate={{ opacity: 1, y: 0 }}
-												className="flex items-center gap-1 text-red-400 text-xs font-mono"
+												className="flex items-center gap-1 text-red-400 text-xs sm:text-sm font-mono"
 											>
-												<AlertCircle className="w-3 h-3" />
+												<AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
 												{errors.email}
 											</motion.div>
 										)}
@@ -350,10 +353,10 @@ export default function Contact() {
 								</div>
 
 								{/* Subject Field */}
-								<div className="space-y-1">
+								<div className="space-y-2">
 									<Label
 										htmlFor="subject"
-										className="font-mono text-primary text-sm font-medium"
+										className="font-mono text-primary text-sm sm:text-base font-medium"
 									>
 										<Zap className="w-4 h-4 inline mr-2" />
 										Subject
@@ -364,7 +367,7 @@ export default function Contact() {
 										value={formData.subject}
 										onChange={handleChange}
 										placeholder="Project collaboration, job opportunity, general inquiry..."
-										className={`font-mono bg-background/50 h-9 transition-all duration-200 ${
+										className={`font-mono bg-background/50 h-10 sm:h-12 text-sm sm:text-base transition-all duration-200 touch-manipulation ${
 											errors.subject
 												? "border-red-500 focus:border-red-500 shadow-red-500/25"
 												: "border-primary/30 focus:border-primary hover:border-primary/50"
@@ -374,19 +377,19 @@ export default function Contact() {
 										<motion.div
 											initial={{ opacity: 0, y: -10 }}
 											animate={{ opacity: 1, y: 0 }}
-											className="flex items-center gap-1 text-red-400 text-xs font-mono"
+											className="flex items-center gap-1 text-red-400 text-xs sm:text-sm font-mono"
 										>
-											<AlertCircle className="w-3 h-3" />
+											<AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
 											{errors.subject}
 										</motion.div>
 									)}
 								</div>
 
 								{/* Message Field */}
-								<div className="space-y-1">
+								<div className="space-y-2">
 									<Label
 										htmlFor="message"
-										className="font-mono text-primary text-sm font-medium"
+										className="font-mono text-primary text-sm sm:text-base font-medium"
 									>
 										<MessageSquare className="w-4 h-4 inline mr-2" />
 										Message
@@ -397,8 +400,8 @@ export default function Contact() {
 										value={formData.message}
 										onChange={handleChange}
 										placeholder="Transmit your message through the neural network..."
-										rows={4}
-										className={`font-mono bg-background/50 resize-none transition-all duration-200 ${
+										rows={5}
+										className={`font-mono bg-background/50 resize-none text-sm sm:text-base transition-all duration-200 touch-manipulation ${
 											errors.message
 												? "border-red-500 focus:border-red-500 shadow-red-500/25"
 												: "border-primary/30 focus:border-primary hover:border-primary/50"
@@ -408,25 +411,25 @@ export default function Contact() {
 										<motion.div
 											initial={{ opacity: 0, y: -10 }}
 											animate={{ opacity: 1, y: 0 }}
-											className="flex items-center gap-1 text-red-400 text-xs font-mono"
+											className="flex items-center gap-1 text-red-400 text-xs sm:text-sm font-mono"
 										>
-											<AlertCircle className="w-3 h-3" />
+											<AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />
 											{errors.message}
 										</motion.div>
 									)}
-									<div className="text-xs text-muted-foreground font-mono text-right">
+									<div className="text-xs sm:text-sm text-muted-foreground font-mono text-right">
 										{formData.message.length}/1000 characters
 									</div>
 								</div>
 
 								{/* Submit Button */}
-								<div className="pt-1">
+								<div className="pt-2">
 									<Button
 										type="submit"
 										variant="neon"
 										size="lg"
 										disabled={isSubmitting}
-										className="w-full font-mono h-10 text-base"
+										className="w-full font-mono h-12 sm:h-14 text-base sm:text-lg touch-manipulation min-h-[44px]"
 									>
 										{isSubmitting ? (
 											<>
@@ -446,9 +449,36 @@ export default function Contact() {
 					</Card>
 
 					{/* Interactive Cyberpunk Dubai Map */}
-					<div className="mt-4">
-						<CyberpunkDubaiMap />
-					</div>
+					<motion.div
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, delay: 0.6 }}
+						className="relative z-10"
+					>
+						<Card variant="cyberpunk" className="overflow-hidden">
+							<CardHeader className="pb-3 sm:pb-4">
+								<CardTitle className="text-primary font-heading flex items-center text-lg sm:text-xl md:text-2xl">
+									<MapPin className="w-5 h-5 sm:w-6 sm:h-6 mr-2 neon-glow" />
+									LOCATION_MATRIX.dubai()
+								</CardTitle>
+								<p className="text-muted-foreground font-mono text-sm sm:text-base">
+									Neural network nodes across Dubai cybernetic grid
+								</p>
+							</CardHeader>
+							<CardContent className="p-0">
+								<div className="relative">
+									<CyberpunkDubaiMap />
+									{/* Mobile-optimized overlay info */}
+									<div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-background/80 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-primary/30">
+										<div className="text-xs sm:text-sm font-mono text-primary flex items-center gap-1 sm:gap-2">
+											<div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+											<span>GRID_STATUS: ONLINE</span>
+										</div>
+									</div>
+								</div>
+							</CardContent>
+						</Card>
+					</motion.div>
 				</motion.div>
 
 				{/* Contact Information & Social Links */}
@@ -456,21 +486,21 @@ export default function Contact() {
 					initial={{ opacity: 0, x: 30 }}
 					animate={{ opacity: 1, x: 0 }}
 					transition={{ duration: 0.6, delay: 0.4 }}
-					className="space-y-4 order-1 xl:order-2 xl:col-span-3"
+					className="space-y-4 sm:space-y-6 order-1 xl:order-2 xl:col-span-3"
 				>
 					{/* Contact Information */}
 					<Card variant="hologram">
-						<CardHeader className="pb-2">
-							<CardTitle className="text-primary font-heading flex items-center text-base md:text-lg">
-								<Zap className="w-4 h-4 md:w-5 md:h-5 mr-2 neon-glow" />
+						<CardHeader className="pb-3 sm:pb-4">
+							<CardTitle className="text-primary font-heading flex items-center text-base sm:text-lg md:text-xl">
+								<Zap className="w-4 h-4 sm:w-5 sm:h-5 mr-2 neon-glow" />
 								DIRECT_CHANNELS.list()
 							</CardTitle>
-							<p className="text-muted-foreground font-mono text-xs">
+							<p className="text-muted-foreground font-mono text-xs sm:text-sm">
 								Primary communication protocols
 							</p>
 						</CardHeader>
 
-						<CardContent className="space-y-2">
+						<CardContent className="space-y-3 sm:space-y-4">
 							{contactInfo.map((item, index) => (
 								<motion.a
 									key={item.label}
@@ -484,16 +514,16 @@ export default function Contact() {
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.4, delay: 0.6 + index * 0.1 }}
-									className="flex items-center gap-2 md:gap-3 p-2 rounded-lg bg-background/50 hover:bg-primary/10 transition-all duration-200 group border border-transparent hover:border-primary/30"
+									className="flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg bg-background/50 hover:bg-primary/10 transition-all duration-200 group border border-transparent hover:border-primary/30 touch-manipulation min-h-[44px]"
 								>
-									<div className="p-1.5 rounded-lg bg-primary/20 text-primary group-hover:bg-primary/30 transition-colors flex-shrink-0">
-										<item.icon className="w-3 h-3 md:w-4 md:h-4" />
+									<div className="p-2 rounded-lg bg-primary/20 text-primary group-hover:bg-primary/30 transition-colors flex-shrink-0">
+										<item.icon className="w-4 h-4 sm:w-5 sm:h-5" />
 									</div>
 									<div className="flex-1 min-w-0">
-										<div className="text-xs font-mono text-muted-foreground">
+										<div className="text-xs sm:text-sm font-mono text-muted-foreground">
 											{item.label}
 										</div>
-										<div className="font-mono text-xs md:text-sm text-foreground group-hover:text-primary transition-colors truncate">
+										<div className="font-mono text-sm sm:text-base text-foreground group-hover:text-primary transition-colors truncate">
 											{item.value}
 										</div>
 									</div>
@@ -504,104 +534,139 @@ export default function Contact() {
 
 					{/* Social Links */}
 					<Card variant="cyberpunk">
-						<CardHeader className="pb-2">
-							<CardTitle className="text-primary font-heading flex items-center text-base md:text-lg">
-								<Globe className="w-4 h-4 md:w-5 md:h-5 mr-2 neon-glow" />
+						<CardHeader className="pb-3 sm:pb-4">
+							<CardTitle className="text-primary font-heading flex items-center text-base sm:text-lg md:text-xl">
+								<Globe className="w-4 h-4 sm:w-5 sm:h-5 mr-2 neon-glow" />
 								SOCIAL_NETWORK.connect()
 							</CardTitle>
-							<p className="text-muted-foreground font-mono text-xs">
+							<p className="text-muted-foreground font-mono text-xs sm:text-sm">
 								Find me across the digital realm
 							</p>
 						</CardHeader>
 
-						<CardContent className="space-y-3">
+						<CardContent className="space-y-3 sm:space-y-4">
 							{socialLinks.map((social, index) => (
-								<motion.div
+								<motion.a
 									key={social.label}
+									href={social.href}
+									target="_blank"
+									rel="noopener noreferrer"
 									initial={{ opacity: 0, y: 20 }}
 									animate={{ opacity: 1, y: 0 }}
 									transition={{ duration: 0.4, delay: 0.8 + index * 0.1 }}
-									className="p-2.5 rounded-lg bg-background/50 border border-transparent hover:border-secondary/30 transition-all duration-200 group"
+									whileHover={{ scale: 1.02 }}
+									whileTap={{ scale: 0.98 }}
+									className="block p-3 sm:p-4 rounded-lg border border-primary/20 hover:border-primary/50 bg-background/30 hover:bg-background/50 transition-all group touch-manipulation min-h-[44px]"
 								>
-									<div className="flex items-center gap-2 md:gap-3 mb-2">
-										<div
-											className={`p-1.5 rounded-lg bg-secondary/20 ${social.color} group-hover:bg-secondary/30 transition-colors flex-shrink-0`}
-										>
-											<social.icon className="w-3 h-3 md:w-4 md:h-4" />
+									<div className="flex items-start gap-3 sm:gap-4">
+										<div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-primary/20 flex items-center justify-center group-hover:bg-primary/30 transition-colors">
+											<social.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
 										</div>
 										<div className="flex-1 min-w-0">
-											<div className="text-xs font-mono text-muted-foreground">
-												{social.label}
+											<div className="flex items-center gap-2">
+												<h3 className="font-mono font-semibold text-foreground text-sm sm:text-base">
+													{social.label}
+												</h3>
+												<ExternalLink className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
 											</div>
-											<div className="font-mono text-xs text-foreground group-hover:text-secondary transition-colors">
+											<p className="font-mono text-primary text-xs sm:text-sm break-all">
 												{social.value}
-											</div>
+											</p>
+											<p className="text-muted-foreground text-xs sm:text-sm">
+												{social.label === "GitHub"
+													? "Open source contributions"
+													: social.label === "GitLab"
+													? "Project repositories"
+													: social.label === "LinkedIn"
+													? "Professional network"
+													: "Discord communication"}
+											</p>
 										</div>
-										<Badge
-											variant="outline"
-											className="font-mono text-xs flex-shrink-0"
-										>
-											ACTIVE
-										</Badge>
 									</div>
-
-									{/* Show clickable links for GitHub and GitLab */}
-									{social.secondaryHref && (
-										<div className="flex flex-col sm:flex-row gap-1.5 ml-0 sm:ml-8">
-											<a
-												href={social.href}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-xs font-mono text-primary hover:text-secondary transition-colors px-2.5 py-1.5 rounded bg-primary/10 hover:bg-secondary/10 text-center"
-											>
-												Work Account →
-											</a>
-											<a
-												href={social.secondaryHref}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-xs font-mono text-accent hover:text-secondary transition-colors px-2.5 py-1.5 rounded bg-accent/10 hover:bg-secondary/10 text-center"
-											>
-												Personal Account →
-											</a>
-										</div>
-									)}
-
-									{/* Single link for LinkedIn and Discord */}
-									{!social.secondaryHref && (
-										<div className="ml-0 sm:ml-8">
-											<a
-												href={social.href}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="text-xs font-mono text-primary hover:text-secondary transition-colors px-2.5 py-1.5 rounded bg-primary/10 hover:bg-secondary/10 inline-block w-full sm:w-auto text-center"
-											>
-												Visit Profile →
-											</a>
-										</div>
-									)}
-								</motion.div>
+								</motion.a>
 							))}
+						</CardContent>
+					</Card>
+
+					{/* Connection Status */}
+					<Card variant="cyberpunk">
+						<CardHeader className="pb-3 sm:pb-4">
+							<CardTitle className="text-primary font-heading flex items-center text-base sm:text-lg md:text-xl">
+								<Building className="w-4 h-4 sm:w-5 sm:h-5 mr-2 neon-glow" />
+								Connection Status
+							</CardTitle>
+						</CardHeader>
+						<CardContent>
+							<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+								<div className="text-center p-3 sm:p-4 bg-green-500/10 border border-green-500/30 rounded-lg">
+									<div className="flex items-center justify-center mb-2">
+										<div className="w-2 h-2 bg-green-400 rounded-full animate-pulse mr-2"></div>
+										<span className="text-xs sm:text-sm font-mono text-green-400">
+											ONLINE
+										</span>
+									</div>
+									<p className="text-xs sm:text-sm text-muted-foreground">
+										Available for new projects
+									</p>
+								</div>
+
+								<div className="text-center p-3 sm:p-4 bg-primary/10 border border-primary/30 rounded-lg">
+									<div className="flex items-center justify-center mb-2">
+										<Phone className="w-3 h-3 mr-2 text-primary" />
+										<span className="text-xs sm:text-sm font-mono text-primary">
+											24-48H
+										</span>
+									</div>
+									<p className="text-xs sm:text-sm text-muted-foreground">
+										Typical response time
+									</p>
+								</div>
+
+								<div className="text-center p-3 sm:p-4 bg-secondary/10 border border-secondary/30 rounded-lg">
+									<div className="flex items-center justify-center mb-2">
+										<MapPin className="w-3 h-3 mr-2 text-secondary" />
+										<span className="text-xs sm:text-sm font-mono text-secondary">
+											UTC+3:30
+										</span>
+									</div>
+									<p className="text-xs sm:text-sm text-muted-foreground">
+										Iran Standard Time
+									</p>
+								</div>
+
+								<div className="text-center p-3 sm:p-4 bg-accent/10 border border-accent/30 rounded-lg">
+									<div className="flex items-center justify-center mb-2">
+										<Code className="w-3 h-3 mr-2 text-accent" />
+										<span className="text-xs sm:text-sm font-mono text-accent">
+											ACTIVE
+										</span>
+									</div>
+									<p className="text-xs sm:text-sm text-muted-foreground">
+										Development status
+									</p>
+								</div>
+							</div>
 						</CardContent>
 					</Card>
 
 					{/* Quick Info */}
 					<Card variant="cyberpunk">
-						<CardContent className="p-3 md:p-4">
-							<div className="text-center space-y-2">
-								<div className="text-xs font-mono text-muted-foreground">
-									Response Time Protocol
+						<CardContent className="p-4 sm:p-6">
+							<div className="text-center space-y-3 sm:space-y-4">
+								<div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto bg-primary/20 rounded-lg flex items-center justify-center">
+									<Terminal className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
 								</div>
-								<div className="text-xl font-heading text-primary neon-glow">
-									&lt; 24 HOURS
+								<div>
+									<h3 className="font-heading font-bold text-lg sm:text-xl text-primary mb-2">
+										Cybernetic Developer
+									</h3>
+									<p className="font-mono text-muted-foreground text-xs sm:text-sm leading-relaxed">
+										Specializing in full-stack development, modern web
+										technologies, and creating seamless digital experiences.
+										Always interested in innovative projects and collaborative
+										opportunities.
+									</p>
 								</div>
-								<div className="text-xs font-mono text-muted-foreground">
-									Average response time for all neural transmissions
-								</div>
-								<Badge variant="secondary" className="font-mono text-xs">
-									<Zap className="w-3 h-3 mr-1" />
-									NEURAL_LINK_ACTIVE
-								</Badge>
 							</div>
 						</CardContent>
 					</Card>

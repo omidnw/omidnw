@@ -343,10 +343,10 @@ export default function Projects() {
 		<div className="min-h-screen">
 			{/* Loading State */}
 			{loading && (
-				<div className="min-h-screen flex items-center justify-center">
+				<div className="min-h-screen flex items-center justify-center px-4">
 					<div className="text-center">
-						<Code className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-						<p className="text-muted-foreground font-mono mb-2">
+						<Code className="w-8 h-8 sm:w-10 sm:w-10 md:w-12 md:h-12 text-primary mx-auto mb-4 animate-pulse" />
+						<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
 							{isGitHubConfigured()
 								? "Connecting to GitHub matrix..."
 								: "Loading project matrix..."}
@@ -363,18 +363,24 @@ export default function Projects() {
 
 			{/* Error State */}
 			{error && !loading && (
-				<div className="min-h-screen flex items-center justify-center">
-					<Card variant="cyberpunk" className="p-12 text-center max-w-md">
-						<AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-						<h1 className="text-2xl font-heading font-bold text-red-400 mb-4">
+				<div className="min-h-screen flex items-center justify-center px-4">
+					<Card
+						variant="cyberpunk"
+						className="p-6 sm:p-8 md:p-12 text-center max-w-md w-full"
+					>
+						<AlertCircle className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-red-400 mx-auto mb-4" />
+						<h1 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-red-400 mb-4">
 							Connection Failed
 						</h1>
-						<p className="text-muted-foreground font-mono mb-6">{error}</p>
+						<p className="text-muted-foreground font-mono mb-6 text-sm sm:text-base">
+							{error}
+						</p>
 						<div className="flex gap-2 justify-center">
 							<Button
 								variant="neon"
 								onClick={refreshProjects}
 								disabled={refreshing}
+								className="touch-manipulation min-h-[44px]"
 							>
 								<RefreshCw
 									className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
@@ -388,16 +394,16 @@ export default function Projects() {
 
 			{/* Main Content */}
 			{!loading && !error && (
-				<>
+				<div className="px-4 sm:px-6 lg:px-8">
 					{/* Hero Section */}
 					<motion.header
 						initial={{ opacity: 0, y: 30 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8 }}
-						className="text-center py-12 mb-8"
+						className="text-center py-8 sm:py-10 md:py-12 mb-6 sm:mb-8"
 					>
-						<div className="flex items-center justify-center gap-4 mb-4">
-							<h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black neon-glow text-primary">
+						<div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
+							<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-heading font-black neon-glow text-primary">
 								PROJECT_MATRIX.load()
 							</h1>
 
@@ -406,12 +412,12 @@ export default function Projects() {
 								<div className="flex items-center text-xs text-muted-foreground font-mono">
 									{dataSource === "github" ? (
 										<>
-											<Github className="w-4 h-4 mr-1 text-green-400" />
+											<Github className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-400" />
 											<span className="text-green-400">GitHub</span>
 										</>
 									) : dataSource === "local" ? (
 										<>
-											<Code className="w-4 h-4 mr-1 text-blue-400" />
+											<Code className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-blue-400" />
 											<span className="text-blue-400">Local</span>
 										</>
 									) : null}
@@ -423,7 +429,7 @@ export default function Projects() {
 										size="sm"
 										onClick={refreshProjects}
 										disabled={refreshing}
-										className="text-xs"
+										className="text-xs h-8 touch-manipulation"
 									>
 										<RefreshCw
 											className={`w-3 h-3 mr-1 ${
@@ -436,7 +442,7 @@ export default function Projects() {
 							</div>
 						</div>
 
-						<p className="text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto mb-4">
+						<p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground font-mono max-w-2xl mx-auto mb-4 px-4">
 							Digital constructs and cybernetic innovations - showcasing the
 							evolution of code into reality
 						</p>
@@ -466,12 +472,12 @@ export default function Projects() {
 						<motion.div
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
-							className="text-center mb-8"
+							className="text-center mb-6 sm:mb-8"
 						>
 							{dataSource === "github" && (
 								<Badge
 									variant="outline"
-									className="bg-green-500/10 border-green-500 text-green-400"
+									className="bg-green-500/10 border-green-500 text-green-400 text-xs sm:text-sm"
 								>
 									<GitBranch className="w-3 h-3 mr-1" />
 									Connected to GitHub Repository
@@ -480,7 +486,7 @@ export default function Projects() {
 							{dataSource === "local" && (
 								<Badge
 									variant="outline"
-									className="bg-yellow-500/10 border-yellow-500 text-yellow-400"
+									className="bg-yellow-500/10 border-yellow-500 text-yellow-400 text-xs sm:text-sm"
 								>
 									<Database className="w-3 h-3 mr-1" />
 									Using Local Project Data
@@ -490,7 +496,7 @@ export default function Projects() {
 							{dataSource === "none" && (
 								<Badge
 									variant="outline"
-									className="bg-red-500/10 border-red-500 text-red-400"
+									className="bg-red-500/10 border-red-500 text-red-400 text-xs sm:text-sm"
 								>
 									<AlertCircle className="w-3 h-3 mr-1" />
 									No Data Available (Local Fallback Disabled)
@@ -504,9 +510,9 @@ export default function Projects() {
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.6, delay: 0.2 }}
-						className="mb-12"
+						className="mb-8 sm:mb-10 md:mb-12"
 					>
-						<Card variant="cyberpunk" className="p-6 relative z-30">
+						<Card variant="cyberpunk" className="p-4 sm:p-6 relative z-30">
 							<div className="space-y-4">
 								{/* Main Search Input */}
 								<div className="relative">
@@ -516,12 +522,12 @@ export default function Projects() {
 										placeholder="Search project matrix... (title, description, technologies, tags)"
 										value={searchTerm}
 										onChange={(e) => setSearchTerm(e.target.value)}
-										className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono"
+										className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono h-10 sm:h-12 text-sm sm:text-base touch-manipulation"
 									/>
 								</div>
 
 								{/* Filters Row */}
-								<div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-20">
+								<div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 relative z-20">
 									{/* Tag Search Input */}
 									<div className="relative" ref={tagInputRef}>
 										<Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -535,7 +541,7 @@ export default function Projects() {
 											}}
 											onFocus={() => setShowTagSuggestions(true)}
 											onKeyDown={handleKeyDown}
-											className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono"
+											className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono h-10 sm:h-12 text-sm sm:text-base touch-manipulation"
 										/>
 
 										{/* Tag Suggestions Dropdown */}
@@ -569,7 +575,7 @@ export default function Projects() {
 																			key={tag}
 																			onClick={() => handleTagSelect(tag)}
 																			disabled={isSelected}
-																			className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group ${
+																			className={`w-full text-left px-3 py-3 sm:py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] sm:min-h-[auto] ${
 																				isSelected
 																					? "bg-primary/20 text-primary cursor-default border-l-2 border-primary"
 																					: "hover:bg-primary/10 text-foreground hover:border-l-2 hover:border-secondary"
@@ -602,7 +608,7 @@ export default function Projects() {
 										<button
 											onClick={() => setShowStatusDropdown(!showStatusDropdown)}
 											onKeyDown={handleStatusKeyDown}
-											className="w-full pl-10 pr-10 py-2 bg-background/50 border border-accent/30 hover:border-accent focus:border-accent rounded-lg font-mono text-sm text-left transition-all duration-200 flex items-center justify-between relative"
+											className="w-full pl-10 pr-10 py-2 bg-background/50 border border-accent/30 hover:border-accent focus:border-accent rounded-lg font-mono text-sm text-left transition-all duration-200 flex items-center justify-between relative h-10 sm:h-12 touch-manipulation"
 										>
 											<Zap className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground z-10 pointer-events-none" />
 											<span
@@ -641,7 +647,7 @@ export default function Projects() {
 														</div>
 														<button
 															onClick={() => handleStatusSelect("")}
-															className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group ${
+															className={`w-full text-left px-3 py-3 sm:py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] sm:min-h-[auto] ${
 																!selectedStatus
 																	? "bg-accent/20 text-accent cursor-default border-l-2 border-accent"
 																	: "hover:bg-accent/10 text-foreground hover:border-l-2 hover:border-accent"
@@ -667,7 +673,7 @@ export default function Projects() {
 																<button
 																	key={status}
 																	onClick={() => handleStatusSelect(status)}
-																	className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group ${
+																	className={`w-full text-left px-3 py-3 sm:py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] sm:min-h-[auto] ${
 																		isSelected
 																			? "bg-accent/20 text-accent cursor-default border-l-2 border-accent"
 																			: "hover:bg-accent/10 text-foreground hover:border-l-2 hover:border-accent"
@@ -700,7 +706,7 @@ export default function Projects() {
 											variant="outline"
 											size="sm"
 											onClick={handleClearFilters}
-											className="font-mono"
+											className="font-mono touch-manipulation min-h-[44px] sm:min-h-[auto]"
 										>
 											<X className="w-4 h-4 mr-2" />
 											Clear All Filters
@@ -716,12 +722,15 @@ export default function Projects() {
 										exit={{ opacity: 0, height: 0 }}
 										className="space-y-2"
 									>
-										<div className="flex items-center gap-2">
+										<div className="flex flex-col sm:flex-row sm:items-center gap-2">
 											<span className="text-sm font-mono text-muted-foreground flex items-center">
 												<Filter className="w-4 h-4 mr-2" />
 												Active filters ({selectedTags.length}):
 											</span>
-											<Badge variant="outline" className="text-xs font-mono">
+											<Badge
+												variant="outline"
+												className="text-xs font-mono w-fit"
+											>
 												{selectedTags.length === 1
 													? "AND logic"
 													: "Multiple tags (AND logic)"}
@@ -738,7 +747,7 @@ export default function Projects() {
 												>
 													<Badge
 														variant="secondary"
-														className="font-mono cursor-pointer hover:bg-destructive/20 transition-colors group relative"
+														className="font-mono cursor-pointer hover:bg-destructive/20 transition-colors group relative touch-manipulation min-h-[32px] flex items-center"
 														onClick={() => handleTagRemove(tag)}
 													>
 														<Hash className="w-3 h-3 mr-1" />
@@ -752,7 +761,7 @@ export default function Projects() {
 								)}
 
 								{/* Search Results Summary */}
-								<div className="flex items-center justify-between text-sm font-mono text-muted-foreground">
+								<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-sm font-mono text-muted-foreground">
 									<span>
 										{filteredProjects.length} project
 										{filteredProjects.length !== 1 ? "s" : ""}{" "}
@@ -760,7 +769,7 @@ export default function Projects() {
 											? "found"
 											: "available"}
 										{selectedTags.length > 1 && (
-											<span className="text-xs ml-2 text-primary">
+											<span className="text-xs ml-2 text-primary block sm:inline">
 												(matching all {selectedTags.length} tags)
 											</span>
 										)}
@@ -783,28 +792,30 @@ export default function Projects() {
 								initial={{ opacity: 0, y: 30 }}
 								animate={{ opacity: 1, y: 0 }}
 								transition={{ duration: 0.6, delay: 0.4 }}
-								className="mb-12"
+								className="mb-8 sm:mb-10 md:mb-12"
 							>
-								<h2 className="text-2xl font-heading font-bold text-primary mb-6 flex items-center">
-									<Star className="w-6 h-6 mr-2" />
+								<h2 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
+									<Star className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
 									FEATURED_PROJECTS.highlight()
 								</h2>
 
-								<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+								<div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
 									{featuredProjects.map((project) => (
 										<Link
 											key={project.id}
 											href={`/projects/${project.id}`}
-											className="block h-[320px]"
+											className="block"
 										>
 											<Card
 												variant="hologram"
-												className="overflow-hidden group cursor-pointer h-full"
+												className="overflow-hidden group cursor-pointer h-full touch-manipulation"
 											>
-												<div className="md:flex h-full">
-													<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-6 flex items-center justify-center">
+												{/* Mobile: Stack vertically, Tablet+: Side by side */}
+												<div className="flex flex-col sm:flex-row h-full min-h-[420px] sm:min-h-[380px] md:min-h-[400px]">
+													{/* Left side - Icon and badge */}
+													<div className="sm:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-4 sm:p-6 flex items-center justify-center flex-shrink-0">
 														<div className="text-center">
-															<Code className="w-12 h-12 text-primary mx-auto mb-3 neon-glow" />
+															<Code className="w-10 h-10 sm:w-12 sm:h-12 text-primary mx-auto mb-3 neon-glow" />
 															<Badge
 																variant="outline"
 																className="neon-border text-xs"
@@ -813,14 +824,15 @@ export default function Projects() {
 															</Badge>
 														</div>
 													</div>
-													<div className="md:w-2/3 p-6 flex flex-col justify-between h-full">
-														<div>
-															{" "}
-															{/* Top content group */}
-															<div className="flex items-center gap-4 mb-2 text-xs text-muted-foreground font-mono">
+
+													{/* Right side - Content */}
+													<div className="sm:w-2/3 p-4 sm:p-6 flex flex-col justify-between flex-1 min-h-0">
+														{/* Top content */}
+														<div className="flex-1">
+															<div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-3 text-xs text-muted-foreground font-mono">
 																<Badge
 																	variant={getStatusVariant(project.status)}
-																	className="font-mono text-xs"
+																	className="font-mono text-xs w-fit"
 																>
 																	{getStatusIcon(project.status)}
 																	{project.status.replace("-", " ")}
@@ -830,25 +842,22 @@ export default function Projects() {
 																	{new Date(project.startDate).getFullYear()}
 																</div>
 															</div>
-															<h3 className="text-xl font-heading font-bold text-primary mb-2 group-hover:neon-glow transition-all line-clamp-2 h-[3rem] leading-tight flex items-start">
+															<h3 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all line-clamp-2 leading-tight">
 																{project.title}
 															</h3>
-															<p className="text-muted-foreground font-mono text-sm mb-3 leading-relaxed line-clamp-3 h-[4.5rem] overflow-hidden">
+															<p className="text-muted-foreground font-mono text-sm mb-4 leading-relaxed line-clamp-3">
 																{project.description}
 															</p>
-														</div>
 
-														<div>
-															{" "}
-															{/* Bottom content group */}
-															<div className="flex flex-wrap gap-1 mb-3 h-[2rem] overflow-hidden items-center">
+															{/* Technologies */}
+															<div className="flex flex-wrap gap-1 mb-4">
 																{project.technologies
 																	.slice(0, 3)
 																	.map((tech) => (
 																		<Badge
 																			key={tech}
 																			variant="secondary"
-																			className="text-xs font-mono cursor-pointer hover:bg-secondary/20"
+																			className="text-xs font-mono cursor-pointer hover:bg-secondary/20 touch-manipulation"
 																			onClick={(e) => {
 																				e.preventDefault();
 																				handleTagSelect(tech);
@@ -867,44 +876,63 @@ export default function Projects() {
 																	</Badge>
 																)}
 															</div>
-															<div className="flex items-center gap-2">
-																<Button
-																	variant="neon"
-																	size="sm"
-																	className="group-hover:scale-105 transition-transform flex-1"
-																>
-																	View Project
-																	<ArrowRight className="w-4 h-4 ml-2" />
-																</Button>
+														</div>
 
-																{project.demoUrl && (
-																	<Button
-																		variant="outline"
-																		size="sm"
-																		onClick={(e) => {
-																			e.preventDefault();
-																			window.open(project.demoUrl, "_blank");
-																		}}
-																	>
-																		<Play className="w-3 h-3 mr-1" />
-																		Demo
-																	</Button>
-																)}
+														{/* Bottom buttons - Always visible */}
+														<div className="flex-shrink-0 space-y-3">
+															<Button
+																variant="neon"
+																size="sm"
+																className="w-full touch-manipulation min-h-[48px] group-hover:scale-105 transition-transform"
+															>
+																<Code className="w-4 h-4 mr-2" />
+																View Project
+																<ArrowRight className="w-4 h-4 ml-2" />
+															</Button>
 
-																{project.githubUrl && (
-																	<Button
-																		variant="ghost"
-																		size="sm"
-																		onClick={(e) => {
-																			e.preventDefault();
-																			window.open(project.githubUrl, "_blank");
-																		}}
-																		className="px-2" // Added tighter padding for GitHub icon button
-																	>
-																		<Github className="w-4 h-4" />
-																	</Button>
-																)}
-															</div>
+															{/* Secondary buttons */}
+															{(project.demoUrl || project.githubUrl) && (
+																<div className="flex gap-2">
+																	{project.demoUrl && (
+																		<Button
+																			variant="outline"
+																			size="sm"
+																			onClick={(e) => {
+																				e.preventDefault();
+																				window.open(project.demoUrl, "_blank");
+																			}}
+																			className="touch-manipulation min-h-[44px] flex-1"
+																		>
+																			<Play className="w-4 h-4 mr-2" />
+																			<span className="hidden sm:inline">
+																				Live Demo
+																			</span>
+																			<span className="sm:hidden">Demo</span>
+																		</Button>
+																	)}
+
+																	{project.githubUrl && (
+																		<Button
+																			variant="ghost"
+																			size="sm"
+																			onClick={(e) => {
+																				e.preventDefault();
+																				window.open(
+																					project.githubUrl,
+																					"_blank"
+																				);
+																			}}
+																			className="touch-manipulation min-h-[44px] flex-1"
+																		>
+																			<Github className="w-4 h-4 mr-2" />
+																			<span className="hidden sm:inline">
+																				GitHub
+																			</span>
+																			<span className="sm:hidden">Code</span>
+																		</Button>
+																	)}
+																</div>
+															)}
 														</div>
 													</div>
 												</div>
@@ -921,9 +949,9 @@ export default function Projects() {
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.6, delay: 0.6 }}
 					>
-						<div className="flex items-center justify-between mb-6">
-							<h2 className="text-2xl font-heading font-bold text-primary flex items-center">
-								<Code className="w-6 h-6 mr-2" />
+						<div className="flex items-center justify-between mb-4 sm:mb-6">
+							<h2 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary flex items-center">
+								<Code className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
 								{selectedTags.length > 0 || searchTerm || selectedStatus
 									? "FILTERED_PROJECTS.scan()"
 									: "ALL_PROJECTS.scan()"}
@@ -931,13 +959,16 @@ export default function Projects() {
 						</div>
 
 						{regularProjects.length === 0 ? (
-							<Card variant="cyberpunk" className="p-12 text-center">
+							<Card
+								variant="cyberpunk"
+								className="p-6 sm:p-8 md:p-12 text-center"
+							>
 								<div className="text-muted-foreground">
-									<Search className="w-16 h-16 mx-auto mb-4 opacity-50" />
-									<h3 className="text-xl font-heading mb-2">
+									<Search className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto mb-4 opacity-50" />
+									<h3 className="text-lg sm:text-xl font-heading mb-2">
 										No projects found
 									</h3>
-									<p className="font-mono mb-4">
+									<p className="font-mono mb-4 text-sm sm:text-base">
 										No projects match your current search criteria
 										{selectedTags.length > 1 && (
 											<span className="block text-sm mt-2 text-primary">
@@ -945,21 +976,25 @@ export default function Projects() {
 											</span>
 										)}
 									</p>
-									<Button variant="outline" onClick={handleClearFilters}>
+									<Button
+										variant="outline"
+										onClick={handleClearFilters}
+										className="touch-manipulation min-h-[44px]"
+									>
 										<X className="w-4 h-4 mr-2" />
 										Clear Filters
 									</Button>
 								</div>
 							</Card>
 						) : (
-							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+							<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 								{regularProjects.map((project, index) => (
 									<motion.div
 										key={project.id}
 										initial={{ opacity: 0, y: 30 }}
 										animate={{ opacity: 1, y: 0 }}
 										transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-										className="h-[420px]"
+										className="h-[420px] sm:h-[440px] md:h-[460px]"
 									>
 										<Link
 											href={`/projects/${project.id}`}
@@ -967,13 +1002,13 @@ export default function Projects() {
 										>
 											<Card
 												variant="cyberpunk"
-												className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform"
+												className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform touch-manipulation"
 											>
-												<CardHeader className="pb-3 flex-shrink-0">
-													<div className="flex items-center justify-between mb-3 text-xs text-muted-foreground font-mono">
+												<CardHeader className="pb-3 flex-shrink-0 p-4 sm:p-6">
+													<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 text-xs text-muted-foreground font-mono">
 														<Badge
 															variant={getStatusVariant(project.status)}
-															className="font-mono"
+															className="font-mono w-fit"
 														>
 															{getStatusIcon(project.status)}
 															{project.status.replace("-", " ")}
@@ -984,18 +1019,18 @@ export default function Projects() {
 														</div>
 													</div>
 
-													<CardTitle className="text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 h-[3.5rem] text-lg leading-tight flex items-start">
+													<CardTitle className="text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 text-base sm:text-lg leading-tight">
 														{project.title}
 													</CardTitle>
 												</CardHeader>
 
-												<CardContent className="flex-1 flex flex-col pt-0 pb-4">
-													<div className="flex-1 flex flex-col">
-														<p className="text-muted-foreground font-mono text-sm leading-relaxed line-clamp-4 h-[5.5rem] mb-4">
+												<CardContent className="flex-1 flex flex-col pt-0 pb-4 px-4 sm:px-6">
+													<div className="flex-1 flex flex-col min-h-0">
+														<p className="text-muted-foreground font-mono text-sm leading-relaxed line-clamp-4 mb-4 flex-shrink-0">
 															{project.description}
 														</p>
 
-														<div className="flex flex-wrap gap-1 mb-4 h-[2.5rem] overflow-hidden">
+														<div className="flex flex-wrap gap-1 mb-4 flex-shrink-0">
 															{[
 																...project.technologies.slice(0, 2),
 																project.category,
@@ -1005,7 +1040,7 @@ export default function Projects() {
 																	<Badge
 																		key={tech}
 																		variant={isSelected ? "default" : "outline"}
-																		className={`text-xs font-mono cursor-pointer transition-all ${
+																		className={`text-xs font-mono cursor-pointer transition-all touch-manipulation ${
 																			isSelected
 																				? "bg-primary/20 text-primary border-primary"
 																				: "hover:bg-primary/10"
@@ -1036,40 +1071,56 @@ export default function Projects() {
 														</div>
 													</div>
 
-													<div className="flex items-center gap-2 mt-auto pt-2 flex-shrink-0">
+													{/* Buttons section - always at bottom */}
+													<div className="flex-shrink-0 space-y-3 mt-auto">
 														<Button
 															variant="ghost"
 															size="sm"
-															className="flex-1 justify-between group-hover:bg-primary/10"
+															className="w-full justify-center group-hover:bg-primary/10 touch-manipulation min-h-[48px]"
 														>
+															<Code className="w-4 h-4 mr-2" />
 															View Project
-															<ArrowRight className="w-4 h-4" />
+															<ArrowRight className="w-4 h-4 ml-2" />
 														</Button>
 
-														{project.demoUrl && (
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={(e) => {
-																	e.preventDefault();
-																	window.open(project.demoUrl, "_blank");
-																}}
-															>
-																<ExternalLink className="w-4 h-4" />
-															</Button>
-														)}
+														{(project.demoUrl || project.githubUrl) && (
+															<div className="flex gap-2">
+																{project.demoUrl && (
+																	<Button
+																		variant="outline"
+																		size="sm"
+																		onClick={(e) => {
+																			e.preventDefault();
+																			window.open(project.demoUrl, "_blank");
+																		}}
+																		className="touch-manipulation min-h-[44px] flex-1"
+																	>
+																		<ExternalLink className="w-4 h-4 mr-2" />
+																		<span className="hidden sm:inline">
+																			Live Demo
+																		</span>
+																		<span className="sm:hidden">Demo</span>
+																	</Button>
+																)}
 
-														{project.githubUrl && (
-															<Button
-																variant="ghost"
-																size="sm"
-																onClick={(e) => {
-																	e.preventDefault();
-																	window.open(project.githubUrl, "_blank");
-																}}
-															>
-																<Github className="w-4 h-4" />
-															</Button>
+																{project.githubUrl && (
+																	<Button
+																		variant="ghost"
+																		size="sm"
+																		onClick={(e) => {
+																			e.preventDefault();
+																			window.open(project.githubUrl, "_blank");
+																		}}
+																		className="touch-manipulation min-h-[44px] flex-1"
+																	>
+																		<Github className="w-4 h-4 mr-2" />
+																		<span className="hidden sm:inline">
+																			GitHub
+																		</span>
+																		<span className="sm:hidden">Code</span>
+																	</Button>
+																)}
+															</div>
 														)}
 													</div>
 												</CardContent>
@@ -1080,7 +1131,7 @@ export default function Projects() {
 							</div>
 						)}
 					</motion.section>
-				</>
+				</div>
 			)}
 		</div>
 	);

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRoute } from "wouter";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import {
 	AlertCircle,
 	Wifi,
 	WifiOff,
+	Laptop,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -236,10 +237,10 @@ export default function ProjectPost() {
 	// Loading state
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
+			<div className="min-h-screen flex items-center justify-center px-4">
 				<div className="text-center">
-					<Code className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-					<p className="text-muted-foreground font-mono mb-2">
+					<Code className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary mx-auto mb-4 animate-pulse" />
+					<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
 						{isGitHubConfigured()
 							? "Connecting to GitHub matrix..."
 							: "Loading project matrix..."}
@@ -258,18 +259,24 @@ export default function ProjectPost() {
 	// Error state
 	if (error) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<Card variant="cyberpunk" className="p-12 text-center max-w-md">
-					<AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-					<h1 className="text-2xl font-heading font-bold text-red-400 mb-4">
+			<div className="min-h-screen flex items-center justify-center px-4">
+				<Card
+					variant="cyberpunk"
+					className="p-6 sm:p-8 md:p-12 text-center max-w-md w-full"
+				>
+					<AlertCircle className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-red-400 mx-auto mb-4" />
+					<h1 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-red-400 mb-4">
 						Connection Failed
 					</h1>
-					<p className="text-muted-foreground font-mono mb-6">{error}</p>
+					<p className="text-muted-foreground font-mono mb-6 text-sm sm:text-base">
+						{error}
+					</p>
 					<div className="flex gap-2 justify-center">
 						<Button
 							variant="neon"
 							onClick={refreshProject}
 							disabled={refreshing}
+							className="touch-manipulation min-h-[44px]"
 						>
 							<RefreshCw
 								className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
@@ -277,7 +284,10 @@ export default function ProjectPost() {
 							Retry
 						</Button>
 						<Link href="/projects">
-							<Button variant="outline">
+							<Button
+								variant="outline"
+								className="touch-manipulation min-h-[44px]"
+							>
 								<ArrowLeft className="w-4 h-4 mr-2" />
 								Back to Projects
 							</Button>
@@ -291,13 +301,16 @@ export default function ProjectPost() {
 	// Project not found
 	if (!project) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<Card variant="cyberpunk" className="p-12 text-center max-w-md">
-					<Code className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-					<h1 className="text-2xl font-heading font-bold text-primary mb-4">
+			<div className="min-h-screen flex items-center justify-center px-4">
+				<Card
+					variant="cyberpunk"
+					className="p-6 sm:p-8 md:p-12 text-center max-w-md w-full"
+				>
+					<Code className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+					<h1 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary mb-4">
 						404: Project Not Found
 					</h1>
-					<p className="text-muted-foreground font-mono mb-4">
+					<p className="text-muted-foreground font-mono mb-4 text-sm sm:text-base">
 						The requested project could not be located in the matrix.
 					</p>
 
@@ -322,6 +335,7 @@ export default function ProjectPost() {
 								variant="outline"
 								onClick={refreshProject}
 								disabled={refreshing}
+								className="touch-manipulation min-h-[44px]"
 							>
 								<RefreshCw
 									className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
@@ -330,7 +344,10 @@ export default function ProjectPost() {
 							</Button>
 						)}
 						<Link href="/projects">
-							<Button variant="neon">
+							<Button
+								variant="neon"
+								className="touch-manipulation min-h-[44px]"
+							>
 								<ArrowLeft className="w-4 h-4 mr-2" />
 								Return to Projects
 							</Button>
@@ -389,11 +406,11 @@ export default function ProjectPost() {
 	const getStatusIcon = (status: string) => {
 		switch (status) {
 			case "completed":
-				return <Check className="w-4 h-4 mr-1" />;
+				return <Check className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />;
 			case "in-progress":
-				return <Zap className="w-4 h-4 mr-1" />;
+				return <Zap className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />;
 			case "planned":
-				return <Clock className="w-4 h-4 mr-1" />;
+				return <Clock className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />;
 			default:
 				return null;
 		}
@@ -412,272 +429,403 @@ export default function ProjectPost() {
 		return `${diffMonths} months`;
 	};
 
+	// Fix image URL paths - remove incorrect /projects/ prefix
+	const getCorrectImageUrl = (imageUrl: string | undefined): string | null => {
+		if (!imageUrl) return null;
+
+		// If the URL starts with /projects/images/, remove the /projects/ part
+		if (imageUrl.startsWith("/projects/images/")) {
+			return imageUrl.replace("/projects/images/", "/images/");
+		}
+
+		// If it starts with projects/images/ (without leading slash), fix it
+		if (imageUrl.startsWith("projects/images/")) {
+			return "/" + imageUrl.replace("projects/images/", "images/");
+		}
+
+		// Return as-is if it's already correct or a different format
+		return imageUrl;
+	};
+
 	return (
-		<div className="min-h-screen">
-			{/* Back Navigation */}
-			<motion.div
-				initial={{ opacity: 0, x: -20 }}
-				animate={{ opacity: 1, x: 0 }}
-				transition={{ duration: 0.6 }}
-				className="mb-8 flex items-center justify-between"
-			>
-				<Link href="/projects">
-					<Button variant="ghost" className="group">
-						<ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-						Back to Project Matrix
-					</Button>
-				</Link>
-
-				{/* Data source indicator and refresh button */}
-				<div className="flex items-center gap-2">
-					<div className="flex items-center text-xs text-muted-foreground font-mono">
-						{dataSource === "github" ? (
-							<>
-								<Github className="w-3 h-3 mr-1 text-green-400" />
-								GitHub
-							</>
-						) : dataSource === "local" ? (
-							<>
-								<Code className="w-3 h-3 mr-1 text-blue-400" />
-								Local
-							</>
-						) : null}
-					</div>
-
-					{dataSource === "github" && (
+		<>
+			<div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+				{/* Back Navigation */}
+				<motion.div
+					initial={{ opacity: 0, x: -20 }}
+					animate={{ opacity: 1, x: 0 }}
+					transition={{ duration: 0.6 }}
+					className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+				>
+					<Link href="/projects">
 						<Button
 							variant="ghost"
-							size="sm"
-							onClick={refreshProject}
-							disabled={refreshing}
-							className="text-xs"
+							className="group touch-manipulation min-h-[44px]"
 						>
-							<RefreshCw
-								className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
-							/>
-							Refresh
+							<ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+							Back to Project Matrix
 						</Button>
-					)}
-				</div>
-			</motion.div>
+					</Link>
 
-			{/* Project Header */}
-			<motion.header
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.8 }}
-				className="mb-12"
-			>
-				<Card variant="hologram" className="p-8 md:p-12">
-					{/* Meta Information */}
-					<div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-muted-foreground font-mono">
-						<Badge
-							variant={getStatusVariant(project.status)}
-							className="font-mono"
-						>
-							{getStatusIcon(project.status)}
-							{project.status.replace("-", " ")}
-						</Badge>
-						<div className="flex items-center gap-1">
-							<Calendar className="w-4 h-4" />
-							{new Date(project.startDate).toLocaleDateString("en-US", {
-								year: "numeric",
-								month: "long",
-							})}{" "}
-							-{" "}
-							{project.endDate
-								? new Date(project.endDate).toLocaleDateString("en-US", {
-										year: "numeric",
-										month: "long",
-								  })
-								: "Present"}
+					{/* Data source indicator and refresh button */}
+					<div className="flex items-center gap-2">
+						<div className="flex items-center text-xs text-muted-foreground font-mono">
+							{dataSource === "github" ? (
+								<>
+									<Github className="w-3 h-3 mr-1 text-green-400" />
+									<span className="text-green-400">GitHub</span>
+								</>
+							) : dataSource === "local" ? (
+								<>
+									<Code className="w-3 h-3 mr-1 text-blue-400" />
+									<span className="text-blue-400">Local</span>
+								</>
+							) : null}
 						</div>
-						<div className="flex items-center gap-1">
-							<Clock className="w-4 h-4" />
-							{formatDuration()}
-						</div>
-						{project.featured && (
-							<Badge variant="outline" className="neon-border">
-								<Star className="w-3 h-3 mr-1" />
-								FEATURED
-							</Badge>
+
+						{dataSource === "github" && (
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={refreshProject}
+								disabled={refreshing}
+								className="text-xs h-6 sm:h-8 touch-manipulation"
+							>
+								<RefreshCw
+									className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
+								/>
+								Refresh
+							</Button>
 						)}
 					</div>
+				</motion.div>
 
-					{/* Title */}
-					<h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-black text-primary neon-glow mb-6">
-						{project.title}
-					</h1>
-
-					{/* Description */}
-					<p className="text-lg md:text-xl text-muted-foreground font-mono leading-relaxed mb-8">
-						{project.description}
-					</p>
-
-					{/* Technologies */}
-					<div className="flex flex-wrap gap-2 mb-8">
-						<span className="text-sm font-mono text-muted-foreground flex items-center mr-4">
-							<Code className="w-4 h-4 mr-2" />
-							Technologies:
-						</span>
-						{project.technologies.map((tech) => (
-							<Badge key={tech} variant="secondary" className="font-mono">
-								<Hash className="w-3 h-3 mr-1" />
-								{tech}
+				{/* Project Header */}
+				<motion.header
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.8 }}
+					className="mb-8 sm:mb-12"
+				>
+					<Card variant="hologram" className="p-6 sm:p-8 md:p-12">
+						{/* Meta Information */}
+						<div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm text-muted-foreground font-mono">
+							<Badge
+								variant={getStatusVariant(project.status)}
+								className="font-mono"
+							>
+								{getStatusIcon(project.status)}
+								{project.status.replace("-", " ")}
 							</Badge>
-						))}
-					</div>
+							<div className="flex items-center gap-1">
+								<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+								<span className="hidden sm:inline">
+									{new Date(project.startDate).toLocaleDateString("en-US", {
+										year: "numeric",
+										month: "long",
+									})}{" "}
+									-{" "}
+									{project.endDate
+										? new Date(project.endDate).toLocaleDateString("en-US", {
+												year: "numeric",
+												month: "long",
+										  })
+										: "Present"}
+								</span>
+								<span className="sm:hidden">
+									{new Date(project.startDate).getFullYear()} -{" "}
+									{project.endDate
+										? new Date(project.endDate).getFullYear()
+										: "Present"}
+								</span>
+							</div>
+							<div className="flex items-center gap-1">
+								<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+								{formatDuration()}
+							</div>
+							{project.featured && (
+								<Badge variant="outline" className="neon-border">
+									<Star className="w-3 h-3 mr-1" />
+									FEATURED
+								</Badge>
+							)}
+						</div>
 
-					{/* Actions */}
-					<div className="flex flex-wrap items-center justify-between gap-4">
-						<div className="flex flex-wrap gap-2">
+						{/* Title */}
+						<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-black text-primary neon-glow mb-4 sm:mb-6">
+							{project.title}
+						</h1>
+
+						{/* Description */}
+						<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono leading-relaxed mb-6 sm:mb-8">
+							{project.description}
+						</p>
+
+						{/* Technologies */}
+						<div className="flex flex-wrap gap-2 mb-6 sm:mb-8">
+							<span className="text-sm font-mono text-muted-foreground flex items-center mr-4 flex-shrink-0">
+								<Code className="w-4 h-4 mr-2" />
+								Technologies:
+							</span>
+							{project.technologies.map((tech) => (
+								<Badge key={tech} variant="secondary" className="font-mono">
+									<Hash className="w-3 h-3 mr-1" />
+									{tech}
+								</Badge>
+							))}
+						</div>
+
+						{/* Actions */}
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+							<div className="flex flex-wrap gap-2">
+								{project.demoUrl && (
+									<Button
+										variant="neon"
+										onClick={() => window.open(project.demoUrl, "_blank")}
+										className="font-mono touch-manipulation min-h-[48px]"
+									>
+										<Play className="w-4 h-4 mr-2" />
+										Live Demo
+									</Button>
+								)}
+
+								{project.githubUrl && (
+									<Button
+										variant="outline"
+										onClick={() => window.open(project.githubUrl, "_blank")}
+										className="font-mono touch-manipulation min-h-[48px]"
+									>
+										<Github className="w-4 h-4 mr-2" />
+										Source Code
+									</Button>
+								)}
+							</div>
+
+							<div className="flex items-center gap-2">
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handleShare}
+									className="font-mono touch-manipulation min-h-[44px]"
+								>
+									<Share2 className="w-4 h-4 mr-2" />
+									Share
+								</Button>
+
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handleCopyLink}
+									className={`font-mono transition-all duration-300 touch-manipulation min-h-[44px] ${
+										linkCopied
+											? "bg-green-500/20 border-green-500 text-green-400"
+											: ""
+									}`}
+								>
+									{linkCopied ? (
+										<>
+											<Check className="w-4 h-4 mr-2" />
+											Copied!
+										</>
+									) : (
+										<>
+											<Link2 className="w-4 h-4 mr-2" />
+											Copy Link
+										</>
+									)}
+								</Button>
+							</div>
+						</div>
+
+						{/* Tags */}
+						<div className="flex flex-wrap gap-2 mt-6">
+							<span className="text-sm font-mono text-muted-foreground flex items-center mr-4 flex-shrink-0">
+								<Tag className="w-4 h-4 mr-2" />
+								Tags:
+							</span>
+							{[...project.tags, project.category]
+								.filter((tag, index, arr) => arr.indexOf(tag) === index)
+								.map((tag) => (
+									<Badge key={tag} variant="outline" className="font-mono">
+										<Hash className="w-3 h-3 mr-1" />
+										{tag}
+									</Badge>
+								))}
+						</div>
+					</Card>
+				</motion.header>
+
+				{/* Project Images */}
+				{project.image && (
+					<motion.section
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.2 }}
+						className="mb-8 sm:mb-12"
+					>
+						<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
+							<Laptop className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+							PROJECT_PREVIEW.display()
+						</h2>
+
+						<motion.div
+							initial={{ opacity: 0, scale: 0.9 }}
+							animate={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.5, delay: 0.1 }}
+							className="group cursor-pointer"
+							onClick={() => {
+								const correctedUrl = getCorrectImageUrl(project.image);
+								if (correctedUrl) {
+									setSelectedImageUrl(correctedUrl);
+									setSelectedImageAlt(`${project.title} preview`);
+									setIsImageModalOpen(true);
+								}
+							}}
+						>
+							<Card
+								variant="cyberpunk"
+								className="overflow-hidden hover:scale-105 transition-transform"
+							>
+								<div className="relative aspect-video bg-gradient-to-br from-primary/10 to-secondary/10">
+									<img
+										src={getCorrectImageUrl(project.image) || project.image}
+										alt={`${project.title} preview`}
+										className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+										loading="lazy"
+									/>
+									<div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center">
+										<div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+											<div className="w-8 h-8 sm:w-12 sm:h-12 rounded-full bg-primary/80 flex items-center justify-center backdrop-blur-sm">
+												<ExternalLink className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+											</div>
+										</div>
+									</div>
+								</div>
+							</Card>
+						</motion.div>
+					</motion.section>
+				)}
+
+				{/* Project Content - MAIN CONTENT SECTION */}
+				{processedContent && (
+					<motion.article
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.4 }}
+						className="mb-8 sm:mb-12"
+					>
+						<Card variant="cyberpunk" className="p-6 sm:p-8 md:p-12">
+							<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
+								<Code className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+								PROJECT_DOCUMENTATION.load()
+							</h2>
+							<div
+								className="cyberpunk-markdown max-w-none"
+								dangerouslySetInnerHTML={{
+									__html: processedContent,
+								}}
+							/>
+						</Card>
+					</motion.article>
+				)}
+
+				{/* Project Details Fallback */}
+				{!processedContent && (
+					<motion.section
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.8, delay: 0.4 }}
+						className="mb-8 sm:mb-12"
+					>
+						<Card variant="cyberpunk" className="p-6 sm:p-8 md:p-12">
+							<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
+								<Code className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+								PROJECT_DETAILS.scan()
+							</h2>
+
+							<div className="prose prose-invert max-w-none">
+								<p className="text-muted-foreground font-mono leading-relaxed text-sm sm:text-base">
+									{project.description}
+								</p>
+
+								{project.content && (
+									<div className="mt-4">
+										<pre className="whitespace-pre-wrap text-muted-foreground font-mono text-sm leading-relaxed">
+											{project.content}
+										</pre>
+									</div>
+								)}
+							</div>
+						</Card>
+					</motion.section>
+				)}
+
+				{/* Navigation Footer */}
+				<motion.footer
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.6 }}
+				>
+					<Card variant="cyberpunk" className="p-4 sm:p-6 text-center">
+						<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
+							End of project transmission
+						</p>
+
+						{/* Data source info */}
+						<div className="text-xs text-muted-foreground font-mono mb-4">
+							{dataSource === "github" && (
+								<span className="text-green-400">
+									✓ Loaded from GitHub repository
+								</span>
+							)}
+							{dataSource === "local" && isGitHubConfigured() && (
+								<span className="text-yellow-400">
+									⚠ Fallback to local data
+								</span>
+							)}
+							{dataSource === "local" && !isGitHubConfigured() && (
+								<span className="text-blue-400">
+									ℹ Using local project data
+								</span>
+							)}
+						</div>
+
+						<div className="flex flex-col sm:flex-row justify-center gap-2 sm:gap-4">
 							{project.demoUrl && (
 								<Button
 									variant="neon"
 									onClick={() => window.open(project.demoUrl, "_blank")}
-									className="font-mono"
+									className="touch-manipulation min-h-[48px]"
 								>
-									<Play className="w-4 h-4 mr-2" />
-									Live Demo
+									<ExternalLink className="w-4 h-4 mr-2" />
+									View Live Project
 								</Button>
 							)}
-
-							{project.githubUrl && (
+							<Link href="/projects">
 								<Button
 									variant="outline"
-									onClick={() => window.open(project.githubUrl, "_blank")}
-									className="font-mono"
+									className="touch-manipulation min-h-[48px]"
 								>
-									<Github className="w-4 h-4 mr-2" />
-									Source Code
+									<ArrowLeft className="w-4 h-4 mr-2" />
+									Explore More Projects
 								</Button>
-							)}
+							</Link>
 						</div>
-
-						<div className="flex items-center gap-2">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={handleShare}
-								className="font-mono"
-							>
-								<Share2 className="w-4 h-4 mr-2" />
-								Share
-							</Button>
-
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={handleCopyLink}
-								className={`font-mono transition-all duration-300 ${
-									linkCopied
-										? "bg-green-500/20 border-green-500 text-green-400"
-										: ""
-								}`}
-							>
-								{linkCopied ? (
-									<>
-										<Check className="w-4 h-4 mr-2" />
-										Copied!
-									</>
-								) : (
-									<>
-										<Link2 className="w-4 h-4 mr-2" />
-										Copy Link
-									</>
-								)}
-							</Button>
-						</div>
-					</div>
-
-					{/* Tags */}
-					<div className="flex flex-wrap gap-2 mt-6">
-						<span className="text-sm font-mono text-muted-foreground flex items-center mr-4">
-							<Tag className="w-4 h-4 mr-2" />
-							Tags:
-						</span>
-						{[...project.tags, project.category]
-							.filter((tag, index, arr) => arr.indexOf(tag) === index)
-							.map((tag) => (
-								<Badge key={tag} variant="outline" className="font-mono">
-									<Hash className="w-3 h-3 mr-1" />
-									{tag}
-								</Badge>
-							))}
-					</div>
-				</Card>
-			</motion.header>
-
-			{/* Project Content */}
-			<motion.article
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.8, delay: 0.2 }}
-				className="mb-12"
-			>
-				<Card variant="cyberpunk" className="p-8 md:p-12">
-					<div
-						className="cyberpunk-markdown max-w-none"
-						dangerouslySetInnerHTML={{
-							__html: processedContent,
-						}}
-					/>
-				</Card>
-			</motion.article>
-
-			{/* Navigation Footer */}
-			<motion.footer
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6, delay: 0.4 }}
-			>
-				<Card variant="cyberpunk" className="p-6 text-center">
-					<p className="text-muted-foreground font-mono mb-2">
-						End of project transmission
-					</p>
-
-					{/* Data source info */}
-					<div className="text-xs text-muted-foreground font-mono mb-4">
-						{dataSource === "github" && (
-							<span className="text-green-400">
-								✓ Loaded from GitHub repository
-							</span>
-						)}
-						{dataSource === "local" && isGitHubConfigured() && (
-							<span className="text-yellow-400">⚠ Fallback to local data</span>
-						)}
-						{dataSource === "local" && !isGitHubConfigured() && (
-							<span className="text-blue-400">ℹ Using local project data</span>
-						)}
-					</div>
-
-					<div className="flex justify-center gap-4">
-						{project.demoUrl && (
-							<Button
-								variant="neon"
-								onClick={() => window.open(project.demoUrl, "_blank")}
-							>
-								<ExternalLink className="w-4 h-4 mr-2" />
-								View Live Project
-							</Button>
-						)}
-						<Link href="/projects">
-							<Button variant="outline">
-								<ArrowLeft className="w-4 h-4 mr-2" />
-								Explore More Projects
-							</Button>
-						</Link>
-					</div>
-				</Card>
-			</motion.footer>
+					</Card>
+				</motion.footer>
+			</div>
 
 			{/* Image Modal */}
-			<ImageModal
-				isOpen={isImageModalOpen}
-				onClose={() => setIsImageModalOpen(false)}
-				imageUrl={selectedImageUrl}
-				altText={selectedImageAlt}
-			/>
-		</div>
+			<AnimatePresence>
+				{isImageModalOpen && selectedImageUrl && (
+					<ImageModal
+						isOpen={isImageModalOpen}
+						onClose={() => setIsImageModalOpen(false)}
+						imageUrl={selectedImageUrl}
+						altText={selectedImageAlt}
+					/>
+				)}
+			</AnimatePresence>
+		</>
 	);
 }

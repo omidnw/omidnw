@@ -110,7 +110,7 @@ export default function GlobalMusicPlayer() {
 				size="icon"
 				onClick={handleClick}
 				className={cn(
-					"relative transition-all duration-300",
+					"relative transition-all duration-300 w-8 h-8 sm:w-10 sm:h-10",
 					isPlaying && !isLoading && !error
 						? "text-primary hover:text-primary/80"
 						: "text-muted-foreground hover:text-primary"
@@ -126,13 +126,13 @@ export default function GlobalMusicPlayer() {
 				}`}
 			>
 				{isLoading ? (
-					<Loader2 className="w-5 h-5 animate-spin" />
+					<Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
 				) : error ? (
-					<AlertTriangle className="w-5 h-5 text-red-400" />
+					<AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
 				) : isPlaying ? (
-					<Pause className="w-5 h-5" />
+					<Pause className="w-4 h-4 sm:w-5 sm:h-5" />
 				) : (
-					<Play className="w-5 h-5" />
+					<Play className="w-4 h-4 sm:w-5 sm:h-5" />
 				)}
 
 				{/* Playing indicator dot */}
@@ -140,7 +140,7 @@ export default function GlobalMusicPlayer() {
 					<motion.div
 						initial={{ opacity: 0, scale: 0 }}
 						animate={{ opacity: 1, scale: 1 }}
-						className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse"
+						className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full animate-pulse"
 					/>
 				)}
 			</Button>
@@ -150,13 +150,13 @@ export default function GlobalMusicPlayer() {
 				variant="ghost"
 				size="icon"
 				onClick={toggleExpanded}
-				className="w-6 h-6 text-muted-foreground hover:text-primary transition-colors"
+				className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground hover:text-primary transition-colors"
 				aria-label={isExpanded ? "Collapse player" : "Expand player"}
 			>
 				{isExpanded ? (
-					<ChevronUp className="w-3 h-3" />
+					<ChevronUp className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
 				) : (
-					<ChevronDown className="w-3 h-3" />
+					<ChevronDown className="w-2.5 h-2.5 sm:w-3 sm:h-3" />
 				)}
 			</Button>
 
@@ -168,15 +168,15 @@ export default function GlobalMusicPlayer() {
 						animate={{ opacity: 1, y: 0, scale: 1 }}
 						exit={{ opacity: 0, y: -10, scale: 0.95 }}
 						transition={{ duration: 0.2 }}
-						className="absolute top-full right-0 mt-2 w-80 max-w-[90vw]"
+						className="absolute top-full right-0 mt-2 w-72 sm:w-80 max-w-[95vw] z-50"
 					>
 						<Card
 							variant="cyberpunk"
-							className="p-4 shadow-2xl border-primary/50"
+							className="p-3 sm:p-4 shadow-2xl border-primary/50"
 						>
 							{/* Header */}
 							<div className="flex items-center gap-2 mb-3">
-								<Music2 className="w-4 h-4 text-primary flex-shrink-0" />
+								<Music2 className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0" />
 								<p className="text-xs font-mono text-primary truncate flex-1">
 									{audioSrc.split("/").pop()?.replace(".mp3", "") ||
 										"Cyberpunk Beats"}
@@ -190,7 +190,7 @@ export default function GlobalMusicPlayer() {
 									max={duration || 100}
 									step={1}
 									onValueCommit={handleSeek}
-									className="w-full h-1 [&>span:first-child]:h-1 [&>span:first-child>span]:h-3 [&>span:first-child>span]:w-3 [&>span:first-child>span]:border-2"
+									className="w-full h-1 [&>span:first-child]:h-1 [&>span:first-child>span]:h-4 [&>span:first-child>span]:w-4 [&>span:first-child>span]:border-2 touch-manipulation"
 									aria-label="Track progress"
 								/>
 								<div className="flex justify-between text-xs font-mono text-muted-foreground mt-1">
@@ -202,18 +202,18 @@ export default function GlobalMusicPlayer() {
 							{/* Controls */}
 							<div className="flex items-center justify-between mb-3">
 								{/* Volume Control */}
-								<div className="flex items-center gap-2">
+								<div className="flex items-center gap-1 sm:gap-2 flex-1 mr-2">
 									<Button
 										variant="ghost"
 										size="icon"
 										onClick={toggleMute}
-										className="w-8 h-8 text-primary hover:text-accent"
+										className="w-7 h-7 sm:w-8 sm:h-8 text-primary hover:text-accent flex-shrink-0"
 										aria-label={isMuted ? "Unmute" : "Mute"}
 									>
 										{isMuted || volume === 0 ? (
-											<VolumeX className="w-4 h-4" />
+											<VolumeX className="w-3 h-3 sm:w-4 sm:h-4" />
 										) : (
-											<Volume2 className="w-4 h-4" />
+											<Volume2 className="w-3 h-3 sm:w-4 sm:h-4" />
 										)}
 									</Button>
 									<Slider
@@ -221,7 +221,7 @@ export default function GlobalMusicPlayer() {
 										max={1}
 										step={0.01}
 										onValueChange={handleVolumeChange}
-										className="w-16 h-1 [&>span:first-child]:h-1 [&>span:first-child>span]:h-2 [&>span:first-child>span]:w-2"
+										className="flex-1 h-1 [&>span:first-child]:h-1 [&>span:first-child>span]:h-3 [&>span:first-child>span]:w-3 touch-manipulation"
 										aria-label="Volume"
 									/>
 								</div>
@@ -234,15 +234,15 @@ export default function GlobalMusicPlayer() {
 										if (error) clearError();
 										togglePlayPause();
 									}}
-									className="w-10 h-10 rounded-full"
+									className="w-9 h-9 sm:w-10 sm:h-10 rounded-full mx-2 flex-shrink-0"
 									aria-label={isPlaying ? "Pause" : "Play"}
 								>
 									{isLoading ? (
-										<Loader2 className="w-5 h-5 animate-spin" />
+										<Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
 									) : isPlaying ? (
-										<Pause className="w-5 h-5" />
+										<Pause className="w-4 h-4 sm:w-5 sm:h-5" />
 									) : (
-										<Play className="w-5 h-5" />
+										<Play className="w-4 h-4 sm:w-5 sm:h-5" />
 									)}
 								</Button>
 
@@ -252,17 +252,17 @@ export default function GlobalMusicPlayer() {
 									size="icon"
 									onClick={toggleLoop}
 									className={cn(
-										"w-8 h-8 relative",
+										"w-7 h-7 sm:w-8 sm:h-8 relative flex-shrink-0",
 										loop
 											? "text-primary bg-primary/20 border border-primary/50"
 											: "text-muted-foreground hover:text-primary"
 									)}
 									aria-label={loop ? "Disable repeat" : "Enable repeat"}
 								>
-									<Repeat className="w-4 h-4" />
+									<Repeat className="w-3 h-3 sm:w-4 sm:h-4" />
 									<span
 										className={cn(
-											"absolute -top-1 -right-1 w-3 h-3 text-xs font-bold rounded-full flex items-center justify-center",
+											"absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-2.5 h-2.5 sm:w-3 sm:h-3 text-xs font-bold rounded-full flex items-center justify-center",
 											loop
 												? "bg-primary text-primary-foreground"
 												: "bg-muted-foreground text-background"
@@ -283,20 +283,20 @@ export default function GlobalMusicPlayer() {
 								</div>
 
 								{/* AutoPlay Toggle */}
-								<div className="flex items-center justify-between py-2">
-									<div className="flex-1">
-										<label className="text-xs font-mono text-foreground cursor-pointer">
+								<div className="flex items-start justify-between py-2 gap-3">
+									<div className="flex-1 min-w-0">
+										<label className="text-xs font-mono text-foreground cursor-pointer block">
 											Auto-play
 										</label>
 										<p className="text-xs text-muted-foreground mt-0.5 leading-tight">
-											Automatically resume music after page refresh. May be
-											blocked by browser security policies.
+											Auto-resume after page refresh. May be blocked by browser
+											policies.
 										</p>
 									</div>
 									<Switch
 										checked={autoPlay}
 										onCheckedChange={toggleAutoPlay}
-										className="ml-3"
+										className="flex-shrink-0 mt-0.5"
 										aria-label="Toggle auto-play"
 									/>
 								</div>

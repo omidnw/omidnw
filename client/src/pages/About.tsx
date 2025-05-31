@@ -177,54 +177,58 @@ const ProfileCard = React.memo(() => {
 			transition={{ duration: 0.6, delay: 0.4 }}
 		>
 			<Card variant="cyberpunk" className="h-full">
-				<CardHeader className="text-center pb-4">
-					<div className="mx-auto mb-4 relative">
-						<div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-primary to-secondary p-1">
+				<CardHeader className="text-center pb-3 sm:pb-4">
+					<div className="mx-auto mb-3 sm:mb-4 relative">
+						<div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-primary to-secondary p-1">
 							<div className="w-full h-full rounded-full bg-background flex items-center justify-center">
 								<User
-									className="w-12 h-12 md:w-16 md:h-16 text-primary neon-glow"
+									className="w-10 h-10 sm:w-12 sm:h-12 md:w-16 md:h-16 text-primary neon-glow"
 									aria-hidden="true"
 								/>
 							</div>
 						</div>
 						<div
-							className="absolute -bottom-1 -right-1 w-6 h-6 md:w-8 md:h-8 bg-green-500 rounded-full border-2 border-background animate-pulse"
+							className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 md:w-8 md:h-8 bg-green-500 rounded-full border-2 border-background animate-pulse"
 							aria-label="Online status indicator"
 							role="status"
 						/>
 					</div>
-					<CardTitle className="text-2xl md:text-3xl mb-2 font-heading text-primary neon-glow">
+					<CardTitle className="text-xl sm:text-2xl md:text-3xl mb-2 font-heading text-primary neon-glow">
 						OmidReza Keshtkar
 					</CardTitle>
-					<p className="text-accent font-mono text-base md:text-lg">
+					<p className="text-accent font-mono text-sm sm:text-base md:text-lg">
 						Software QA & Full Stack Developer
 					</p>
 				</CardHeader>
-				<CardContent className="space-y-3">
-					<div className="flex items-center gap-3 text-muted-foreground">
+				<CardContent className="space-y-2 sm:space-y-3">
+					<div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">
 						<MapPin
-							className="w-4 h-4 text-primary flex-shrink-0"
+							className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0"
 							aria-hidden="true"
 						/>
-						<span className="font-mono text-sm">Dubai, UAE</span>
+						<span className="font-mono text-xs sm:text-sm">Dubai, UAE</span>
 					</div>
-					<div className="flex items-center gap-3 text-muted-foreground">
+					<div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">
 						<Calendar
-							className="w-4 h-4 text-primary flex-shrink-0"
+							className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0"
 							aria-hidden="true"
 						/>
-						<span className="font-mono text-sm">Experienced Professional</span>
+						<span className="font-mono text-xs sm:text-sm">
+							Experienced Professional
+						</span>
 					</div>
-					<div className="flex items-center gap-3 text-muted-foreground">
+					<div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">
 						<Code
-							className="w-4 h-4 text-primary flex-shrink-0"
+							className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0"
 							aria-hidden="true"
 						/>
-						<span className="font-mono text-sm">25+ Projects Completed</span>
+						<span className="font-mono text-xs sm:text-sm">
+							25+ Projects Completed
+						</span>
 					</div>
 
-					<div className="pt-3 border-t border-border">
-						<p className="text-sm text-muted-foreground font-mono leading-relaxed">
+					<div className="pt-2 sm:pt-3 border-t border-border">
+						<p className="text-xs sm:text-sm text-muted-foreground font-mono leading-relaxed">
 							Passionate about creating digital experiences that bridge the gap
 							between humans and technology. I specialize in building scalable
 							web applications with a focus on performance and user experience.
@@ -248,19 +252,22 @@ const Timeline = React.memo(() => {
 	);
 
 	return (
-		<section className="space-y-6" aria-label="Professional timeline">
+		<section
+			className="space-y-4 sm:space-y-6"
+			aria-label="Professional timeline"
+		>
 			<motion.h2
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.3 }}
-				className="text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-6"
+				className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-4 sm:mb-6"
 			>
 				NEURAL_PATHWAY.timeline()
 			</motion.h2>
 
 			<div className="relative">
 				<div
-					className="absolute left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent"
+					className="absolute left-3 sm:left-4 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent"
 					aria-hidden="true"
 				/>
 
@@ -269,39 +276,39 @@ const Timeline = React.memo(() => {
 					return (
 						<article
 							key={`${item.year}-${index}`}
-							className="relative pl-12 pb-6 last:pb-0"
+							className="relative pl-10 sm:pl-12 pb-4 sm:pb-6 last:pb-0"
 						>
 							<div
-								className="absolute left-0 top-0 w-8 h-8 rounded-full bg-background border-2 border-primary flex items-center justify-center"
+								className="absolute left-0 top-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-background border-2 border-primary flex items-center justify-center"
 								aria-label={`Timeline marker for ${item.type}`}
 							>
 								<IconComponent
-									className="w-4 h-4 text-primary"
+									className="w-3 h-3 sm:w-4 sm:h-4 text-primary"
 									aria-hidden="true"
 								/>
 							</div>
 
-							<Card variant="hologram" className="ml-4">
-								<CardHeader className="pb-3">
-									<div className="flex justify-between items-start gap-4">
-										<div className="flex-1">
-											<CardTitle className="text-primary font-heading mb-1 text-lg">
+							<Card variant="hologram" className="ml-2 sm:ml-4">
+								<CardHeader className="pb-2 sm:pb-3">
+									<div className="flex justify-between items-start gap-2 sm:gap-4">
+										<div className="flex-1 min-w-0">
+											<CardTitle className="text-primary font-heading mb-1 text-base sm:text-lg">
 												{item.title}
 											</CardTitle>
-											<p className="text-secondary font-mono text-sm">
+											<p className="text-secondary font-mono text-xs sm:text-sm break-words">
 												{item.company}
 											</p>
 										</div>
 										<Badge
 											variant="outline"
-											className="font-mono neon-border text-xs"
+											className="font-mono neon-border text-xs flex-shrink-0"
 										>
 											{item.year}
 										</Badge>
 									</div>
 								</CardHeader>
 								<CardContent className="pt-0">
-									<p className="text-muted-foreground font-mono text-sm leading-relaxed">
+									<p className="text-muted-foreground font-mono text-xs sm:text-sm leading-relaxed">
 										{item.description}
 									</p>
 								</CardContent>
@@ -317,27 +324,30 @@ Timeline.displayName = "Timeline";
 
 const TechStack = React.memo(() => {
 	return (
-		<section className="space-y-6" aria-label="Technical skills and expertise">
+		<section
+			className="space-y-4 sm:space-y-6"
+			aria-label="Technical skills and expertise"
+		>
 			<motion.h2
 				initial={{ opacity: 0 }}
 				whileInView={{ opacity: 1 }}
 				transition={{ duration: 0.5 }}
 				viewport={{ once: true }}
-				className="text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-6"
+				className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-4 sm:mb-6"
 			>
 				TECH_STACK.analyze()
 			</motion.h2>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 				{techStack.map((category, index) => (
 					<div key={category.category}>
 						<Card variant="cyberpunk" className="h-full">
-							<CardHeader className="pb-3">
-								<CardTitle className="text-accent font-heading mb-3 text-lg">
+							<CardHeader className="pb-2 sm:pb-3">
+								<CardTitle className="text-accent font-heading mb-2 sm:mb-3 text-base sm:text-lg">
 									{category.category}
 								</CardTitle>
-								<div className="space-y-2">
-									<div className="flex justify-between text-sm font-mono">
+								<div className="space-y-1.5 sm:space-y-2">
+									<div className="flex justify-between text-xs sm:text-sm font-mono">
 										<span>Proficiency</span>
 										<span aria-label={`${category.level} percent`}>
 											{category.level}%
@@ -345,13 +355,13 @@ const TechStack = React.memo(() => {
 									</div>
 									<Progress
 										value={category.level}
-										className="h-2 neon-border"
+										className="h-1.5 sm:h-2 neon-border"
 										aria-label={`${category.category} proficiency: ${category.level}%`}
 									/>
 								</div>
 							</CardHeader>
 							<CardContent className="pt-0">
-								<div className="flex flex-wrap gap-1.5">
+								<div className="flex flex-wrap gap-1 sm:gap-1.5">
 									{category.skills.map((skill) => (
 										<Badge
 											key={skill}
@@ -374,44 +384,47 @@ TechStack.displayName = "TechStack";
 
 const Interests = React.memo(() => {
 	return (
-		<section className="space-y-6" aria-label="Personal interests and hobbies">
+		<section
+			className="space-y-4 sm:space-y-6"
+			aria-label="Personal interests and hobbies"
+		>
 			<motion.h2
 				initial={{ opacity: 0 }}
 				whileInView={{ opacity: 1 }}
 				transition={{ duration: 0.5 }}
 				viewport={{ once: true }}
-				className="text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-6"
+				className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-4 sm:mb-6"
 			>
 				PERSONAL_INTERESTS.load()
 			</motion.h2>
 
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 				{interests.map((interest, index) => {
 					const Icon = interest.icon;
 					return (
 						<div key={interest.name}>
 							<Card
 								variant="hologram"
-								className="h-full cursor-pointer transition-transform hover:scale-105 duration-200"
+								className="h-full cursor-pointer transition-transform hover:scale-105 duration-200 touch-manipulation"
 							>
-								<CardContent className="p-4 text-center">
+								<CardContent className="p-3 sm:p-4 text-center">
 									<Icon
-										className="w-10 h-10 mx-auto mb-3 text-accent neon-glow"
+										className="w-8 h-8 sm:w-10 sm:h-10 mx-auto mb-2 sm:mb-3 text-accent neon-glow"
 										aria-hidden="true"
 									/>
-									<h3 className="font-heading text-base text-primary mb-2">
+									<h3 className="font-heading text-sm sm:text-base text-primary mb-2">
 										{interest.name}
 									</h3>
-									<p className="text-sm text-muted-foreground font-mono leading-relaxed">
+									<p className="text-xs sm:text-sm text-muted-foreground font-mono leading-relaxed">
 										{interest.description}
 									</p>
 									{interest.href && interest.linkText && (
-										<div className="mt-3">
+										<div className="mt-2 sm:mt-3">
 											<a
 												href={interest.href}
 												target="_blank"
 												rel="noopener noreferrer"
-												className="block w-full sm:inline-block sm:w-auto text-xs font-mono text-primary hover:text-secondary transition-colors px-3 py-2 rounded bg-primary/10 hover:bg-secondary/10 text-center"
+												className="block w-full text-xs font-mono text-primary hover:text-secondary transition-colors px-2 sm:px-3 py-1.5 sm:py-2 rounded bg-primary/10 hover:bg-secondary/10 text-center touch-manipulation min-h-[44px] flex items-center justify-center"
 												aria-label={`Visit ${interest.name} profile`}
 											>
 												{interest.linkText}
@@ -433,12 +446,12 @@ export default function About() {
 	return (
 		<div className="min-h-screen">
 			{/* Hero Section */}
-			<header className="text-center py-12 mb-8">
+			<header className="text-center py-8 sm:py-12 mb-6 sm:mb-8">
 				<motion.h1
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6 }}
-					className="text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-4 neon-glow text-primary"
+					className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary"
 				>
 					ABOUT_ME.sh
 				</motion.h1>
@@ -446,16 +459,16 @@ export default function About() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 0.6, delay: 0.2 }}
-					className="text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto"
+					className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4"
 				>
 					Diving deep into the neural pathways of a cybernetic developer
 				</motion.p>
 			</header>
 
 			{/* Main Content */}
-			<div className="space-y-12">
+			<div className="space-y-8 sm:space-y-12">
 				{/* Profile and Timeline Section */}
-				<section className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+				<section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
 					<div className="lg:col-span-1">
 						<ProfileCard />
 					</div>

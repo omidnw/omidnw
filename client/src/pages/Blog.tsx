@@ -251,10 +251,10 @@ export default function Blog() {
 	// Loading State
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
+			<div className="min-h-screen flex items-center justify-center p-4">
 				<div className="text-center">
-					<BookOpen className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-					<p className="text-muted-foreground font-mono mb-2">
+					<BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-primary mx-auto mb-4 animate-pulse" />
+					<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
 						{isGitHubConfigured()
 							? "Accessing neural network for blog data..."
 							: "Scanning local blog archives..."}
@@ -267,15 +267,25 @@ export default function Blog() {
 	// Error State
 	if (error) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<Card variant="cyberpunk" className="p-12 text-center max-w-md">
-					<AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-					<h1 className="text-2xl font-heading font-bold text-red-400 mb-4">
+			<div className="min-h-screen flex items-center justify-center p-4">
+				<Card
+					variant="cyberpunk"
+					className="p-8 sm:p-12 text-center max-w-md w-full"
+				>
+					<AlertCircle className="w-12 h-12 sm:w-16 sm:h-16 text-red-400 mx-auto mb-4" />
+					<h1 className="text-xl sm:text-2xl font-heading font-bold text-red-400 mb-4">
 						Data Stream Interrupted
 					</h1>
-					<p className="text-muted-foreground font-mono mb-6">{error}</p>
+					<p className="text-muted-foreground font-mono mb-6 text-sm sm:text-base">
+						{error}
+					</p>
 					<div className="flex gap-2 justify-center">
-						<Button variant="neon" onClick={refreshPosts} disabled={refreshing}>
+						<Button
+							variant="neon"
+							onClick={refreshPosts}
+							disabled={refreshing}
+							className="touch-manipulation min-h-[44px]"
+						>
 							<RefreshCw
 								className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
 							/>
@@ -294,17 +304,17 @@ export default function Blog() {
 				initial={{ opacity: 0, y: 30 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
-				className="text-center py-12 mb-8"
+				className="text-center py-8 sm:py-12 mb-6 sm:mb-8"
 			>
-				<h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-4 neon-glow text-primary">
+				<h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
 					NEURAL_BLOG.sh
 				</h1>
-				<p className="text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto">
+				<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4">
 					Transmissions from the digital frontier - insights, tutorials, and
 					thoughts on cybernetic development
 				</p>
 				{/* Data source indicator */}
-				<div className="mt-4 flex items-center justify-center gap-2 text-xs font-mono">
+				<div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs font-mono">
 					{dataSource === "github" && (
 						<Badge
 							variant="outline"
@@ -327,7 +337,7 @@ export default function Blog() {
 							size="sm"
 							onClick={refreshPosts}
 							disabled={refreshing}
-							className="text-xs"
+							className="text-xs h-6 sm:h-8 touch-manipulation"
 						>
 							<RefreshCw
 								className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
@@ -343,10 +353,10 @@ export default function Blog() {
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6, delay: 0.2 }}
-				className="mb-12 relative z-30" // Ensure filter section is above content
+				className="mb-8 sm:mb-12 relative z-30" // Ensure filter section is above content
 			>
-				<Card variant="cyberpunk" className="p-6">
-					<div className="space-y-4">
+				<Card variant="cyberpunk" className="p-4 sm:p-6">
+					<div className="space-y-3 sm:space-y-4">
 						{/* Main Search Input */}
 						<div className="relative">
 							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -355,14 +365,12 @@ export default function Blog() {
 								placeholder="Search neural pathways... (title, content, author, tags)"
 								value={searchTerm}
 								onChange={(e) => setSearchTerm(e.target.value)}
-								className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono"
+								className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono h-10 sm:h-12 text-sm sm:text-base"
 							/>
 						</div>
 
 						{/* Tag Search and Filter */}
-						<div className="flex flex-col md:flex-row gap-4 relative z-20">
-							{" "}
-							{/* Ensure tag dropdown is above content */}
+						<div className="flex flex-col md:flex-row gap-3 sm:gap-4 relative z-20">
 							{/* Tag Search Input */}
 							<div className="relative flex-1" ref={tagInputRef}>
 								<Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -376,7 +384,7 @@ export default function Blog() {
 									}}
 									onFocus={() => setShowTagSuggestions(true)}
 									onKeyDown={handleKeyDown}
-									className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono"
+									className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono h-10 sm:h-12 text-sm sm:text-base"
 								/>
 
 								{/* Tag Suggestions Dropdown */}
@@ -409,7 +417,7 @@ export default function Blog() {
 																key={tag}
 																onClick={() => handleTagSelect(tag)}
 																disabled={isSelected}
-																className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group ${
+																className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] ${
 																	isSelected
 																		? "bg-primary/20 text-primary cursor-default border-l-2 border-primary"
 																		: "hover:bg-primary/10 text-foreground hover:border-l-2 hover:border-secondary"
@@ -442,7 +450,7 @@ export default function Blog() {
 									variant="outline"
 									size="sm"
 									onClick={handleClearFilters}
-									className="font-mono whitespace-nowrap md:mt-0 mt-2"
+									className="font-mono whitespace-nowrap md:mt-0 mt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
 								>
 									<X className="w-4 h-4 mr-2" />
 									Clear All
@@ -456,7 +464,7 @@ export default function Blog() {
 								initial={{ opacity: 0, height: 0 }}
 								animate={{ opacity: 1, height: "auto" }}
 								exit={{ opacity: 0, height: 0 }}
-								className="space-y-2 pt-4"
+								className="space-y-2 pt-3 sm:pt-4"
 							>
 								<div className="flex items-center gap-2">
 									<span className="text-sm font-mono text-muted-foreground flex items-center">
@@ -475,7 +483,7 @@ export default function Blog() {
 										>
 											<Badge
 												variant="secondary"
-												className="font-mono cursor-pointer hover:bg-destructive/20 transition-colors group relative"
+												className="font-mono cursor-pointer hover:bg-destructive/20 transition-colors group relative touch-manipulation min-h-[32px] flex items-center"
 												onClick={() => handleTagRemove(tag)}
 											>
 												<Hash className="w-3 h-3 mr-1" />
@@ -489,7 +497,7 @@ export default function Blog() {
 						)}
 
 						{/* Search Results Summary */}
-						<div className="flex items-center justify-between text-sm font-mono text-muted-foreground pt-4">
+						<div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm font-mono text-muted-foreground pt-3 sm:pt-4 gap-2">
 							<span>
 								{filteredPosts.length} post
 								{filteredPosts.length !== 1 ? "s" : ""}
@@ -499,7 +507,7 @@ export default function Blog() {
 									? " found"
 									: " available"}
 								{selectedTags.length > 1 && (
-									<span className="text-xs ml-2 text-primary">
+									<span className="block sm:inline text-xs mt-1 sm:mt-0 sm:ml-2 text-primary">
 										(matching all {selectedTags.length} tags)
 									</span>
 								)}
@@ -518,31 +526,31 @@ export default function Blog() {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6, delay: 0.4 }}
-					className="mb-12"
+					className="mb-8 sm:mb-12"
 				>
-					<h2 className="text-2xl font-heading font-bold text-primary mb-6 flex items-center">
-						<BookOpen className="w-6 h-6 mr-2" />
+					<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
+						<BookOpen className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
 						FEATURED_POST.highlight()
 					</h2>
 
 					<Link href={`/blog/${featuredPost.id}`}>
 						<Card
 							variant="hologram"
-							className="overflow-hidden group cursor-pointer"
+							className="overflow-hidden group cursor-pointer touch-manipulation"
 						>
 							<div className="md:flex">
-								<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-8 flex items-center justify-center">
+								<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-6 sm:p-8 flex items-center justify-center">
 									<div className="text-center">
-										<BookOpen className="w-16 h-16 text-primary mx-auto mb-4 neon-glow" />
+										<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 sm:mb-4 neon-glow" />
 										<Badge variant="outline" className="neon-border">
 											FEATURED
 										</Badge>
 									</div>
 								</div>
-								<div className="md:w-2/3 p-8">
-									<div className="flex items-center gap-4 mb-4 text-sm text-muted-foreground font-mono">
+								<div className="md:w-2/3 p-6 sm:p-8">
+									<div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm text-muted-foreground font-mono">
 										<div className="flex items-center gap-1">
-											<Calendar className="w-4 h-4" />
+											<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
 											{new Date(featuredPost.date).toLocaleDateString("en-US", {
 												year: "numeric",
 												month: "short",
@@ -550,25 +558,25 @@ export default function Blog() {
 											})}
 										</div>
 										<div className="flex items-center gap-1">
-											<Clock className="w-4 h-4" />
+											<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
 											{featuredPost.readTime}
 										</div>
 									</div>
 
-									<h3 className="text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all">
+									<h3 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all">
 										{featuredPost.title}
 									</h3>
 
-									<p className="text-muted-foreground font-mono mb-4 leading-relaxed line-clamp-3">
+									<p className="text-muted-foreground font-mono mb-4 leading-relaxed line-clamp-3 text-sm sm:text-base">
 										{featuredPost.excerpt}
 									</p>
 
-									<div className="flex flex-wrap gap-2 mb-4">
+									<div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
 										{featuredPost.tags.slice(0, 4).map((tag) => (
 											<Badge
 												key={tag}
 												variant="secondary"
-												className="text-xs font-mono cursor-pointer hover:bg-secondary/20"
+												className="text-xs font-mono cursor-pointer hover:bg-secondary/20 touch-manipulation"
 												onClick={(e) => {
 													e.preventDefault();
 													handleTagSelect(tag);
@@ -587,7 +595,7 @@ export default function Blog() {
 
 									<Button
 										variant="neon"
-										className="group-hover:scale-105 transition-transform"
+										className="group-hover:scale-105 transition-transform h-10 sm:h-12 touch-manipulation min-h-[44px]"
 									>
 										Read Full Post
 										<ArrowRight className="w-4 h-4 ml-2" />
@@ -609,9 +617,9 @@ export default function Blog() {
 						featuredPost && !selectedTags.length && !searchTerm ? 0.6 : 0.4,
 				}}
 			>
-				<div className="flex items-center justify-between mb-6">
-					<h2 className="text-2xl font-heading font-bold text-primary flex items-center">
-						<Tag className="w-6 h-6 mr-2" />
+				<div className="flex items-center justify-between mb-4 sm:mb-6">
+					<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary flex items-center">
+						<Tag className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
 						{selectedTags.length > 0 || searchTerm
 							? "FILTERED_RESULTS.scan()"
 							: "ALL_POSTS.scan()"}
@@ -620,30 +628,38 @@ export default function Blog() {
 
 				{filteredPosts.length === 0 &&
 				(searchTerm || selectedTags.length > 0) ? (
-					<Card variant="cyberpunk" className="p-12 text-center">
+					<Card variant="cyberpunk" className="p-8 sm:p-12 text-center">
 						<div className="text-muted-foreground">
-							<Search className="w-16 h-16 mx-auto mb-4 opacity-50" />
-							<h3 className="text-xl font-heading mb-2">No posts found</h3>
-							<p className="font-mono mb-4">
+							<Search className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 opacity-50" />
+							<h3 className="text-lg sm:text-xl font-heading mb-2">
+								No posts found
+							</h3>
+							<p className="font-mono mb-4 text-sm sm:text-base">
 								No posts match your current search criteria.
 								{selectedTags.length > 1 && (
-									<span className="block text-sm mt-2 text-primary">
+									<span className="block text-xs sm:text-sm mt-2 text-primary">
 										Posts must contain ALL selected tags.
 									</span>
 								)}
 							</p>
-							<Button variant="outline" onClick={handleClearFilters}>
+							<Button
+								variant="outline"
+								onClick={handleClearFilters}
+								className="touch-manipulation min-h-[44px]"
+							>
 								<X className="w-4 h-4 mr-2" />
 								Clear Filters
 							</Button>
 						</div>
 					</Card>
 				) : posts.length === 0 && !loading ? (
-					<Card variant="cyberpunk" className="p-12 text-center">
+					<Card variant="cyberpunk" className="p-8 sm:p-12 text-center">
 						<div className="text-muted-foreground">
-							<BookOpen className="w-16 h-16 mx-auto mb-4 opacity-50" />
-							<h3 className="text-xl font-heading mb-2">No Blog Posts Yet</h3>
-							<p className="font-mono mb-4">
+							<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 opacity-50" />
+							<h3 className="text-lg sm:text-xl font-heading mb-2">
+								No Blog Posts Yet
+							</h3>
+							<p className="font-mono mb-4 text-sm sm:text-base">
 								{dataSource === "github"
 									? "No blog posts found in the GitHub repository."
 									: "No local blog posts found. Add some MDX files to your blogs folder."}
@@ -653,6 +669,7 @@ export default function Blog() {
 									variant="outline"
 									onClick={refreshPosts}
 									disabled={refreshing}
+									className="touch-manipulation min-h-[44px]"
 								>
 									<RefreshCw
 										className={`w-4 h-4 mr-2 ${
@@ -665,7 +682,7 @@ export default function Blog() {
 						</div>
 					</Card>
 				) : (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
 						{(searchTerm || selectedTags.length > 0
 							? filteredPosts
 							: regularPosts
@@ -679,10 +696,10 @@ export default function Blog() {
 								<Link href={`/blog/${post.id}`}>
 									<Card
 										variant="cyberpunk"
-										className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform"
+										className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform touch-manipulation"
 									>
-										<CardHeader className="pb-3">
-											<div className="flex items-center gap-4 mb-2 text-xs text-muted-foreground font-mono">
+										<CardHeader className="pb-2 sm:pb-3">
+											<div className="flex items-center gap-2 sm:gap-4 mb-2 text-xs text-muted-foreground font-mono">
 												<div className="flex items-center gap-1">
 													<Calendar className="w-3 h-3" />
 													{new Date(post.date).toLocaleDateString("en-US", {
@@ -697,24 +714,24 @@ export default function Blog() {
 												</div>
 											</div>
 
-											<CardTitle className="text-lg text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 h-[3rem] leading-tight flex items-start">
+											<CardTitle className="text-base sm:text-lg text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 h-[3rem] leading-tight flex items-start">
 												{post.title}
 											</CardTitle>
 										</CardHeader>
 
-										<CardContent className="flex-1 flex flex-col pt-0 pb-4">
-											<p className="text-muted-foreground font-mono text-sm mb-4 flex-1 leading-relaxed line-clamp-4 h-[5.5rem]">
+										<CardContent className="flex-1 flex flex-col pt-0 pb-3 sm:pb-4">
+											<p className="text-muted-foreground font-mono text-xs sm:text-sm mb-3 sm:mb-4 flex-1 leading-relaxed line-clamp-4 h-[5.5rem]">
 												{post.excerpt}
 											</p>
 
-											<div className="flex flex-wrap gap-1 mb-4 h-[2.5rem] overflow-hidden items-center">
+											<div className="flex flex-wrap gap-1 mb-3 sm:mb-4 h-[2.5rem] overflow-hidden items-center">
 												{post.tags.slice(0, 3).map((tag) => {
 													const isSelected = selectedTags.includes(tag);
 													return (
 														<Badge
 															key={tag}
 															variant={isSelected ? "default" : "outline"}
-															className={`text-xs font-mono cursor-pointer transition-all ${
+															className={`text-xs font-mono cursor-pointer transition-all touch-manipulation ${
 																isSelected
 																	? "bg-primary/20 text-primary border-primary"
 																	: "hover:bg-primary/10"
@@ -745,7 +762,7 @@ export default function Blog() {
 											<Button
 												variant="ghost"
 												size="sm"
-												className="w-full justify-between group-hover:bg-primary/10 mt-auto pt-2"
+												className="w-full justify-between group-hover:bg-primary/10 mt-auto pt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
 											>
 												Read More
 												<ArrowRight className="w-4 h-4" />

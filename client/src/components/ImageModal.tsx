@@ -61,7 +61,7 @@ export default function ImageModal({
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
 					transition={{ duration: 0.3 }}
-					className="fixed inset-0 z-[10000] bg-black/90 backdrop-blur-lg flex items-center justify-center p-4"
+					className="fixed inset-0 z-[10000] bg-black/90 backdrop-blur-lg flex items-center justify-center p-2 sm:p-4"
 					onClick={onClose} // Close on backdrop click
 				>
 					{/* Modal Content Container */}
@@ -70,40 +70,43 @@ export default function ImageModal({
 						animate={{ scale: 1, opacity: 1 }}
 						exit={{ scale: 0.8, opacity: 0 }}
 						transition={{ duration: 0.3, type: "spring", stiffness: 100 }}
-						className="relative bg-background/80 border border-primary/50 rounded-lg shadow-2xl shadow-primary/30 overflow-hidden w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl max-h-[90vh] flex flex-col"
+						className="relative bg-background/80 border border-primary/50 rounded-lg shadow-2xl shadow-primary/30 overflow-hidden w-full max-w-xs sm:max-w-md md:max-w-lg lg:max-w-2xl xl:max-w-4xl max-h-[95vh] sm:max-h-[90vh] flex flex-col"
 						onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside the modal content
 					>
 						{/* Terminal-style Header */}
-						<div className="bg-gradient-to-r from-primary/20 to-secondary/20 border-b border-primary/30 px-4 py-2 flex items-center justify-between">
-							<div className="flex items-center space-x-2">
-								<div className="w-3 h-3 bg-red-500 rounded-full" />
-								<div className="w-3 h-3 bg-yellow-500 rounded-full" />
-								<div className="w-3 h-3 bg-green-500 rounded-full" />
+						<div className="bg-gradient-to-r from-primary/20 to-secondary/20 border-b border-primary/30 px-3 sm:px-4 py-2 flex items-center justify-between flex-shrink-0">
+							<div className="flex items-center space-x-1.5 sm:space-x-2">
+								<div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full" />
+								<div className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full" />
+								<div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full" />
 							</div>
-							<span className="text-xs font-mono text-primary/80 uppercase tracking-wider">
+							<span className="text-xs font-mono text-primary/80 uppercase tracking-wider hidden sm:block">
 								IMAGE_VIEW.SYS
+							</span>
+							<span className="text-xs font-mono text-primary/80 uppercase tracking-wider sm:hidden">
+								IMG.SYS
 							</span>
 							<motion.button
 								onClick={onClose}
-								className="group relative p-1 rounded-sm hover:bg-red-500/20 transition-colors"
+								className="group relative p-1.5 sm:p-1 rounded-sm hover:bg-red-500/20 transition-colors min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0 flex items-center justify-center touch-manipulation"
 								aria-label="Close image viewer"
 								whileHover={{ scale: 1.1 }}
 								whileTap={{ scale: 0.9 }}
 							>
-								<X className="w-5 h-5 text-red-400 group-hover:text-red-300 transition-colors" />
+								<X className="w-4 h-4 sm:w-5 sm:h-5 text-red-400 group-hover:text-red-300 transition-colors" />
 							</motion.button>
 						</div>
 
 						{/* Image Display Area */}
 						<div
-							className={`relative overflow-auto p-4 flex-grow flex items-center justify-center ${
+							className={`relative overflow-auto p-3 sm:p-4 flex-grow flex items-center justify-center ${
 								isZoomed ? "cursor-zoom-out" : "cursor-zoom-in"
 							}`}
 						>
 							<motion.img
 								src={imageUrl}
 								alt={altText}
-								className={`block max-w-full max-h-full object-contain transition-transform duration-300 ease-out ${
+								className={`block max-w-full max-h-full object-contain transition-transform duration-300 ease-out touch-manipulation ${
 									isZoomed ? "scale-150" : "scale-100"
 								}`}
 								onClick={handleImageClick}
@@ -115,7 +118,7 @@ export default function ImageModal({
 
 						{/* Footer with Alt Text */}
 						{altText && altText.trim() !== "" && (
-							<div className="bg-background/50 border-t border-primary/30 px-4 py-2 text-center">
+							<div className="bg-background/50 border-t border-primary/30 px-3 sm:px-4 py-2 text-center flex-shrink-0">
 								<p className="text-xs font-mono text-muted-foreground italic">
 									{altText}
 								</p>
@@ -128,11 +131,12 @@ export default function ImageModal({
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.3, delay: 0.5 }}
-						className="absolute bottom-5 left-1/2 -translate-x-1/2"
+						className="absolute bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2"
 					>
-						<p className="text-xs font-mono text-muted-foreground/70 bg-black/50 px-3 py-1 rounded-full">
+						<p className="text-xs font-mono text-muted-foreground/70 bg-black/50 px-2 sm:px-3 py-1 rounded-full">
 							Press <kbd className="font-sans text-primary/90">ESC</kbd> or
-							click background to close
+							<span className="hidden sm:inline"> click background</span>
+							<span className="sm:hidden"> tap outside</span> to close
 						</p>
 					</motion.div>
 				</motion.div>

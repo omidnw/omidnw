@@ -138,32 +138,34 @@ const formatTime = (timeInSeconds: number): string => {
 function Navigation() {
 	return (
 		<nav
-			className="fixed top-0 left-0 right-0 z-50 p-4"
+			className="fixed top-0 left-0 right-0 z-50 p-2 sm:p-4"
 			role="navigation"
 			aria-label="Main navigation"
 		>
 			<Card variant="cyberpunk" className="mx-auto max-w-4xl">
-				<div className="flex items-center justify-between p-4">
+				<div className="flex items-center justify-between p-2 sm:p-4">
 					{/* Logo */}
 					<Link href="/" aria-label="Go to home page">
 						<motion.div
-							className="flex items-center space-x-2 cursor-pointer"
+							className="flex items-center space-x-1 sm:space-x-2 cursor-pointer"
 							whileHover={{ scale: 1.05 }}
 							whileTap={{ scale: 0.95 }}
 						>
 							<Terminal
-								className="w-8 h-8 text-primary neon-glow"
+								className="w-6 h-6 sm:w-8 sm:h-8 text-primary neon-glow"
 								aria-hidden="true"
 							/>
-							<span className="text-2xl font-heading font-bold neon-glow text-primary">
+							<span className="text-lg sm:text-2xl font-heading font-bold neon-glow text-primary">
 								PortFolio.sh
 							</span>
 						</motion.div>
 					</Link>
 
 					{/* Right side controls */}
-					<div className="flex items-center gap-2">
-						<GlobalMusicPlayer />
+					<div className="flex items-center gap-1 sm:gap-2">
+						<div className="relative">
+							<GlobalMusicPlayer />
+						</div>
 						<HamburgerMenu />
 					</div>
 				</div>
@@ -199,8 +201,12 @@ export default function Layout({ children }: LayoutProps) {
 			<CyberBackground />
 			<Navigation />
 
-			<main id="main-content" className="relative z-10 pt-24 pb-8" role="main">
-				<div className="container mx-auto px-4">
+			<main
+				id="main-content"
+				className="relative z-10 pt-20 sm:pt-24 pb-4 sm:pb-8"
+				role="main"
+			>
+				<div className="container mx-auto px-2 sm:px-4">
 					<PageTransition>{children}</PageTransition>
 				</div>
 			</main>

@@ -206,19 +206,19 @@ function Hero() {
 
 	return (
 		<section
-			className="min-h-screen flex items-center justify-center relative"
+			className="min-h-screen flex items-center justify-center relative px-4"
 			aria-label="Hero section"
 		>
 			<MatrixRain />
 
-			<div className="text-center z-10 max-w-4xl mx-auto px-4">
+			<div className="text-center z-10 max-w-4xl mx-auto">
 				<motion.div
 					initial={{ opacity: 0, y: 50 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
 					<motion.h1
-						className="text-6xl md:text-8xl font-heading font-black mb-6 neon-glow"
+						className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-4 sm:mb-6 neon-glow"
 						animate={{
 							textShadow: [
 								"0 0 20px #ff00ff",
@@ -238,7 +238,7 @@ function Hero() {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1, delay: 0.5 }}
-					className="text-2xl md:text-4xl font-mono mb-8"
+					className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-mono mb-6 sm:mb-8"
 				>
 					<span className="text-foreground">I'M A </span>
 					<GlitchText />
@@ -248,7 +248,7 @@ function Hero() {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1, delay: 1 }}
-					className="text-lg md:text-xl text-muted-foreground mb-12 max-w-2xl mx-auto font-mono"
+					className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto font-mono leading-relaxed px-4"
 				>
 					Welcome to my digital realm. I craft immersive web experiences using
 					cutting-edge technologies in the cyberpunk era.
@@ -258,27 +258,30 @@ function Hero() {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1, delay: 1.5 }}
-					className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+					className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4"
 				>
 					<Button
 						variant="cyberpunk"
 						size="lg"
-						className="w-full sm:w-auto"
+						className="w-full sm:w-auto min-h-[48px] touch-manipulation"
 						onClick={handleDownloadResume}
 						aria-label="Download my resume (coming soon)"
 						disabled={true}
 					>
-						<Download className="w-5 h-5 mr-2" aria-hidden="true" />
+						<Download
+							className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
+							aria-hidden="true"
+						/>
 						Download Resume
 					</Button>
 					<Button
 						variant="neon"
 						size="lg"
-						className="w-full sm:w-auto"
+						className="w-full sm:w-auto min-h-[48px] touch-manipulation"
 						onClick={handleViewProjects}
 						aria-label="View my projects"
 					>
-						<Code className="w-5 h-5 mr-2" aria-hidden="true" />
+						<Code className="w-4 h-4 sm:w-5 sm:h-5 mr-2" aria-hidden="true" />
 						View Projects
 					</Button>
 				</motion.div>
@@ -287,18 +290,18 @@ function Hero() {
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 1, delay: 2 }}
-					className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+					className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2"
 				>
 					<motion.button
 						animate={{ y: [0, 10, 0] }}
 						transition={{ duration: 2, repeat: Infinity }}
-						className="text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md p-2"
+						className="text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md p-2 touch-manipulation"
 						onClick={() =>
 							window.scrollTo({ top: window.innerHeight, behavior: "smooth" })
 						}
 						aria-label="Scroll to next section"
 					>
-						<ChevronDown className="w-8 h-8" aria-hidden="true" />
+						<ChevronDown className="w-6 h-6 sm:w-8 sm:h-8" aria-hidden="true" />
 					</motion.button>
 				</motion.div>
 			</div>
@@ -308,34 +311,34 @@ function Hero() {
 
 function SkillsGrid() {
 	return (
-		<section className="py-20" aria-label="Technical skills">
+		<section className="py-16 sm:py-20 px-4" aria-label="Technical skills">
 			<motion.div
 				initial={{ opacity: 0, y: 50 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
 				viewport={{ once: true }}
-				className="text-center mb-16"
+				className="text-center mb-12 sm:mb-16"
 			>
-				<h2 className="text-4xl md:text-6xl font-heading font-bold mb-4 neon-glow text-primary">
+				<h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 neon-glow text-primary">
 					TECH_STACK
 				</h2>
-				<p className="text-lg text-muted-foreground font-mono">
+				<p className="text-base sm:text-lg text-muted-foreground font-mono">
 					My arsenal of cybernetic enhancements
 				</p>
 			</motion.div>
 
 			{categorizedSkills.map((category) => (
-				<div key={category.categoryName} className="mb-12">
+				<div key={category.categoryName} className="mb-8 sm:mb-12">
 					<motion.h3
 						initial={{ opacity: 0, x: -50 }}
 						whileInView={{ opacity: 1, x: 0 }}
 						transition={{ duration: 0.5 }}
 						viewport={{ once: true }}
-						className="text-3xl md:text-4xl font-heading font-semibold mb-8 text-secondary neon-glow text-center"
+						className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading font-semibold mb-6 sm:mb-8 text-secondary neon-glow text-center"
 					>
 						{category.categoryName.toUpperCase().replace(/ /g, "_")}
 					</motion.h3>
-					<div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 						{category.skills.map((skill, index) => {
 							const Icon = skill.icon;
 							return (
@@ -347,18 +350,18 @@ function SkillsGrid() {
 									viewport={{ once: true }}
 								>
 									<Card variant="hologram" className="h-full">
-										<CardHeader className="text-center">
+										<CardHeader className="text-center p-4 sm:p-6">
 											<Icon
-												className="w-12 h-12 mx-auto mb-4 text-primary neon-glow"
+												className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 mx-auto mb-3 sm:mb-4 text-primary neon-glow"
 												aria-hidden="true"
 											/>
-											<CardTitle className="font-heading text-primary">
+											<CardTitle className="font-heading text-primary text-sm sm:text-base">
 												{skill.name}
 											</CardTitle>
 										</CardHeader>
-										<CardContent>
+										<CardContent className="p-4 sm:p-6 pt-0">
 											<div className="space-y-2">
-												<div className="flex justify-between items-center text-sm font-mono">
+												<div className="flex justify-between items-center text-xs sm:text-sm font-mono">
 													<span>
 														Proficiency:{" "}
 														<span className="text-accent">
@@ -444,7 +447,7 @@ const StatusBar = React.memo(() => {
 	return (
 		<section
 			id="status-bar"
-			className="py-20"
+			className="py-16 sm:py-20 px-4"
 			aria-label="Professional statistics"
 		>
 			<motion.div
@@ -452,17 +455,17 @@ const StatusBar = React.memo(() => {
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
 				viewport={{ once: true }}
-				className="text-center mb-16"
+				className="text-center mb-12 sm:mb-16"
 			>
-				<h2 className="text-4xl md:text-6xl font-heading font-bold mb-4 neon-glow text-primary">
+				<h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold mb-4 neon-glow text-primary">
 					STATUS_BAR
 				</h2>
-				<p className="text-lg text-muted-foreground font-mono">
+				<p className="text-base sm:text-lg text-muted-foreground font-mono">
 					System performance metrics
 				</p>
 			</motion.div>
 
-			<div className="grid grid-cols-2 gap-6 lg:flex lg:justify-center">
+			<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
 				{stats.map((stat, index) => (
 					<motion.div
 						key={stat.label}
@@ -470,9 +473,10 @@ const StatusBar = React.memo(() => {
 						whileInView={{ opacity: 1, scale: 1 }}
 						transition={{ duration: 0.5, delay: index * 0.1 }}
 						viewport={{ once: true }}
+						className="lg:col-span-1"
 					>
-						<Card variant="cyberpunk" className="text-center p-6">
-							<div className="text-4xl md:text-6xl font-heading font-bold text-primary neon-glow mb-2">
+						<Card variant="cyberpunk" className="text-center p-4 sm:p-6 h-full">
+							<div className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-primary neon-glow mb-2">
 								<span
 									aria-label={`${animatedStats[index]}${stat.suffix} ${stat.label}`}
 								>
@@ -480,7 +484,7 @@ const StatusBar = React.memo(() => {
 									{stat.suffix}
 								</span>
 							</div>
-							<div className="text-sm font-mono text-muted-foreground uppercase tracking-wider">
+							<div className="text-xs sm:text-sm font-mono text-muted-foreground uppercase tracking-wider">
 								{stat.label}
 							</div>
 						</Card>

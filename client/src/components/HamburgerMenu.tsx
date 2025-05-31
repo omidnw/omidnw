@@ -100,7 +100,7 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 				variant="ghost"
 				size="icon"
 				onClick={toggleMenu}
-				className={`relative z-[60] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${className}`}
+				className={`relative z-[60] w-8 h-8 sm:w-10 sm:h-10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 touch-manipulation ${className}`}
 				aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
 				aria-expanded={isOpen}
 			>
@@ -109,9 +109,9 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 					transition={{ duration: 0.3 }}
 				>
 					{isOpen ? (
-						<X className="w-6 h-6 text-primary" />
+						<X className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
 					) : (
-						<Menu className="w-6 h-6 text-primary" />
+						<Menu className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
 					)}
 				</motion.div>
 			</Button>
@@ -268,16 +268,16 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 								animate={{ opacity: 1, scale: 1 }}
 								transition={{ duration: 0.3, delay: 0.2 }}
 								onClick={() => setIsOpen(false)}
-								className="absolute top-8 right-8 z-[10001] group"
+								className="absolute top-4 right-4 sm:top-8 sm:right-8 z-[10001] group touch-manipulation"
 								aria-label="Close menu"
 							>
 								<div className="relative">
 									<div className="absolute inset-0 bg-red-500/20 rounded-lg blur group-hover:bg-red-500/40 transition-all duration-300" />
-									<div className="relative bg-background/80 border border-red-500 rounded-lg p-3 group-hover:border-red-400 group-hover:bg-red-500/10 transition-all duration-300">
-										<X className="w-6 h-6 text-red-500 group-hover:text-red-400" />
+									<div className="relative bg-background/80 border border-red-500 rounded-lg p-2 sm:p-3 group-hover:border-red-400 group-hover:bg-red-500/10 transition-all duration-300">
+										<X className="w-5 h-5 sm:w-6 sm:h-6 text-red-500 group-hover:text-red-400" />
 									</div>
 								</div>
-								<span className="absolute -bottom-8 right-0 text-xs font-mono text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
+								<span className="absolute -bottom-6 sm:-bottom-8 right-0 text-xs font-mono text-red-500 opacity-0 group-hover:opacity-100 transition-opacity">
 									ESC
 								</span>
 							</motion.button>
@@ -293,43 +293,46 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 									type: "spring",
 									stiffness: 100,
 								}}
-								className="relative z-[10000] h-full flex items-center justify-center p-8"
+								className="relative z-[10000] h-full flex items-center justify-center p-4 sm:p-8"
 								onClick={(e) => e.stopPropagation()}
 							>
-								<div className="relative w-full max-w-lg mx-auto">
+								<div className="relative w-full max-w-sm sm:max-w-lg mx-auto">
 									{/* Terminal-style container */}
 									<div className="relative bg-background/90 border border-primary/50 rounded-lg backdrop-blur-md overflow-hidden">
 										{/* Terminal header */}
-										<div className="bg-gradient-to-r from-primary/20 to-secondary/20 border-b border-primary/30 px-6 py-3">
+										<div className="bg-gradient-to-r from-primary/20 to-secondary/20 border-b border-primary/30 px-4 sm:px-6 py-2 sm:py-3">
 											<div className="flex items-center justify-between">
 												<div className="flex items-center space-x-2">
-													<div className="w-3 h-3 bg-red-500 rounded-full animate-pulse" />
+													<div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse" />
 													<div
-														className="w-3 h-3 bg-yellow-500 rounded-full animate-pulse"
+														className="w-2 h-2 sm:w-3 sm:h-3 bg-yellow-500 rounded-full animate-pulse"
 														style={{ animationDelay: "0.2s" }}
 													/>
 													<div
-														className="w-3 h-3 bg-green-500 rounded-full animate-pulse"
+														className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-pulse"
 														style={{ animationDelay: "0.4s" }}
 													/>
 												</div>
-												<span className="text-xs font-mono text-primary">
+												<span className="text-xs font-mono text-primary hidden sm:block">
 													NEURAL_INTERFACE_v2.077
+												</span>
+												<span className="text-xs font-mono text-primary sm:hidden">
+													v2.077
 												</span>
 											</div>
 										</div>
 
-										<div className="p-8">
+										<div className="p-4 sm:p-8">
 											{/* Navigation Section */}
 											<motion.div
 												initial={{ opacity: 0, y: 20 }}
 												animate={{ opacity: 1, y: 0 }}
 												transition={{ duration: 0.3, delay: 0.3 }}
-												className="mb-8"
+												className="mb-6 sm:mb-8"
 											>
-												<div className="text-center mb-6">
+												<div className="text-center mb-4 sm:mb-6">
 													<motion.h2
-														className="text-2xl font-heading font-bold text-primary neon-glow mb-2"
+														className="text-lg sm:text-2xl font-heading font-bold text-primary neon-glow mb-2"
 														animate={{
 															textShadow: [
 																"0 0 10px #ff0080",
@@ -366,24 +369,31 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 															>
 																<Link href={item.path}>
 																	<button
-																		className={`w-full flex items-center justify-start px-4 py-3 rounded-md font-mono text-left transition-all duration-300 group ${
+																		className={`w-full flex items-center justify-start px-3 sm:px-4 py-3 sm:py-4 rounded-md font-mono text-left transition-all duration-300 group min-h-[48px] touch-manipulation ${
 																			isActive
 																				? "bg-primary/20 border border-primary text-primary shadow-lg shadow-primary/25"
 																				: "bg-background/50 border border-border hover:border-primary/50 hover:bg-primary/10 text-foreground hover:text-primary"
 																		}`}
 																		aria-current={isActive ? "page" : undefined}
 																	>
-																		<span className="mr-3 text-lg">&gt;</span>
+																		<span className="mr-2 sm:mr-3 text-sm sm:text-lg">
+																			&gt;
+																		</span>
 																		<Icon
-																			className="w-5 h-5 mr-3 group-hover:scale-110 transition-transform"
+																			className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0"
 																			aria-hidden="true"
 																		/>
-																		<span className="flex-1">
+																		<span className="flex-1 text-sm sm:text-base">
 																			{item.name.toUpperCase()}
 																		</span>
 																		{isActive && (
-																			<span className="text-xs opacity-60">
+																			<span className="text-xs opacity-60 hidden sm:inline">
 																				ACTIVE
+																			</span>
+																		)}
+																		{isActive && (
+																			<span className="text-xs opacity-60 sm:hidden">
+																				•
 																			</span>
 																		)}
 																	</button>
@@ -399,17 +409,17 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 												initial={{ opacity: 0, y: 20 }}
 												animate={{ opacity: 1, y: 0 }}
 												transition={{ duration: 0.3, delay: 0.9 }}
-												className="pt-6 border-t border-primary/30"
+												className="pt-4 sm:pt-6 border-t border-primary/30"
 											>
-												<div className="text-center mb-4">
-													<h3 className="text-lg font-heading font-bold text-secondary mb-2">
+												<div className="text-center mb-3 sm:mb-4">
+													<h3 className="text-base sm:text-lg font-heading font-bold text-secondary mb-2">
 														&gt; CONNECT.social()
 													</h3>
 													<div className="h-px bg-gradient-to-r from-transparent via-secondary to-transparent" />
 												</div>
 
 												<div
-													className="flex justify-center space-x-4"
+													className="flex justify-center space-x-3 sm:space-x-4"
 													role="group"
 													aria-label="Social media links"
 												>
@@ -438,12 +448,12 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 																	aria-label={social.ariaLabel}
 																	whileHover={{ scale: 1.2, rotate: 10 }}
 																	whileTap={{ scale: 0.9 }}
-																	className="group relative block"
+																	className="group relative block touch-manipulation"
 																>
 																	<div className="absolute inset-0 bg-secondary/20 rounded-lg blur group-hover:bg-secondary/40 transition-all duration-300" />
-																	<div className="relative bg-background/80 border border-secondary rounded-lg p-3 group-hover:border-secondary/80 group-hover:bg-secondary/10 transition-all duration-300">
+																	<div className="relative bg-background/80 border border-secondary rounded-lg p-2 sm:p-3 group-hover:border-secondary/80 group-hover:bg-secondary/10 transition-all duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center">
 																		<Icon
-																			className="w-5 h-5 text-secondary group-hover:text-secondary/80"
+																			className="w-4 h-4 sm:w-5 sm:h-5 text-secondary group-hover:text-secondary/80"
 																			aria-hidden="true"
 																		/>
 																	</div>
@@ -461,11 +471,11 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 										initial={{ opacity: 0 }}
 										animate={{ opacity: 1 }}
 										transition={{ duration: 0.3, delay: 1.2 }}
-										className="mt-4 text-center"
+										className="mt-3 sm:mt-4 text-center px-2"
 									>
 										<span className="font-mono text-xs text-muted-foreground">
 											Press <span className="text-red-500 font-bold">ESC</span>{" "}
-											or click outside to exit
+											or tap outside to exit
 										</span>
 									</motion.div>
 								</div>

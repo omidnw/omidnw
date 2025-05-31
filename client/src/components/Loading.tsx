@@ -15,13 +15,13 @@ const Loading: React.FC<LoadingProps> = ({
 	variant = "inline",
 }) => {
 	const sizeClasses = {
-		sm: "w-6 h-6",
-		md: "w-8 h-8",
-		lg: "w-12 h-12",
+		sm: "w-5 h-5 sm:w-6 sm:h-6",
+		md: "w-6 h-6 sm:w-8 sm:h-8",
+		lg: "w-8 h-8 sm:w-12 sm:h-12",
 	};
 
 	const containerClasses = {
-		inline: "flex items-center justify-center p-8",
+		inline: "flex items-center justify-center p-6 sm:p-8",
 		fullscreen: "min-h-screen flex items-center justify-center bg-background",
 	};
 
@@ -40,7 +40,7 @@ const Loading: React.FC<LoadingProps> = ({
 			{[0, 1, 2].map((i) => (
 				<motion.div
 					key={i}
-					className="w-2 h-2 bg-primary rounded-full"
+					className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-primary rounded-full"
 					animate={{
 						scale: [1, 1.2, 1],
 						opacity: [0.5, 1, 0.5],
@@ -84,12 +84,15 @@ const Loading: React.FC<LoadingProps> = ({
 	if (variant === "fullscreen") {
 		return (
 			<div className={containerClasses[variant]}>
-				<Card variant="cyberpunk" className="p-8 relative overflow-hidden">
+				<Card
+					variant="cyberpunk"
+					className="p-6 sm:p-8 relative overflow-hidden mx-4"
+				>
 					<MatrixNumbers />
-					<div className="relative z-10 text-center space-y-4">
+					<div className="relative z-10 text-center space-y-3 sm:space-y-4">
 						<LoadingSpinner />
 						<motion.p
-							className="font-mono text-muted-foreground"
+							className="font-mono text-muted-foreground text-sm sm:text-base"
 							animate={{ opacity: [0.5, 1, 0.5] }}
 							transition={{ duration: 2, repeat: Infinity }}
 						>
@@ -108,10 +111,10 @@ const Loading: React.FC<LoadingProps> = ({
 			role="status"
 			aria-label={message}
 		>
-			<div className="text-center space-y-4">
+			<div className="text-center space-y-3 sm:space-y-4">
 				<LoadingSpinner />
 				<motion.p
-					className="font-mono text-muted-foreground text-sm"
+					className="font-mono text-muted-foreground text-xs sm:text-sm"
 					animate={{ opacity: [0.5, 1, 0.5] }}
 					transition={{ duration: 2, repeat: Infinity }}
 				>

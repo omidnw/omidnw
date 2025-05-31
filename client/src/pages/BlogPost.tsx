@@ -18,6 +18,8 @@ import {
 	AlertCircle,
 	Github,
 	Code,
+	Wifi,
+	WifiOff,
 } from "lucide-react";
 import { Link } from "wouter";
 
@@ -162,14 +164,20 @@ export default function BlogPost() {
 
 	if (loading) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
+			<div className="min-h-screen flex items-center justify-center px-4">
 				<div className="text-center">
-					<BookOpen className="w-12 h-12 text-primary mx-auto mb-4 animate-pulse" />
-					<p className="text-muted-foreground font-mono mb-2">
+					<BookOpen className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 text-primary mx-auto mb-4 animate-pulse" />
+					<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
 						{isGitHubConfigured()
 							? "Decrypting neural pathway..."
 							: "Loading blog data from local archive..."}
 					</p>
+					{isGitHubConfigured() && (
+						<div className="flex items-center justify-center text-xs text-muted-foreground">
+							<Wifi className="w-3 h-3 mr-1" />
+							<span>GitHub API Integration Enabled</span>
+						</div>
+					)}
 				</div>
 			</div>
 		);
@@ -177,22 +185,35 @@ export default function BlogPost() {
 
 	if (error) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<Card variant="cyberpunk" className="p-12 text-center max-w-md">
-					<AlertCircle className="w-16 h-16 text-red-400 mx-auto mb-4" />
-					<h1 className="text-2xl font-heading font-bold text-red-400 mb-4">
+			<div className="min-h-screen flex items-center justify-center px-4">
+				<Card
+					variant="cyberpunk"
+					className="p-6 sm:p-8 md:p-12 text-center max-w-md w-full"
+				>
+					<AlertCircle className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-red-400 mx-auto mb-4" />
+					<h1 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-red-400 mb-4">
 						Data Corruption Detected
 					</h1>
-					<p className="text-muted-foreground font-mono mb-6">{error}</p>
+					<p className="text-muted-foreground font-mono mb-6 text-sm sm:text-base">
+						{error}
+					</p>
 					<div className="flex gap-2 justify-center">
-						<Button variant="neon" onClick={refreshPost} disabled={refreshing}>
+						<Button
+							variant="neon"
+							onClick={refreshPost}
+							disabled={refreshing}
+							className="touch-manipulation min-h-[44px]"
+						>
 							<RefreshCw
 								className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
 							/>
 							Re-establish Link
 						</Button>
 						<Link href="/blog">
-							<Button variant="outline">
+							<Button
+								variant="outline"
+								className="touch-manipulation min-h-[44px]"
+							>
 								<ArrowLeft className="w-4 h-4 mr-2" />
 								Back to Blog Matrix
 							</Button>
@@ -205,24 +226,58 @@ export default function BlogPost() {
 
 	if (!post) {
 		return (
-			<div className="min-h-screen flex items-center justify-center">
-				<Card variant="cyberpunk" className="p-12 text-center max-w-md">
-					<BookOpen className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-					<h1 className="text-2xl font-heading font-bold text-primary mb-4">
+			<div className="min-h-screen flex items-center justify-center px-4">
+				<Card
+					variant="cyberpunk"
+					className="p-6 sm:p-8 md:p-12 text-center max-w-md w-full"
+				>
+					<BookOpen className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
+					<h1 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary mb-4">
 						404: Neural Pathway Not Found
 					</h1>
-					<p className="text-muted-foreground font-mono mb-6">
+					<p className="text-muted-foreground font-mono mb-4 text-sm sm:text-base">
 						The requested blog post could not be located in the data matrix.
 					</p>
+
+					{/* Show data source info */}
 					<div className="flex items-center justify-center text-xs text-muted-foreground mb-6 p-3 bg-background/30 rounded-lg">
-						Data source: {dataSource}
+						{isGitHubConfigured() ? (
+							<>
+								<Wifi className="w-3 h-3 mr-1" />
+								Searched GitHub repository
+							</>
+						) : (
+							<>
+								<WifiOff className="w-3 h-3 mr-1" />
+								Using local blog data
+							</>
+						)}
 					</div>
-					<Link href="/blog">
-						<Button variant="neon">
-							<ArrowLeft className="w-4 h-4 mr-2" />
-							Return to Blog Matrix
-						</Button>
-					</Link>
+
+					<div className="flex gap-2 justify-center">
+						{isGitHubConfigured() && (
+							<Button
+								variant="outline"
+								onClick={refreshPost}
+								disabled={refreshing}
+								className="touch-manipulation min-h-[44px]"
+							>
+								<RefreshCw
+									className={`w-4 h-4 mr-2 ${refreshing ? "animate-spin" : ""}`}
+								/>
+								Refresh
+							</Button>
+						)}
+						<Link href="/blog">
+							<Button
+								variant="neon"
+								className="touch-manipulation min-h-[44px]"
+							>
+								<ArrowLeft className="w-4 h-4 mr-2" />
+								Return to Blog Matrix
+							</Button>
+						</Link>
+					</div>
 				</Card>
 			</div>
 		);
@@ -257,44 +312,47 @@ export default function BlogPost() {
 	};
 
 	return (
-		<div className="min-h-screen">
+		<div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 			{/* Back Navigation & Data Source */}
 			<motion.div
 				initial={{ opacity: 0, x: -20 }}
 				animate={{ opacity: 1, x: 0 }}
 				transition={{ duration: 0.6 }}
-				className="mb-8 flex items-center justify-between"
+				className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
 			>
 				<Link href="/blog">
-					<Button variant="ghost" className="group">
+					<Button
+						variant="ghost"
+						className="group touch-manipulation min-h-[44px]"
+					>
 						<ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
 						Back to Neural Blog
 					</Button>
 				</Link>
-				<div className="flex items-center gap-2 text-xs font-mono">
-					{dataSource === "github" && (
-						<Badge
-							variant="outline"
-							className="bg-green-500/10 border-green-500 text-green-400"
-						>
-							<Github className="w-3 h-3 mr-1" /> GitHub
-						</Badge>
-					)}
-					{dataSource === "local" && (
-						<Badge
-							variant="outline"
-							className="bg-blue-500/10 border-blue-500 text-blue-400"
-						>
-							<Code className="w-3 h-3 mr-1" /> Local
-						</Badge>
-					)}
+
+				{/* Data source indicator and refresh button */}
+				<div className="flex items-center gap-2">
+					<div className="flex items-center text-xs text-muted-foreground font-mono">
+						{dataSource === "github" ? (
+							<>
+								<Github className="w-3 h-3 mr-1 text-green-400" />
+								<span className="text-green-400">GitHub</span>
+							</>
+						) : dataSource === "local" ? (
+							<>
+								<Code className="w-3 h-3 mr-1 text-blue-400" />
+								<span className="text-blue-400">Local</span>
+							</>
+						) : null}
+					</div>
+
 					{dataSource === "github" && (
 						<Button
 							variant="ghost"
 							size="sm"
 							onClick={refreshPost}
 							disabled={refreshing}
-							className="text-xs"
+							className="text-xs h-6 sm:h-8 touch-manipulation"
 						>
 							<RefreshCw
 								className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
@@ -310,83 +368,98 @@ export default function BlogPost() {
 				initial={{ opacity: 0, y: 30 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
-				className="mb-12"
+				className="mb-8 sm:mb-12"
 			>
-				<Card variant="hologram" className="p-8 md:p-12">
+				<Card variant="hologram" className="p-6 sm:p-8 md:p-12">
 					{/* Meta Information */}
-					<div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-muted-foreground font-mono">
+					<div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm text-muted-foreground font-mono">
 						<div className="flex items-center gap-1">
-							<Calendar className="w-4 h-4" />
-							{new Date(post.date).toLocaleDateString("en-US", {
-								year: "numeric",
-								month: "long",
-								day: "numeric",
-							})}
+							<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+							<span className="hidden sm:inline">
+								{new Date(post.date).toLocaleDateString("en-US", {
+									year: "numeric",
+									month: "long",
+									day: "numeric",
+								})}
+							</span>
+							<span className="sm:hidden">
+								{new Date(post.date).toLocaleDateString("en-US", {
+									year: "numeric",
+									month: "short",
+									day: "numeric",
+								})}
+							</span>
 						</div>
 						<div className="flex items-center gap-1">
-							<Clock className="w-4 h-4" />
+							<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
 							{post.readTime}
 						</div>
 						<div className="flex items-center gap-1">
-							<User className="w-4 h-4" />
+							<User className="w-3 h-3 sm:w-4 sm:h-4" />
 							{post.author}
 						</div>
 					</div>
 
 					{/* Title */}
-					<h1 className="text-3xl md:text-4xl lg:text-5xl font-heading font-black text-primary neon-glow mb-6">
+					<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-black text-primary neon-glow mb-4 sm:mb-6">
 						{post.title}
 					</h1>
 
 					{/* Excerpt */}
-					<p className="text-lg md:text-xl text-muted-foreground font-mono leading-relaxed mb-8">
+					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono leading-relaxed mb-6 sm:mb-8">
 						{post.excerpt}
 					</p>
 
 					{/* Tags and Actions */}
-					<div className="flex flex-wrap items-center justify-between gap-4">
-						<div className="flex flex-wrap gap-2">
+					<div className="flex flex-col gap-4">
+						<div className="flex flex-wrap gap-1.5 sm:gap-2">
 							{post.tags.map((tag) => (
-								<Badge key={tag} variant="secondary" className="font-mono">
+								<Badge
+									key={tag}
+									variant="secondary"
+									className="font-mono text-xs"
+								>
 									<Tag className="w-3 h-3 mr-1" />
 									{tag}
 								</Badge>
 							))}
 						</div>
 
-						<div className="flex items-center gap-2">
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={handleShare}
-								className="font-mono"
-							>
-								<Share2 className="w-4 h-4 mr-2" />
-								Share
-							</Button>
+						<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+							<div className="flex flex-wrap gap-2">
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handleShare}
+									className="font-mono touch-manipulation min-h-[44px]"
+								>
+									<Share2 className="w-4 h-4 mr-2" />
+									Share
+								</Button>
 
-							<Button
-								variant="outline"
-								size="sm"
-								onClick={handleCopyLink}
-								className={`font-mono transition-all duration-300 ${
-									linkCopied
-										? "bg-green-500/20 border-green-500 text-green-400"
-										: ""
-								}`}
-							>
-								{linkCopied ? (
-									<>
-										<Check className="w-4 h-4 mr-2" />
-										Copied!
-									</>
-								) : (
-									<>
-										<Link2 className="w-4 h-4 mr-2" />
-										Copy Link
-									</>
-								)}
-							</Button>
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={handleCopyLink}
+									className={`font-mono transition-all duration-300 touch-manipulation min-h-[44px] ${
+										linkCopied
+											? "bg-green-500/20 border-green-500 text-green-400"
+											: ""
+									}`}
+								>
+									{linkCopied ? (
+										<>
+											<Check className="w-4 h-4 mr-2" />
+											Copied!
+										</>
+									) : (
+										<>
+											<Link2 className="w-4 h-4 mr-2" />
+											Copy Link
+										</>
+									)}
+								</Button>
+							</div>
 						</div>
 					</div>
 				</Card>
@@ -397,9 +470,9 @@ export default function BlogPost() {
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8, delay: 0.2 }}
-				className="mb-12"
+				className="mb-8 sm:mb-12"
 			>
-				<Card variant="cyberpunk" className="p-8 md:p-12">
+				<Card variant="cyberpunk" className="p-6 sm:p-8 md:p-12">
 					<div
 						className="cyberpunk-markdown max-w-none"
 						dangerouslySetInnerHTML={{
@@ -415,12 +488,28 @@ export default function BlogPost() {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.6, delay: 0.4 }}
 			>
-				<Card variant="cyberpunk" className="p-6 text-center">
-					<p className="text-muted-foreground font-mono mb-4">
+				<Card variant="cyberpunk" className="p-4 sm:p-6 text-center">
+					<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
 						End of neural transmission
 					</p>
+
+					{/* Data source info */}
+					<div className="text-xs text-muted-foreground font-mono mb-4">
+						{dataSource === "github" && (
+							<span className="text-green-400">
+								✓ Loaded from GitHub repository
+							</span>
+						)}
+						{dataSource === "local" && isGitHubConfigured() && (
+							<span className="text-yellow-400">⚠ Fallback to local data</span>
+						)}
+						{dataSource === "local" && !isGitHubConfigured() && (
+							<span className="text-blue-400">ℹ Using local blog data</span>
+						)}
+					</div>
+
 					<Link href="/blog">
-						<Button variant="neon">
+						<Button variant="neon" className="touch-manipulation min-h-[48px]">
 							<ArrowLeft className="w-4 h-4 mr-2" />
 							Explore More Posts
 						</Button>
