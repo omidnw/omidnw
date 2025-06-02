@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
@@ -171,7 +171,7 @@ const interests: readonly InterestItem[] = [
 
 const ProfileCard = React.memo(() => {
 	return (
-		<motion.div
+		<m.div
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.6, delay: 0.4 }}
@@ -236,7 +236,7 @@ const ProfileCard = React.memo(() => {
 					</div>
 				</CardContent>
 			</Card>
-		</motion.div>
+		</m.div>
 	);
 });
 ProfileCard.displayName = "ProfileCard";
@@ -256,14 +256,14 @@ const Timeline = React.memo(() => {
 			className="space-y-4 sm:space-y-6"
 			aria-label="Professional timeline"
 		>
-			<motion.h2
+			<m.h2
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ duration: 0.5, delay: 0.3 }}
 				className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-4 sm:mb-6"
 			>
 				NEURAL_PATHWAY.timeline()
-			</motion.h2>
+			</m.h2>
 
 			<div className="relative">
 				<div
@@ -328,7 +328,7 @@ const TechStack = React.memo(() => {
 			className="space-y-4 sm:space-y-6"
 			aria-label="Technical skills and expertise"
 		>
-			<motion.h2
+			<m.h2
 				initial={{ opacity: 0 }}
 				whileInView={{ opacity: 1 }}
 				transition={{ duration: 0.5 }}
@@ -336,7 +336,7 @@ const TechStack = React.memo(() => {
 				className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-4 sm:mb-6"
 			>
 				TECH_STACK.analyze()
-			</motion.h2>
+			</m.h2>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 				{techStack.map((category, index) => (
@@ -388,7 +388,7 @@ const Interests = React.memo(() => {
 			className="space-y-4 sm:space-y-6"
 			aria-label="Personal interests and hobbies"
 		>
-			<motion.h2
+			<m.h2
 				initial={{ opacity: 0 }}
 				whileInView={{ opacity: 1 }}
 				transition={{ duration: 0.5 }}
@@ -396,7 +396,7 @@ const Interests = React.memo(() => {
 				className="text-xl sm:text-2xl md:text-3xl font-heading font-bold text-primary neon-glow mb-4 sm:mb-6"
 			>
 				PERSONAL_INTERESTS.load()
-			</motion.h2>
+			</m.h2>
 
 			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 				{interests.map((interest, index) => {
@@ -444,45 +444,47 @@ Interests.displayName = "Interests";
 
 export default function About() {
 	return (
-		<div className="min-h-screen">
-			{/* Hero Section */}
-			<header className="text-center py-8 sm:py-12 mb-6 sm:mb-8">
-				<motion.h1
-					initial={{ opacity: 0, y: 20 }}
-					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6 }}
-					className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary"
-				>
-					ABOUT_ME.sh
-				</motion.h1>
-				<motion.p
-					initial={{ opacity: 0 }}
-					animate={{ opacity: 1 }}
-					transition={{ duration: 0.6, delay: 0.2 }}
-					className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4"
-				>
-					Diving deep into the neural pathways of a cybernetic developer
-				</motion.p>
-			</header>
+		<LazyMotion features={domMax}>
+			<div className="min-h-screen">
+				{/* Hero Section */}
+				<header className="text-center py-8 sm:py-12 mb-6 sm:mb-8">
+					<m.h1
+						initial={{ opacity: 0, y: 20 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6 }}
+						className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary"
+					>
+						ABOUT_ME.sh
+					</m.h1>
+					<m.p
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ duration: 0.6, delay: 0.2 }}
+						className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4"
+					>
+						Diving deep into the neural pathways of a cybernetic developer
+					</m.p>
+				</header>
 
-			{/* Main Content */}
-			<div className="space-y-8 sm:space-y-12">
-				{/* Profile and Timeline Section */}
-				<section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-					<div className="lg:col-span-1">
-						<ProfileCard />
-					</div>
-					<div className="lg:col-span-2">
-						<Timeline />
-					</div>
-				</section>
+				{/* Main Content */}
+				<div className="space-y-8 sm:space-y-12">
+					{/* Profile and Timeline Section */}
+					<section className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+						<div className="lg:col-span-1">
+							<ProfileCard />
+						</div>
+						<div className="lg:col-span-2">
+							<Timeline />
+						</div>
+					</section>
 
-				{/* Tech Stack Section */}
-				<TechStack />
+					{/* Tech Stack Section */}
+					<TechStack />
 
-				{/* Interests Section */}
-				<Interests />
+					{/* Interests Section */}
+					<Interests />
+				</div>
 			</div>
-		</div>
+		</LazyMotion>
 	);
 }

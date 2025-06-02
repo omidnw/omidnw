@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import { motion } from "framer-motion";
+import { LazyMotion, m, domMax } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -136,7 +136,7 @@ function GlitchText() {
 	}, []);
 
 	return (
-		<motion.span
+		<m.span
 			key={currentText}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
@@ -145,7 +145,7 @@ function GlitchText() {
 			aria-label={`Current role: ${glitchText[currentText]}`}
 		>
 			{glitchText[currentText]}
-		</motion.span>
+		</m.span>
 	);
 }
 
@@ -172,7 +172,7 @@ const MatrixRain = React.memo(() => {
 			role="presentation"
 		>
 			{rainDrops.map((drop) => (
-				<motion.div
+				<m.div
 					key={drop.id}
 					className="absolute text-primary font-mono text-sm"
 					style={{ left: `${drop.left}%` }}
@@ -186,7 +186,7 @@ const MatrixRain = React.memo(() => {
 					{drop.characters.map((char, j) => (
 						<div key={j}>{char}</div>
 					))}
-				</motion.div>
+				</m.div>
 			))}
 		</div>
 	);
@@ -212,12 +212,12 @@ function Hero() {
 			<MatrixRain />
 
 			<div className="text-center z-10 max-w-4xl mx-auto">
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, y: 50 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
 				>
-					<motion.h1
+					<m.h1
 						className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-black mb-4 sm:mb-6 neon-glow"
 						animate={{
 							textShadow: [
@@ -231,10 +231,10 @@ function Hero() {
 						CYBER
 						<br />
 						<span className="text-secondary">PORTFOLIO</span>
-					</motion.h1>
-				</motion.div>
+					</m.h1>
+				</m.div>
 
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1, delay: 0.5 }}
@@ -242,9 +242,9 @@ function Hero() {
 				>
 					<span className="text-foreground">I'M A </span>
 					<GlitchText />
-				</motion.div>
+				</m.div>
 
-				<motion.p
+				<m.p
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1, delay: 1 }}
@@ -252,9 +252,9 @@ function Hero() {
 				>
 					Welcome to my digital realm. I craft immersive web experiences using
 					cutting-edge technologies in the cyberpunk era.
-				</motion.p>
+				</m.p>
 
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1, delay: 1.5 }}
@@ -284,15 +284,15 @@ function Hero() {
 						<Code className="w-4 h-4 sm:w-5 sm:h-5 mr-2" aria-hidden="true" />
 						View Projects
 					</Button>
-				</motion.div>
+				</m.div>
 
-				<motion.div
+				<m.div
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{ duration: 1, delay: 2 }}
 					className="absolute bottom-4 sm:bottom-8 left-1/2 transform -translate-x-1/2"
 				>
-					<motion.button
+					<m.button
 						animate={{ y: [0, 10, 0] }}
 						transition={{ duration: 2, repeat: Infinity }}
 						className="text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 rounded-md p-2 touch-manipulation"
@@ -302,8 +302,8 @@ function Hero() {
 						aria-label="Scroll to next section"
 					>
 						<ChevronDown className="w-6 h-6 sm:w-8 sm:h-8" aria-hidden="true" />
-					</motion.button>
-				</motion.div>
+					</m.button>
+				</m.div>
 			</div>
 		</section>
 	);
@@ -312,7 +312,7 @@ function Hero() {
 function SkillsGrid() {
 	return (
 		<section className="py-16 sm:py-20 px-4" aria-label="Technical skills">
-			<motion.div
+			<m.div
 				initial={{ opacity: 0, y: 50 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
@@ -325,11 +325,11 @@ function SkillsGrid() {
 				<p className="text-base sm:text-lg text-muted-foreground font-mono">
 					My arsenal of cybernetic enhancements
 				</p>
-			</motion.div>
+			</m.div>
 
 			{categorizedSkills.map((category) => (
 				<div key={category.categoryName} className="mb-8 sm:mb-12">
-					<motion.h3
+					<m.h3
 						initial={{ opacity: 0, x: -50 }}
 						whileInView={{ opacity: 1, x: 0 }}
 						transition={{ duration: 0.5 }}
@@ -337,12 +337,12 @@ function SkillsGrid() {
 						className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-heading font-semibold mb-6 sm:mb-8 text-secondary neon-glow text-center"
 					>
 						{category.categoryName.toUpperCase().replace(/ /g, "_")}
-					</motion.h3>
+					</m.h3>
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
 						{category.skills.map((skill, index) => {
 							const Icon = skill.icon;
 							return (
-								<motion.div
+								<m.div
 									key={skill.name}
 									initial={{ opacity: 0, y: 50 }}
 									whileInView={{ opacity: 1, y: 0 }}
@@ -373,7 +373,7 @@ function SkillsGrid() {
 													</span>
 												</div>
 												<div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-													<motion.div
+													<m.div
 														className="h-full bg-gradient-to-r from-primary to-secondary neon-border"
 														initial={{ width: 0 }}
 														whileInView={{ width: `${skill.level}%` }}
@@ -392,7 +392,7 @@ function SkillsGrid() {
 											</div>
 										</CardContent>
 									</Card>
-								</motion.div>
+								</m.div>
 							);
 						})}
 					</div>
@@ -450,7 +450,7 @@ const StatusBar = React.memo(() => {
 			className="py-16 sm:py-20 px-4"
 			aria-label="Professional statistics"
 		>
-			<motion.div
+			<m.div
 				initial={{ opacity: 0, y: 50 }}
 				whileInView={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
@@ -463,11 +463,11 @@ const StatusBar = React.memo(() => {
 				<p className="text-base sm:text-lg text-muted-foreground font-mono">
 					System performance metrics
 				</p>
-			</motion.div>
+			</m.div>
 
 			<div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 max-w-4xl mx-auto">
 				{stats.map((stat, index) => (
-					<motion.div
+					<m.div
 						key={stat.label}
 						initial={{ opacity: 0, scale: 0.5 }}
 						whileInView={{ opacity: 1, scale: 1 }}
@@ -488,7 +488,7 @@ const StatusBar = React.memo(() => {
 								{stat.label}
 							</div>
 						</Card>
-					</motion.div>
+					</m.div>
 				))}
 			</div>
 		</section>
@@ -498,10 +498,12 @@ StatusBar.displayName = "StatusBar";
 
 export default function Home() {
 	return (
-		<div className="space-y-0">
-			<Hero />
-			<SkillsGrid />
-			<StatusBar />
-		</div>
+		<LazyMotion features={domMax}>
+			<div className="text-foreground selection:bg-accent selection:text-background">
+				<Hero />
+				<SkillsGrid />
+				<StatusBar />
+			</div>
+		</LazyMotion>
 	);
 }

@@ -5,7 +5,7 @@ import React, {
 	useEffect,
 	useCallback,
 } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
 import { Link } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -298,483 +298,492 @@ export default function Blog() {
 	}
 
 	return (
-		<div className="min-h-screen">
-			{/* Hero Section */}
-			<motion.header
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.8 }}
-				className="text-center py-8 sm:py-12 mb-6 sm:mb-8"
-			>
-				<h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
-					NEURAL_BLOG.sh
-				</h1>
-				<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4">
-					Transmissions from the digital frontier - insights, tutorials, and
-					thoughts on cybernetic development
-				</p>
-				{/* Data source indicator */}
-				<div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs font-mono">
-					{dataSource === "github" && (
-						<Badge
-							variant="outline"
-							className="bg-green-500/10 border-green-500 text-green-400"
-						>
-							<GitBranch className="w-3 h-3 mr-1" /> GitHub
-						</Badge>
-					)}
-					{dataSource === "local" && (
-						<Badge
-							variant="outline"
-							className="bg-blue-500/10 border-blue-500 text-blue-400"
-						>
-							<Database className="w-3 h-3 mr-1" /> Local
-						</Badge>
-					)}
-					{dataSource === "github" && (
-						<Button
-							variant="ghost"
-							size="sm"
-							onClick={refreshPosts}
-							disabled={refreshing}
-							className="text-xs h-6 sm:h-8 touch-manipulation"
-						>
-							<RefreshCw
-								className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
-							/>
-							Refresh
-						</Button>
-					)}
-				</div>
-			</motion.header>
-
-			{/* Enhanced Search and Filter Section */}
-			<motion.section
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6, delay: 0.2 }}
-				className="mb-8 sm:mb-12 relative z-30" // Ensure filter section is above content
-			>
-				<Card variant="cyberpunk" className="p-4 sm:p-6">
-					<div className="space-y-3 sm:space-y-4">
-						{/* Main Search Input */}
-						<div className="relative">
-							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-							<Input
-								type="text"
-								placeholder="Search neural pathways... (title, content, author, tags)"
-								value={searchTerm}
-								onChange={(e) => setSearchTerm(e.target.value)}
-								className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono h-10 sm:h-12 text-sm sm:text-base"
-							/>
-						</div>
-
-						{/* Tag Search and Filter */}
-						<div className="flex flex-col md:flex-row gap-3 sm:gap-4 relative z-20">
-							{/* Tag Search Input */}
-							<div className="relative flex-1" ref={tagInputRef}>
-								<Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-								<Input
-									type="text"
-									placeholder="Search and filter by tags..."
-									value={tagSearch}
-									onChange={(e) => {
-										setTagSearch(e.target.value);
-										setShowTagSuggestions(true);
-									}}
-									onFocus={() => setShowTagSuggestions(true)}
-									onKeyDown={handleKeyDown}
-									className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono h-10 sm:h-12 text-sm sm:text-base"
-								/>
-
-								{/* Tag Suggestions Dropdown */}
-								<AnimatePresence>
-									{showTagSuggestions && filteredTagSuggestions.length > 0 && (
-										<motion.div
-											initial={{ opacity: 0, y: -10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: -10 }}
-											transition={{ duration: 0.2 }}
-											className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-sm border border-primary/50 rounded-lg shadow-2xl max-h-60 overflow-hidden z-50"
-											style={{
-												boxShadow:
-													"0 0 20px rgba(255, 0, 128, 0.3), 0 0 40px rgba(0, 255, 255, 0.2)",
-											}}
-										>
-											<div className="p-2">
-												<div className="text-xs font-mono text-muted-foreground px-3 py-2 border-b border-primary/20">
-													{selectedTags.length > 0
-														? `${selectedTags.length} tag${
-																selectedTags.length !== 1 ? "s" : ""
-														  } selected`
-														: "Select tags to filter"}
-												</div>
-												<div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50">
-													{filteredTagSuggestions.map((tag) => {
-														const isSelected = selectedTags.includes(tag);
-														return (
-															<button
-																key={tag}
-																onClick={() => handleTagSelect(tag)}
-																disabled={isSelected}
-																className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] ${
-																	isSelected
-																		? "bg-primary/20 text-primary cursor-default border-l-2 border-primary"
-																		: "hover:bg-primary/10 text-foreground hover:border-l-2 hover:border-secondary"
-																}`}
-															>
-																<div className="flex items-center">
-																	<Hash className="w-3 h-3 mr-2" />
-																	{tag}
-																</div>
-																{isSelected ? (
-																	<div className="flex items-center text-xs">
-																		<Check className="w-3 h-3 mr-1" />
-																		Selected
-																	</div>
-																) : (
-																	<Plus className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-																)}
-															</button>
-														);
-													})}
-												</div>
-											</div>
-										</motion.div>
-									)}
-								</AnimatePresence>
-							</div>
-							{/* Clear Filters Button */}
-							{(searchTerm || selectedTags.length > 0) && (
-								<Button
-									variant="outline"
-									size="sm"
-									onClick={handleClearFilters}
-									className="font-mono whitespace-nowrap md:mt-0 mt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
-								>
-									<X className="w-4 h-4 mr-2" />
-									Clear All
-								</Button>
-							)}
-						</div>
-
-						{/* Selected Tags Display */}
-						{selectedTags.length > 0 && (
-							<motion.div
-								initial={{ opacity: 0, height: 0 }}
-								animate={{ opacity: 1, height: "auto" }}
-								exit={{ opacity: 0, height: 0 }}
-								className="space-y-2 pt-3 sm:pt-4"
-							>
-								<div className="flex items-center gap-2">
-									<span className="text-sm font-mono text-muted-foreground flex items-center">
-										<Filter className="w-4 h-4 mr-2" />
-										Active filters ({selectedTags.length}):
-									</span>
-								</div>
-								<div className="flex flex-wrap gap-2">
-									{selectedTags.map((tag, index) => (
-										<motion.div
-											key={tag}
-											initial={{ opacity: 0, scale: 0.8 }}
-											animate={{ opacity: 1, scale: 1 }}
-											exit={{ opacity: 0, scale: 0.8 }}
-											transition={{ duration: 0.2, delay: index * 0.05 }}
-										>
-											<Badge
-												variant="secondary"
-												className="font-mono cursor-pointer hover:bg-destructive/20 transition-colors group relative touch-manipulation min-h-[32px] flex items-center"
-												onClick={() => handleTagRemove(tag)}
-											>
-												<Hash className="w-3 h-3 mr-1" />
-												{tag}
-												<X className="w-3 h-3 ml-1 opacity-60 group-hover:opacity-100" />
-											</Badge>
-										</motion.div>
-									))}
-								</div>
-							</motion.div>
-						)}
-
-						{/* Search Results Summary */}
-						<div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm font-mono text-muted-foreground pt-3 sm:pt-4 gap-2">
-							<span>
-								{filteredPosts.length} post
-								{filteredPosts.length !== 1 ? "s" : ""}
-								{posts.length > 0 && searchTerm && !filteredPosts.length
-									? ""
-									: searchTerm || selectedTags.length > 0
-									? " found"
-									: " available"}
-								{selectedTags.length > 1 && (
-									<span className="block sm:inline text-xs mt-1 sm:mt-0 sm:ml-2 text-primary">
-										(matching all {selectedTags.length} tags)
-									</span>
-								)}
-							</span>
-							<span className="text-xs">
-								{allTags.length} tag{allTags.length !== 1 ? "s" : ""} available
-							</span>
-						</div>
-					</div>
-				</Card>
-			</motion.section>
-
-			{/* Featured Post */}
-			{featuredPost && !selectedTags.length && !searchTerm && (
-				<motion.section
+		<LazyMotion features={domMax}>
+			<div className="min-h-screen">
+				{/* Hero Section */}
+				<m.header
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6, delay: 0.4 }}
-					className="mb-8 sm:mb-12"
+					transition={{ duration: 0.8 }}
+					className="text-center py-8 sm:py-12 mb-6 sm:mb-8"
 				>
-					<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
-						<BookOpen className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-						FEATURED_POST.highlight()
-					</h2>
-
-					<Link href={`/blog/${featuredPost.id}`}>
-						<Card
-							variant="hologram"
-							className="overflow-hidden group cursor-pointer touch-manipulation"
-						>
-							<div className="md:flex">
-								<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-6 sm:p-8 flex items-center justify-center">
-									<div className="text-center">
-										<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 sm:mb-4 neon-glow" />
-										<Badge variant="outline" className="neon-border">
-											FEATURED
-										</Badge>
-									</div>
-								</div>
-								<div className="md:w-2/3 p-6 sm:p-8">
-									<div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm text-muted-foreground font-mono">
-										<div className="flex items-center gap-1">
-											<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-											{new Date(featuredPost.date).toLocaleDateString("en-US", {
-												year: "numeric",
-												month: "short",
-												day: "numeric",
-											})}
-										</div>
-										<div className="flex items-center gap-1">
-											<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-											{featuredPost.readTime}
-										</div>
-									</div>
-
-									<h3 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all">
-										{featuredPost.title}
-									</h3>
-
-									<p className="text-muted-foreground font-mono mb-4 leading-relaxed line-clamp-3 text-sm sm:text-base">
-										{featuredPost.excerpt}
-									</p>
-
-									<div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
-										{featuredPost.tags.slice(0, 4).map((tag) => (
-											<Badge
-												key={tag}
-												variant="secondary"
-												className="text-xs font-mono cursor-pointer hover:bg-secondary/20 touch-manipulation"
-												onClick={(e) => {
-													e.preventDefault();
-													handleTagSelect(tag);
-												}}
-											>
-												<Hash className="w-3 h-3 mr-1" />
-												{tag}
-											</Badge>
-										))}
-										{featuredPost.tags.length > 4 && (
-											<Badge variant="outline" className="text-xs font-mono">
-												+{featuredPost.tags.length - 4}
-											</Badge>
-										)}
-									</div>
-
-									<Button
-										variant="neon"
-										className="group-hover:scale-105 transition-transform h-10 sm:h-12 touch-manipulation min-h-[44px]"
-									>
-										Read Full Post
-										<ArrowRight className="w-4 h-4 ml-2" />
-									</Button>
-								</div>
-							</div>
-						</Card>
-					</Link>
-				</motion.section>
-			)}
-
-			{/* Blog Posts Grid */}
-			<motion.section
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{
-					duration: 0.6,
-					delay:
-						featuredPost && !selectedTags.length && !searchTerm ? 0.6 : 0.4,
-				}}
-			>
-				<div className="flex items-center justify-between mb-4 sm:mb-6">
-					<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary flex items-center">
-						<Tag className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-						{selectedTags.length > 0 || searchTerm
-							? "FILTERED_RESULTS.scan()"
-							: "ALL_POSTS.scan()"}
-					</h2>
-				</div>
-
-				{filteredPosts.length === 0 &&
-				(searchTerm || selectedTags.length > 0) ? (
-					<Card variant="cyberpunk" className="p-8 sm:p-12 text-center">
-						<div className="text-muted-foreground">
-							<Search className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 opacity-50" />
-							<h3 className="text-lg sm:text-xl font-heading mb-2">
-								No posts found
-							</h3>
-							<p className="font-mono mb-4 text-sm sm:text-base">
-								No posts match your current search criteria.
-								{selectedTags.length > 1 && (
-									<span className="block text-xs sm:text-sm mt-2 text-primary">
-										Posts must contain ALL selected tags.
-									</span>
-								)}
-							</p>
-							<Button
+					<h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
+						NEURAL_BLOG.sh
+					</h1>
+					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4">
+						Transmissions from the digital frontier - insights, tutorials, and
+						thoughts on cybernetic development
+					</p>
+					{/* Data source indicator */}
+					<div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs font-mono">
+						{dataSource === "github" && (
+							<Badge
 								variant="outline"
-								onClick={handleClearFilters}
-								className="touch-manipulation min-h-[44px]"
+								className="bg-green-500/10 border-green-500 text-green-400"
 							>
-								<X className="w-4 h-4 mr-2" />
-								Clear Filters
+								<GitBranch className="w-3 h-3 mr-1" /> GitHub
+							</Badge>
+						)}
+						{dataSource === "local" && (
+							<Badge
+								variant="outline"
+								className="bg-blue-500/10 border-blue-500 text-blue-400"
+							>
+								<Database className="w-3 h-3 mr-1" /> Local
+							</Badge>
+						)}
+						{dataSource === "github" && (
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={refreshPosts}
+								disabled={refreshing}
+								className="text-xs h-6 sm:h-8 touch-manipulation"
+							>
+								<RefreshCw
+									className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
+								/>
+								Refresh
 							</Button>
-						</div>
-					</Card>
-				) : posts.length === 0 && !loading ? (
-					<Card variant="cyberpunk" className="p-8 sm:p-12 text-center">
-						<div className="text-muted-foreground">
-							<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 opacity-50" />
-							<h3 className="text-lg sm:text-xl font-heading mb-2">
-								No Blog Posts Yet
-							</h3>
-							<p className="font-mono mb-4 text-sm sm:text-base">
-								{dataSource === "github"
-									? "No blog posts found in the GitHub repository."
-									: "No local blog posts found. Add some MDX files to your blogs folder."}
-							</p>
-							{dataSource === "github" && (
-								<Button
-									variant="outline"
-									onClick={refreshPosts}
-									disabled={refreshing}
-									className="touch-manipulation min-h-[44px]"
-								>
-									<RefreshCw
-										className={`w-4 h-4 mr-2 ${
-											refreshing ? "animate-spin" : ""
-										}`}
+						)}
+					</div>
+				</m.header>
+
+				{/* Enhanced Search and Filter Section */}
+				<m.section
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.2 }}
+					className="mb-8 sm:mb-12 relative z-30" // Ensure filter section is above content
+				>
+					<Card variant="cyberpunk" className="p-4 sm:p-6">
+						<div className="space-y-3 sm:space-y-4">
+							{/* Main Search Input */}
+							<div className="relative">
+								<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+								<Input
+									type="text"
+									placeholder="Search neural pathways... (title, content, author, tags)"
+									value={searchTerm}
+									onChange={(e) => setSearchTerm(e.target.value)}
+									className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono h-10 sm:h-12 text-sm sm:text-base"
+								/>
+							</div>
+
+							{/* Tag Search and Filter */}
+							<div className="flex flex-col md:flex-row gap-3 sm:gap-4 relative z-20">
+								{/* Tag Search Input */}
+								<div className="relative flex-1" ref={tagInputRef}>
+									<Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+									<Input
+										type="text"
+										placeholder="Search and filter by tags..."
+										value={tagSearch}
+										onChange={(e) => {
+											setTagSearch(e.target.value);
+											setShowTagSuggestions(true);
+										}}
+										onFocus={() => setShowTagSuggestions(true)}
+										onKeyDown={handleKeyDown}
+										className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono h-10 sm:h-12 text-sm sm:text-base"
 									/>
-									Refresh from GitHub
-								</Button>
+
+									{/* Tag Suggestions Dropdown */}
+									<AnimatePresence>
+										{showTagSuggestions &&
+											filteredTagSuggestions.length > 0 && (
+												<m.div
+													initial={{ opacity: 0, y: -10 }}
+													animate={{ opacity: 1, y: 0 }}
+													exit={{ opacity: 0, y: -10 }}
+													transition={{ duration: 0.2 }}
+													className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-sm border border-primary/50 rounded-lg shadow-2xl max-h-60 overflow-hidden z-50"
+													style={{
+														boxShadow:
+															"0 0 20px rgba(255, 0, 128, 0.3), 0 0 40px rgba(0, 255, 255, 0.2)",
+													}}
+												>
+													<div className="p-2">
+														<div className="text-xs font-mono text-muted-foreground px-3 py-2 border-b border-primary/20">
+															{selectedTags.length > 0
+																? `${selectedTags.length} tag${
+																		selectedTags.length !== 1 ? "s" : ""
+																  } selected`
+																: "Select tags to filter"}
+														</div>
+														<div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50">
+															{filteredTagSuggestions.map((tag) => {
+																const isSelected = selectedTags.includes(tag);
+																return (
+																	<button
+																		key={tag}
+																		onClick={() => handleTagSelect(tag)}
+																		disabled={isSelected}
+																		className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] ${
+																			isSelected
+																				? "bg-primary/20 text-primary cursor-default border-l-2 border-primary"
+																				: "hover:bg-primary/10 text-foreground hover:border-l-2 hover:border-secondary"
+																		}`}
+																	>
+																		<div className="flex items-center">
+																			<Hash className="w-3 h-3 mr-2" />
+																			{tag}
+																		</div>
+																		{isSelected ? (
+																			<div className="flex items-center text-xs">
+																				<Check className="w-3 h-3 mr-1" />
+																				Selected
+																			</div>
+																		) : (
+																			<Plus className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+																		)}
+																	</button>
+																);
+															})}
+														</div>
+													</div>
+												</m.div>
+											)}
+									</AnimatePresence>
+								</div>
+								{/* Clear Filters Button */}
+								{(searchTerm || selectedTags.length > 0) && (
+									<Button
+										variant="outline"
+										size="sm"
+										onClick={handleClearFilters}
+										className="font-mono whitespace-nowrap md:mt-0 mt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
+									>
+										<X className="w-4 h-4 mr-2" />
+										Clear All
+									</Button>
+								)}
+							</div>
+
+							{/* Selected Tags Display */}
+							{selectedTags.length > 0 && (
+								<m.div
+									initial={{ opacity: 0, height: 0 }}
+									animate={{ opacity: 1, height: "auto" }}
+									exit={{ opacity: 0, height: 0 }}
+									className="space-y-2 pt-3 sm:pt-4"
+								>
+									<div className="flex items-center gap-2">
+										<span className="text-sm font-mono text-muted-foreground flex items-center">
+											<Filter className="w-4 h-4 mr-2" />
+											Active filters ({selectedTags.length}):
+										</span>
+									</div>
+									<div className="flex flex-wrap gap-2">
+										{selectedTags.map((tag, index) => (
+											<m.div
+												key={tag}
+												initial={{ opacity: 0, scale: 0.8 }}
+												animate={{ opacity: 1, scale: 1 }}
+												exit={{ opacity: 0, scale: 0.8 }}
+												transition={{ duration: 0.2, delay: index * 0.05 }}
+											>
+												<Badge
+													variant="secondary"
+													className="font-mono cursor-pointer hover:bg-destructive/20 transition-colors group relative touch-manipulation min-h-[32px] flex items-center"
+													onClick={() => handleTagRemove(tag)}
+												>
+													<Hash className="w-3 h-3 mr-1" />
+													{tag}
+													<X className="w-3 h-3 ml-1 opacity-60 group-hover:opacity-100" />
+												</Badge>
+											</m.div>
+										))}
+									</div>
+								</m.div>
 							)}
+
+							{/* Search Results Summary */}
+							<div className="flex flex-col sm:flex-row sm:items-center justify-between text-sm font-mono text-muted-foreground pt-3 sm:pt-4 gap-2">
+								<span>
+									{filteredPosts.length} post
+									{filteredPosts.length !== 1 ? "s" : ""}
+									{posts.length > 0 && searchTerm && !filteredPosts.length
+										? ""
+										: searchTerm || selectedTags.length > 0
+										? " found"
+										: " available"}
+									{selectedTags.length > 1 && (
+										<span className="block sm:inline text-xs mt-1 sm:mt-0 sm:ml-2 text-primary">
+											(matching all {selectedTags.length} tags)
+										</span>
+									)}
+								</span>
+								<span className="text-xs">
+									{allTags.length} tag{allTags.length !== 1 ? "s" : ""}{" "}
+									available
+								</span>
+							</div>
 						</div>
 					</Card>
-				) : (
-					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-						{(searchTerm || selectedTags.length > 0
-							? filteredPosts
-							: regularPosts
-						).map((post, index) => (
-							<motion.div
-								key={post.id}
-								initial={{ opacity: 0, y: 30 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
+				</m.section>
+
+				{/* Featured Post */}
+				{featuredPost && !selectedTags.length && !searchTerm && (
+					<m.section
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, delay: 0.4 }}
+						className="mb-8 sm:mb-12"
+					>
+						<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
+							<BookOpen className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+							FEATURED_POST.highlight()
+						</h2>
+
+						<Link href={`/blog/${featuredPost.id}`}>
+							<Card
+								variant="hologram"
+								className="overflow-hidden group cursor-pointer touch-manipulation"
 							>
-								<Link href={`/blog/${post.id}`}>
-									<Card
-										variant="cyberpunk"
-										className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform touch-manipulation"
-									>
-										<CardHeader className="pb-2 sm:pb-3">
-											<div className="flex items-center gap-2 sm:gap-4 mb-2 text-xs text-muted-foreground font-mono">
-												<div className="flex items-center gap-1">
-													<Calendar className="w-3 h-3" />
-													{new Date(post.date).toLocaleDateString("en-US", {
+								<div className="md:flex">
+									<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-6 sm:p-8 flex items-center justify-center">
+										<div className="text-center">
+											<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 sm:mb-4 neon-glow" />
+											<Badge variant="outline" className="neon-border">
+												FEATURED
+											</Badge>
+										</div>
+									</div>
+									<div className="md:w-2/3 p-6 sm:p-8">
+										<div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm text-muted-foreground font-mono">
+											<div className="flex items-center gap-1">
+												<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+												{new Date(featuredPost.date).toLocaleDateString(
+													"en-US",
+													{
 														year: "numeric",
 														month: "short",
 														day: "numeric",
-													})}
-												</div>
-												<div className="flex items-center gap-1">
-													<Clock className="w-3 h-3" />
-													{post.readTime}
-												</div>
-											</div>
-
-											<CardTitle className="text-base sm:text-lg text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 h-[3rem] leading-tight flex items-start">
-												{post.title}
-											</CardTitle>
-										</CardHeader>
-
-										<CardContent className="flex-1 flex flex-col pt-0 pb-3 sm:pb-4">
-											<p className="text-muted-foreground font-mono text-xs sm:text-sm mb-3 sm:mb-4 flex-1 leading-relaxed line-clamp-4 h-[5.5rem]">
-												{post.excerpt}
-											</p>
-
-											<div className="flex flex-wrap gap-1 mb-3 sm:mb-4 h-[2.5rem] overflow-hidden items-center">
-												{post.tags.slice(0, 3).map((tag) => {
-													const isSelected = selectedTags.includes(tag);
-													return (
-														<Badge
-															key={tag}
-															variant={isSelected ? "default" : "outline"}
-															className={`text-xs font-mono cursor-pointer transition-all touch-manipulation ${
-																isSelected
-																	? "bg-primary/20 text-primary border-primary"
-																	: "hover:bg-primary/10"
-															}`}
-															onClick={(e) => {
-																e.preventDefault();
-																if (!isSelected) {
-																	handleTagSelect(tag);
-																}
-															}}
-														>
-															<Hash className="w-3 h-3 mr-1" />
-															{tag}
-															{isSelected && <Check className="w-3 h-3 ml-1" />}
-														</Badge>
-													);
-												})}
-												{post.tags.length > 3 && (
-													<Badge
-														variant="outline"
-														className="text-xs font-mono"
-													>
-														+{post.tags.length - 3}
-													</Badge>
+													}
 												)}
 											</div>
+											<div className="flex items-center gap-1">
+												<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+												{featuredPost.readTime}
+											</div>
+										</div>
 
-											<Button
-												variant="ghost"
-												size="sm"
-												className="w-full justify-between group-hover:bg-primary/10 mt-auto pt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
-											>
-												Read More
-												<ArrowRight className="w-4 h-4" />
-											</Button>
-										</CardContent>
-									</Card>
-								</Link>
-							</motion.div>
-						))}
-					</div>
+										<h3 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all">
+											{featuredPost.title}
+										</h3>
+
+										<p className="text-muted-foreground font-mono mb-4 leading-relaxed line-clamp-3 text-sm sm:text-base">
+											{featuredPost.excerpt}
+										</p>
+
+										<div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
+											{featuredPost.tags.slice(0, 4).map((tag) => (
+												<Badge
+													key={tag}
+													variant="secondary"
+													className="text-xs font-mono cursor-pointer hover:bg-secondary/20 touch-manipulation"
+													onClick={(e) => {
+														e.preventDefault();
+														handleTagSelect(tag);
+													}}
+												>
+													<Hash className="w-3 h-3 mr-1" />
+													{tag}
+												</Badge>
+											))}
+											{featuredPost.tags.length > 4 && (
+												<Badge variant="outline" className="text-xs font-mono">
+													+{featuredPost.tags.length - 4}
+												</Badge>
+											)}
+										</div>
+
+										<Button
+											variant="neon"
+											className="group-hover:scale-105 transition-transform h-10 sm:h-12 touch-manipulation min-h-[44px]"
+										>
+											Read Full Post
+											<ArrowRight className="w-4 h-4 ml-2" />
+										</Button>
+									</div>
+								</div>
+							</Card>
+						</Link>
+					</m.section>
 				)}
-			</motion.section>
-		</div>
+
+				{/* Blog Posts Grid */}
+				<m.section
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{
+						duration: 0.6,
+						delay:
+							featuredPost && !selectedTags.length && !searchTerm ? 0.6 : 0.4,
+					}}
+				>
+					<div className="flex items-center justify-between mb-4 sm:mb-6">
+						<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary flex items-center">
+							<Tag className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+							{selectedTags.length > 0 || searchTerm
+								? "FILTERED_RESULTS.scan()"
+								: "ALL_POSTS.scan()"}
+						</h2>
+					</div>
+
+					{filteredPosts.length === 0 &&
+					(searchTerm || selectedTags.length > 0) ? (
+						<Card variant="cyberpunk" className="p-8 sm:p-12 text-center">
+							<div className="text-muted-foreground">
+								<Search className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 opacity-50" />
+								<h3 className="text-lg sm:text-xl font-heading mb-2">
+									No posts found
+								</h3>
+								<p className="font-mono mb-4 text-sm sm:text-base">
+									No posts match your current search criteria.
+									{selectedTags.length > 1 && (
+										<span className="block text-xs sm:text-sm mt-2 text-primary">
+											Posts must contain ALL selected tags.
+										</span>
+									)}
+								</p>
+								<Button
+									variant="outline"
+									onClick={handleClearFilters}
+									className="touch-manipulation min-h-[44px]"
+								>
+									<X className="w-4 h-4 mr-2" />
+									Clear Filters
+								</Button>
+							</div>
+						</Card>
+					) : posts.length === 0 && !loading ? (
+						<Card variant="cyberpunk" className="p-8 sm:p-12 text-center">
+							<div className="text-muted-foreground">
+								<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 opacity-50" />
+								<h3 className="text-lg sm:text-xl font-heading mb-2">
+									No Blog Posts Yet
+								</h3>
+								<p className="font-mono mb-4 text-sm sm:text-base">
+									{dataSource === "github"
+										? "No blog posts found in the GitHub repository."
+										: "No local blog posts found. Add some MDX files to your blogs folder."}
+								</p>
+								{dataSource === "github" && (
+									<Button
+										variant="outline"
+										onClick={refreshPosts}
+										disabled={refreshing}
+										className="touch-manipulation min-h-[44px]"
+									>
+										<RefreshCw
+											className={`w-4 h-4 mr-2 ${
+												refreshing ? "animate-spin" : ""
+											}`}
+										/>
+										Refresh from GitHub
+									</Button>
+								)}
+							</div>
+						</Card>
+					) : (
+						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+							{(searchTerm || selectedTags.length > 0
+								? filteredPosts
+								: regularPosts
+							).map((post, index) => (
+								<m.div
+									key={post.id}
+									initial={{ opacity: 0, y: 30 }}
+									animate={{ opacity: 1, y: 0 }}
+									transition={{ duration: 0.5, delay: 0.1 + index * 0.1 }}
+								>
+									<Link href={`/blog/${post.id}`}>
+										<Card
+											variant="cyberpunk"
+											className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform touch-manipulation"
+										>
+											<CardHeader className="pb-2 sm:pb-3">
+												<div className="flex items-center gap-2 sm:gap-4 mb-2 text-xs text-muted-foreground font-mono">
+													<div className="flex items-center gap-1">
+														<Calendar className="w-3 h-3" />
+														{new Date(post.date).toLocaleDateString("en-US", {
+															year: "numeric",
+															month: "short",
+															day: "numeric",
+														})}
+													</div>
+													<div className="flex items-center gap-1">
+														<Clock className="w-3 h-3" />
+														{post.readTime}
+													</div>
+												</div>
+
+												<CardTitle className="text-base sm:text-lg text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 h-[3rem] leading-tight flex items-start">
+													{post.title}
+												</CardTitle>
+											</CardHeader>
+
+											<CardContent className="flex-1 flex flex-col pt-0 pb-3 sm:pb-4">
+												<p className="text-muted-foreground font-mono text-xs sm:text-sm mb-3 sm:mb-4 flex-1 leading-relaxed line-clamp-4 h-[5.5rem]">
+													{post.excerpt}
+												</p>
+
+												<div className="flex flex-wrap gap-1 mb-3 sm:mb-4 h-[2.5rem] overflow-hidden items-center">
+													{post.tags.slice(0, 3).map((tag) => {
+														const isSelected = selectedTags.includes(tag);
+														return (
+															<Badge
+																key={tag}
+																variant={isSelected ? "default" : "outline"}
+																className={`text-xs font-mono cursor-pointer transition-all touch-manipulation ${
+																	isSelected
+																		? "bg-primary/20 text-primary border-primary"
+																		: "hover:bg-primary/10"
+																}`}
+																onClick={(e) => {
+																	e.preventDefault();
+																	if (!isSelected) {
+																		handleTagSelect(tag);
+																	}
+																}}
+															>
+																<Hash className="w-3 h-3 mr-1" />
+																{tag}
+																{isSelected && (
+																	<Check className="w-3 h-3 ml-1" />
+																)}
+															</Badge>
+														);
+													})}
+													{post.tags.length > 3 && (
+														<Badge
+															variant="outline"
+															className="text-xs font-mono"
+														>
+															+{post.tags.length - 3}
+														</Badge>
+													)}
+												</div>
+
+												<Button
+													variant="ghost"
+													size="sm"
+													className="w-full justify-between group-hover:bg-primary/10 mt-auto pt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
+												>
+													Read More
+													<ArrowRight className="w-4 h-4" />
+												</Button>
+											</CardContent>
+										</Card>
+									</Link>
+								</m.div>
+							))}
+						</div>
+					)}
+				</m.section>
+			</div>
+		</LazyMotion>
 	);
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRoute } from "wouter";
-import { motion, AnimatePresence } from "framer-motion";
+import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -448,10 +448,10 @@ export default function ProjectPost() {
 	};
 
 	return (
-		<>
+		<LazyMotion features={domMax}>
 			<div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 				{/* Back Navigation */}
-				<motion.div
+				<m.div
 					initial={{ opacity: 0, x: -20 }}
 					animate={{ opacity: 1, x: 0 }}
 					transition={{ duration: 0.6 }}
@@ -498,10 +498,10 @@ export default function ProjectPost() {
 							</Button>
 						)}
 					</div>
-				</motion.div>
+				</m.div>
 
 				{/* Project Header */}
-				<motion.header
+				<m.header
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
@@ -653,11 +653,11 @@ export default function ProjectPost() {
 								))}
 						</div>
 					</Card>
-				</motion.header>
+				</m.header>
 
 				{/* Project Images */}
 				{project.image && (
-					<motion.section
+					<m.section
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.2 }}
@@ -668,7 +668,7 @@ export default function ProjectPost() {
 							PROJECT_PREVIEW.display()
 						</h2>
 
-						<motion.div
+						<m.div
 							initial={{ opacity: 0, scale: 0.9 }}
 							animate={{ opacity: 1, scale: 1 }}
 							transition={{ duration: 0.5, delay: 0.1 }}
@@ -702,13 +702,13 @@ export default function ProjectPost() {
 									</div>
 								</div>
 							</Card>
-						</motion.div>
-					</motion.section>
+						</m.div>
+					</m.section>
 				)}
 
 				{/* Project Content - MAIN CONTENT SECTION */}
 				{processedContent && (
-					<motion.article
+					<m.article
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.4 }}
@@ -726,12 +726,12 @@ export default function ProjectPost() {
 								}}
 							/>
 						</Card>
-					</motion.article>
+					</m.article>
 				)}
 
 				{/* Project Details Fallback */}
 				{!processedContent && (
-					<motion.section
+					<m.section
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.8, delay: 0.4 }}
@@ -757,11 +757,11 @@ export default function ProjectPost() {
 								)}
 							</div>
 						</Card>
-					</motion.section>
+					</m.section>
 				)}
 
 				{/* Navigation Footer */}
-				<motion.footer
+				<m.footer
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.6, delay: 0.6 }}
@@ -812,7 +812,7 @@ export default function ProjectPost() {
 							</Link>
 						</div>
 					</Card>
-				</motion.footer>
+				</m.footer>
 			</div>
 
 			{/* Image Modal */}
@@ -826,6 +826,6 @@ export default function ProjectPost() {
 					/>
 				)}
 			</AnimatePresence>
-		</>
+		</LazyMotion>
 	);
 }

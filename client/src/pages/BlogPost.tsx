@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useRoute } from "wouter";
-import { motion } from "framer-motion";
+import { LazyMotion, m, domMax } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -312,65 +312,37 @@ export default function BlogPost() {
 	};
 
 	return (
-		<div className="min-h-screen px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-			{/* Back Navigation & Data Source */}
-			<motion.div
-				initial={{ opacity: 0, x: -20 }}
-				animate={{ opacity: 1, x: 0 }}
-				transition={{ duration: 0.6 }}
-				className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
-			>
-				<Link href="/blog">
-					<Button
-						variant="ghost"
-						className="group touch-manipulation min-h-[44px]"
-					>
-						<ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-						Back to Neural Blog
-					</Button>
-				</Link>
-
-				{/* Data source indicator and refresh button */}
-				<div className="flex items-center gap-2">
-					<div className="flex items-center text-xs text-muted-foreground font-mono">
-						{dataSource === "github" ? (
-							<>
-								<Github className="w-3 h-3 mr-1 text-green-400" />
-								<span className="text-green-400">GitHub</span>
-							</>
-						) : dataSource === "local" ? (
-							<>
-								<Code className="w-3 h-3 mr-1 text-blue-400" />
-								<span className="text-blue-400">Local</span>
-							</>
-						) : null}
-					</div>
-
-					{dataSource === "github" && (
+		<LazyMotion features={domMax}>
+			<div className="max-w-4xl mx-auto px-4 py-8 font-sans">
+				{/* Back to Blog Button */}
+				<m.div
+					initial={{ opacity: 0, x: -20 }}
+					animate={{ opacity: 1, x: 0 }}
+					transition={{ duration: 0.5, delay: 0.1 }}
+					className="mb-6 sm:mb-8"
+				>
+					<Link href="/blog">
 						<Button
 							variant="ghost"
-							size="sm"
-							onClick={refreshPost}
-							disabled={refreshing}
-							className="text-xs h-6 sm:h-8 touch-manipulation"
+							className="group touch-manipulation min-h-[44px]"
 						>
-							<RefreshCw
-								className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
-							/>
-							Refresh
+							<ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+							Back to Neural Blog
 						</Button>
-					)}
-				</div>
-			</motion.div>
+					</Link>
+				</m.div>
 
-			{/* Article Header */}
-			<motion.header
-				initial={{ opacity: 0, y: 30 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.8 }}
-				className="mb-8 sm:mb-12"
-			>
-				<Card variant="hologram" className="p-6 sm:p-8 md:p-12">
+				{/* Post Header */}
+				<m.header
+					initial={{ opacity: 0, y: -30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.7, delay: 0.2 }}
+					className="mb-6 sm:mb-8 border-b-2 border-primary/30 pb-6 sm:pb-8"
+				>
+					<h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-black mb-3 sm:mb-4 text-primary neon-glow-subtle">
+						{post.title}
+					</h1>
+
 					{/* Meta Information */}
 					<div className="flex flex-wrap items-center gap-2 sm:gap-4 mb-4 sm:mb-6 text-xs sm:text-sm text-muted-foreground font-mono">
 						<div className="flex items-center gap-1">
@@ -399,16 +371,6 @@ export default function BlogPost() {
 							{post.author}
 						</div>
 					</div>
-
-					{/* Title */}
-					<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-heading font-black text-primary neon-glow mb-4 sm:mb-6">
-						{post.title}
-					</h1>
-
-					{/* Excerpt */}
-					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono leading-relaxed mb-6 sm:mb-8">
-						{post.excerpt}
-					</p>
 
 					{/* Tags and Actions */}
 					<div className="flex flex-col gap-4">
@@ -462,60 +424,108 @@ export default function BlogPost() {
 							</div>
 						</div>
 					</div>
-				</Card>
-			</motion.header>
 
-			{/* Article Content */}
-			<motion.article
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.8, delay: 0.2 }}
-				className="mb-8 sm:mb-12"
-			>
-				<Card variant="cyberpunk" className="p-6 sm:p-8 md:p-12">
-					<div
-						className="cyberpunk-markdown max-w-none"
-						dangerouslySetInnerHTML={{
-							__html: processedContent,
-						}}
-					/>
-				</Card>
-			</motion.article>
+					{/* Data source indicator and refresh button */}
+					<div className="flex items-center gap-2">
+						<div className="flex items-center text-xs text-muted-foreground font-mono">
+							{dataSource === "github" ? (
+								<>
+									<Github className="w-3 h-3 mr-1 text-green-400" />
+									<span className="text-green-400">GitHub</span>
+								</>
+							) : dataSource === "local" ? (
+								<>
+									<Code className="w-3 h-3 mr-1 text-blue-400" />
+									<span className="text-blue-400">Local</span>
+								</>
+							) : null}
+						</div>
 
-			{/* Navigation Footer */}
-			<motion.footer
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.6, delay: 0.4 }}
-			>
-				<Card variant="cyberpunk" className="p-4 sm:p-6 text-center">
-					<p className="text-muted-foreground font-mono mb-2 text-sm sm:text-base">
-						End of neural transmission
-					</p>
-
-					{/* Data source info */}
-					<div className="text-xs text-muted-foreground font-mono mb-4">
 						{dataSource === "github" && (
-							<span className="text-green-400">
-								✓ Loaded from GitHub repository
-							</span>
-						)}
-						{dataSource === "local" && isGitHubConfigured() && (
-							<span className="text-yellow-400">⚠ Fallback to local data</span>
-						)}
-						{dataSource === "local" && !isGitHubConfigured() && (
-							<span className="text-blue-400">ℹ Using local blog data</span>
+							<Button
+								variant="ghost"
+								size="sm"
+								onClick={refreshPost}
+								disabled={refreshing}
+								className="text-xs h-6 sm:h-8 touch-manipulation"
+							>
+								<RefreshCw
+									className={`w-3 h-3 mr-1 ${refreshing ? "animate-spin" : ""}`}
+								/>
+								Refresh
+							</Button>
 						)}
 					</div>
+				</m.header>
 
-					<Link href="/blog">
-						<Button variant="neon" className="touch-manipulation min-h-[48px]">
-							<ArrowLeft className="w-4 h-4 mr-2" />
-							Explore More Posts
-						</Button>
-					</Link>
-				</Card>
-			</motion.footer>
-		</div>
+				{/* Post Content */}
+				<m.article
+					initial={{ opacity: 0 }}
+					animate={{ opacity: 1 }}
+					transition={{ duration: 0.8, delay: 0.5 }}
+					className="prose prose-cyberpunk dark:prose-invert max-w-none 
+                           prose-headings:font-heading prose-headings:tracking-tight 
+                           prose-p:font-mono prose-li:font-mono prose-code:font-mono 
+                           prose-a:text-secondary hover:prose-a:neon-glow-secondary-subtle
+                           prose-code:bg-background/50 prose-code:p-1 prose-code:rounded-sm prose-code:text-xs
+                           prose-blockquote:border-primary/50 prose-blockquote:text-muted-foreground
+                           prose-strong:text-primary prose-strong:font-bold
+                           prose-hr:border-primary/20
+                           mb-8 sm:mb-12"
+					dangerouslySetInnerHTML={{ __html: processedContent }}
+				/>
+
+				{/* Post Footer - Tags & Share */}
+				<m.footer
+					initial={{ opacity: 0, y: 30 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.6, delay: 0.7 }}
+					className="border-t-2 border-primary/30 pt-6 sm:pt-8"
+				>
+					<div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+						{/* Tags */}
+						<div className="flex flex-wrap gap-2">
+							{post.tags.map((tag) => (
+								<Badge
+									key={tag}
+									variant="secondary"
+									className="font-mono text-xs"
+								>
+									<Tag className="w-3 h-3 mr-1" />
+									{tag}
+								</Badge>
+							))}
+						</div>
+
+						{/* Data source info */}
+						<div className="text-xs text-muted-foreground font-mono mb-4">
+							{dataSource === "github" && (
+								<span className="text-green-400">
+									✓ Loaded from GitHub repository
+								</span>
+							)}
+							{dataSource === "local" && isGitHubConfigured() && (
+								<span className="text-yellow-400">
+									⚠ Fallback to local data
+								</span>
+							)}
+							{dataSource === "local" && !isGitHubConfigured() && (
+								<span className="text-blue-400">ℹ Using local blog data</span>
+							)}
+						</div>
+
+						<Link href="/blog">
+							<Button
+								variant="neon"
+								className="touch-manipulation min-h-[48px]"
+							>
+								<ArrowLeft className="w-4 h-4 mr-2" />
+								Explore More Posts
+							</Button>
+						</Link>
+					</div>
+				</m.footer>
+			</div>
+		</LazyMotion>
 	);
 }
