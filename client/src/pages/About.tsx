@@ -121,7 +121,7 @@ const techStack = [
 		skills: [
 			"Jest (Middle)",
 			"Remix (Junior)",
-			"Playwright (Junior)",
+			"Playwright (Expert)",
 			"Selenium (Middle)",
 		],
 		level: 70, // Estimated average
