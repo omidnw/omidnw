@@ -28,12 +28,19 @@ export interface TerminalCommands {
 	pwd: string;
 	read: string;
 	systemctl: string;
+	neofetch: string;
 	whoami: string;
 	status: string;
 	clear: string;
+	history: string;
+	"clear-history": string;
+	shutdown: string;
 	exit: string;
 	quit: string;
 	reload: string;
+	ps: string;
+	top: string;
+	man: string;
 }
 
 export interface TimeInfo {

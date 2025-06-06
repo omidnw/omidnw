@@ -1,5 +1,5 @@
 /**
- * Initial terminal history with welcome message
+ * Initial terminal history with simple welcome message
  */
 export const INITIAL_HISTORY: string[] = [
 	"╔═══════════════════════════════════════════════════════════════╗",
@@ -7,25 +7,10 @@ export const INITIAL_HISTORY: string[] = [
 	"║  Cyberpunk Portfolio System - OMID REZA KESHTKAR             ║",
 	"╠═══════════════════════════════════════════════════════════════╣",
 	"║                                                               ║",
-	"║  ▶ SYSTEM INITIALIZATION.......... [COMPLETE]                ║",
-	"║  ▶ NEURAL LINK ESTABLISHED......... [ONLINE]                 ║",
-	"║  ▶ QUANTUM ENCRYPTION.............. [ACTIVE]                 ║",
-	"║  ▶ FIREWALL PROTOCOLS.............. [SECURED]                ║",
-	"║  ▶ CYBERPUNK INTERFACE............. [LOADED]                 ║",
-	"║                                                               ║",
 	"║  Welcome to the neural matrix terminal interface.            ║",
 	"║  All systems operational. Ready for command input.           ║",
 	"║                                                               ║",
-	"║  ┌─────────────────────────────────────────────────────────┐ ║",
-	"║  │  QUICK START GUIDE                                      │ ║",
-	"║  ├─────────────────────────────────────────────────────────┤ ║",
-	"║  │  help           → View all available commands          │ ║",
-	"║  │  ls             → List directory contents              │ ║",
-	"║  │  cd blog/       → Navigate to blog directory           │ ║",
-	"║  │  cd projects/   → Navigate to projects directory       │ ║",
-	"║  │  read <file>    → View blog posts or projects          │ ║",
-	"║  │  status         → Check system status                  │ ║",
-	"║  └─────────────────────────────────────────────────────────┘ ║",
+	"║  Type 'help' for commands or 'neofetch' for system info.     ║",
 	"║                                                               ║",
 	"╚═══════════════════════════════════════════════════════════════╝",
 	"",

@@ -202,6 +202,131 @@ export const getTabCompletions = (
 		return [];
 	}
 
+	// Handle man command completion
+	if (command === "man") {
+		const manPages = [
+			"ls",
+			"cd",
+			"ps",
+			"top",
+			"man",
+			"systemctl",
+			"neofetch",
+			"shutdown",
+		];
+
+		if (parts.length === 2) {
+			return manPages
+				.filter((page) =>
+					page.toLowerCase().startsWith(partialArg.toLowerCase())
+				)
+				.map((page) => `man ${page}`);
+		}
+
+		return [];
+	}
+
+	// Handle ps command completion
+	if (command === "ps") {
+		const psOptions = [
+			"-a",
+			"-e",
+			"-A",
+			"-f",
+			"-l",
+			"-u",
+			"-x",
+			"--help",
+			"--version",
+			"--forest",
+			"--no-headers",
+		];
+
+		if (parts.length === 2) {
+			return psOptions
+				.filter((option) =>
+					option.toLowerCase().startsWith(partialArg.toLowerCase())
+				)
+				.map((option) => `ps ${option}`);
+		}
+
+		return [];
+	}
+
+	// Handle top command completion
+	if (command === "top") {
+		const topOptions = [
+			"-h",
+			"--help",
+			"-v",
+			"--version",
+			"-n",
+			"-d",
+			"-p",
+			"-u",
+		];
+
+		if (parts.length === 2) {
+			return topOptions
+				.filter((option) =>
+					option.toLowerCase().startsWith(partialArg.toLowerCase())
+				)
+				.map((option) => `top ${option}`);
+		}
+
+		return [];
+	}
+
+	// Handle shutdown command completion
+	if (command === "shutdown") {
+		const shutdownOptions = [
+			"-r",
+			"--reboot",
+			"-H",
+			"--halt",
+			"-P",
+			"--poweroff",
+			"-c",
+			"-k",
+			"-h",
+			"--help",
+			"now",
+			"+1",
+			"+5",
+			"+10",
+			"+15",
+			"+30",
+			"+60",
+		];
+
+		if (parts.length === 2) {
+			return shutdownOptions
+				.filter((option) =>
+					option.toLowerCase().startsWith(partialArg.toLowerCase())
+				)
+				.map((option) => `shutdown ${option}`);
+		}
+
+		// If first arg is an option that takes a time, complete with time formats
+		if (parts.length === 3) {
+			const firstArg = parts[1];
+			if (
+				["-r", "--reboot", "-H", "--halt", "-P", "--poweroff"].includes(
+					firstArg
+				)
+			) {
+				const timeOptions = ["now", "+5", "+10", "+15", "+30", "+60"];
+				return timeOptions
+					.filter((time) =>
+						time.toLowerCase().startsWith(partialArg.toLowerCase())
+					)
+					.map((time) => `shutdown ${firstArg} ${time}`);
+			}
+		}
+
+		return [];
+	}
+
 	// Determine the target directory content and prefix based on the command
 	if (command === "cd" || command === "read" || command === "ls") {
 		const resolvedInputPath = resolveTerminalPath(

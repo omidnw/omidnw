@@ -1,7 +1,7 @@
 import { TerminalState } from "@/components/CyberpunkTerminal/types";
 
-// Mock services data
-const services = {
+// Default services data
+const defaultServices = {
 	"neural-matrix": {
 		name: "neural-matrix.service",
 		description: "Neural Matrix Interface Service",
@@ -45,6 +45,41 @@ const services = {
 		pid: 1341,
 	},
 };
+
+// LocalStorage keys
+const SERVICES_STATE_KEY = "cyberpunk-terminal-services-state";
+
+// Helper functions for localStorage
+const saveServicesToLocalStorage = (services: typeof defaultServices) => {
+	try {
+		localStorage.setItem(SERVICES_STATE_KEY, JSON.stringify(services));
+		console.log("💾 Services state saved to localStorage:", services);
+	} catch (error) {
+		console.warn("Failed to save services to localStorage:", error);
+	}
+};
+
+const loadServicesFromLocalStorage = (): typeof defaultServices => {
+	try {
+		const savedServices = localStorage.getItem(SERVICES_STATE_KEY);
+		if (savedServices) {
+			const parsedServices = JSON.parse(savedServices);
+			console.log(
+				"📂 Services state loaded from localStorage:",
+				parsedServices
+			);
+			return parsedServices;
+		}
+	} catch (error) {
+		console.warn("Failed to load services from localStorage:", error);
+	}
+
+	console.log("🔄 Using default services state");
+	return { ...defaultServices };
+};
+
+// Load services from localStorage or use defaults
+let services = loadServicesFromLocalStorage();
 
 // Global rescue mode state
 let isRescueMode = false;
@@ -105,6 +140,15 @@ export const isSystemInRescueMode = (): boolean => {
  */
 export const forceRescueMode = (mode: boolean): void => {
 	isRescueMode = mode;
+};
+
+/**
+ * Reset services to default state (for debugging)
+ */
+export const resetServicesToDefault = (): void => {
+	services = { ...defaultServices };
+	saveServicesToLocalStorage(services);
+	console.log("🔄 Services reset to default state");
 };
 
 /**
@@ -207,6 +251,9 @@ Available services: ${Object.keys(services).join(", ")}`;
 		new Date().toISOString().replace("T", " ").split(".")[0] + " UTC";
 	service.pid = Math.floor(Math.random() * 9000) + 1000;
 
+	// Save to localStorage
+	saveServicesToLocalStorage(services);
+
 	// Special handling for NetworkManager recovery
 	if (serviceName === "NetworkManager" && isRescueMode) {
 		isRescueMode = false;
@@ -257,6 +304,9 @@ Available services: ${Object.keys(services).join(", ")}`;
 	service.since =
 		new Date().toISOString().replace("T", " ").split(".")[0] + " UTC";
 	service.pid = null;
+
+	// Save to localStorage
+	saveServicesToLocalStorage(services);
 
 	// Special handling for NetworkManager
 	if (serviceName === "NetworkManager") {

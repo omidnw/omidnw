@@ -4,6 +4,9 @@ import {
 } from "@/components/CyberpunkTerminal/types";
 import { getCurrentDirectory } from "@/components/CyberpunkTerminal/utils";
 
+// Store previous directory for cd - command
+let previousDirectory: string[] = [];
+
 /**
  * Resolve a path string against a current path
  */
@@ -27,66 +30,169 @@ export const resolveTerminalPath = (
 };
 
 /**
+ * Display cd command help
+ */
+const displayCdHelp = (): string => {
+	return `cd: cd [-L|-P] [dir]
+    Change the current directory to DIR.  The default DIR is the value of the
+    HOME variable.
+    
+    The variable CDPATH defines the search path for the directory containing
+    DIR.  Alternative directory names in CDPATH are separated by a colon (:).
+    A null directory name is the same as the current directory.  If DIR begins
+    with a slash (/), then CDPATH is not used.
+    
+    If the directory is not found, and the shell option 'cdable_vars' is set,
+    the word is assumed to be a variable name.  If that variable has a value,
+    its value is used for DIR.
+    
+    Options:
+        -L      force symbolic links to be followed
+        -P      use the physical directory structure without following symbolic
+                links
+    
+    The default is to follow symbolic links, as if '-L' were specified.
+    
+    Exit Status:
+    Returns 0 if the directory is changed; non-zero otherwise.
+    
+    Examples:
+        cd                 # change to home directory
+        cd ~               # change to home directory
+        cd /               # change to root directory
+        cd ..              # change to parent directory
+        cd -               # change to previous directory
+        cd /projects       # change to projects directory
+        cd ../blog         # change to blog directory relative to current`;
+};
+
+/**
  * Handle cd command navigation
  */
 export const handleCdCommand = (
-	path: string,
+	args: string[],
 	navigate: (path: string) => void,
 	terminalState: TerminalState,
 	setTerminalState: (state: TerminalState) => void,
-	fileSystem: Record<string, FileSystemNode> // Pass fileSystem here
+	fileSystem: Record<string, FileSystemNode>
 ): string => {
-	if (!path.trim()) {
-		// cd with no argument goes to root
+	// Parse arguments
+	let followSymlinks = true; // -L is default
+	let targetPath = "";
+
+	for (let i = 0; i < args.length; i++) {
+		const arg = args[i];
+
+		if (arg === "-h" || arg === "--help") {
+			return displayCdHelp();
+		} else if (arg === "-L") {
+			followSymlinks = true;
+		} else if (arg === "-P") {
+			followSymlinks = false;
+		} else if (arg.startsWith("-")) {
+			return `cd: ${arg}: invalid option\ncd: usage: cd [-L|-P] [dir]`;
+		} else {
+			// First non-option argument is the target path
+			targetPath = arg;
+			break;
+		}
+	}
+
+	// Store current directory as previous before changing
+	previousDirectory = [...(terminalState.currentPath || [])];
+
+	// Handle cd with no argument (go to home/root)
+	if (!targetPath) {
 		setTerminalState({
 			...terminalState,
 			currentPath: [],
 		});
 		navigate("/");
-		return "Changed to root directory";
+		return "";
 	}
 
 	// Handle cd ~ (home directory = root)
-	if (path.trim() === "~") {
+	if (targetPath === "~") {
 		setTerminalState({
 			...terminalState,
 			currentPath: [],
 		});
 		navigate("/");
-		return "Changed to home directory (/)";
+		return "";
+	}
+
+	// Handle cd - (previous directory)
+	if (targetPath === "-") {
+		if (
+			previousDirectory.length === 0 &&
+			terminalState.currentPath?.length === 0
+		) {
+			return "cd: OLDPWD not set";
+		}
+
+		const oldPath = [...previousDirectory];
+		const currentPath = [...(terminalState.currentPath || [])];
+
+		// Set the previous directory to current before changing
+		previousDirectory = currentPath;
+
+		setTerminalState({
+			...terminalState,
+			currentPath: oldPath,
+		});
+
+		const urlPath = oldPath.length === 0 ? "/" : "/" + oldPath.join("/");
+		navigate(urlPath);
+
+		// Print the directory we changed to (like real cd -)
+		const dirPath = oldPath.length === 0 ? "/" : "/" + oldPath.join("/");
+		return dirPath;
+	}
+
+	// Handle cd ~username (for now, just treat as invalid since we don't have users)
+	if (targetPath.startsWith("~") && targetPath.length > 1) {
+		const username = targetPath.substring(1);
+		return `cd: ${username}: No such user`;
 	}
 
 	// Handle special navigation paths that navigate the actual website
 	if (
-		path.startsWith("/") &&
-		!path.includes("blog") &&
-		!path.includes("projects")
+		targetPath.startsWith("/") &&
+		!targetPath.includes("blog") &&
+		!targetPath.includes("projects")
 	) {
-		switch (path) {
+		switch (targetPath) {
 			case "/":
 			case "/home":
+				setTerminalState({
+					...terminalState,
+					currentPath: [],
+				});
 				navigate("/");
-				return "Navigating to Home...";
+				return "";
 			case "/about":
 				navigate("/about");
-				return "Navigating to About...";
+				return "";
 			case "/projects":
 				navigate("/projects");
-				return "Navigating to Projects...";
+				return "";
 			case "/blog":
 				navigate("/blog");
-				return "Navigating to Blog...";
+				return "";
 			case "/contact":
 				navigate("/contact");
-				return "Navigating to Contact...";
+				return "";
 			case "/terminal":
 				navigate("/terminal");
-				return "Opening Terminal Interface...";
+				return "";
 		}
 	}
 
 	// Handle file system navigation
-	const newPath = resolveTerminalPath(terminalState.currentPath || [], path);
+	const newPath = resolveTerminalPath(
+		terminalState.currentPath || [],
+		targetPath
+	);
 
 	// Handle root directory case
 	if (newPath.length === 0) {
@@ -95,7 +201,7 @@ export const handleCdCommand = (
 			currentPath: [],
 		});
 		navigate("/");
-		return "Changed directory to /";
+		return "";
 	}
 
 	// Check if the path exists in file system
@@ -111,21 +217,12 @@ export const handleCdCommand = (
 
 	// If trying to cd into a file, show error
 	if (currentNode && currentNode.type === "file") {
-		if (currentNode.content === "blog") {
-			return `cd: ${newPath[newPath.length - 1]}: Not a directory\nUse 'read ${
-				newPath[newPath.length - 1]
-			}' to view this blog post.`;
-		} else if (currentNode.content === "project") {
-			return `cd: ${newPath[newPath.length - 1]}: Not a directory\nUse 'read ${
-				newPath[newPath.length - 1]
-			}' to view this project.`;
-		}
-		return `cd: ${newPath[newPath.length - 1]}: Not a directory`;
+		return `cd: ${targetPath}: Not a directory`;
 	}
 
 	// If path doesn't exist
 	if (!currentNode) {
-		return `cd: ${path}: No such file or directory`;
+		return `cd: ${targetPath}: No such file or directory`;
 	}
 
 	// Update terminal state
@@ -138,5 +235,5 @@ export const handleCdCommand = (
 	const urlPath = "/" + newPath.join("/");
 	navigate(urlPath);
 
-	return `Changed directory to ${getCurrentDirectory(newPath)}`;
+	return "";
 };

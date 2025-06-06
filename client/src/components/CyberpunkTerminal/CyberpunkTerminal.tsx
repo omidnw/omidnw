@@ -23,11 +23,16 @@ export default function CyberpunkTerminal({
 }: CyberpunkTerminalProps) {
 	const [location, navigate] = useLocation();
 	const [input, setInput] = useState("");
-	const [history, setHistory] = useState<string[]>(INITIAL_HISTORY.slice());
+	const [history, setHistory] = useState<string[]>([]);
 	const [historyIndex, setHistoryIndex] = useState(-1);
 	const [commandHistory, setCommandHistory] = useState<string[]>([]);
 	const [isMac] = useState(detectMacOS);
 	const [isInitialized, setIsInitialized] = useState(false);
+
+	// LocalStorage keys
+	const TERMINAL_HISTORY_KEY = "cyberpunk-terminal-history";
+	const COMMAND_HISTORY_KEY = "cyberpunk-terminal-command-history";
+	const INITIAL_SHOWN_KEY = "cyberpunk-terminal-initial-shown";
 
 	// Terminal state for file system navigation
 	const [terminalState, setTerminalState] = useState<TerminalState>({
@@ -54,6 +59,21 @@ export default function CyberpunkTerminal({
 						...prev,
 						fileSystem,
 					}));
+
+					// Load history from localStorage
+					const savedHistory = loadHistoryFromLocalStorage();
+					const savedCommandHistory = loadCommandHistoryFromLocalStorage();
+
+					// Show initial history only if it hasn't been shown before
+					if (!hasShownInitialHistory() && savedHistory.length === 0) {
+						setHistory(INITIAL_HISTORY.slice());
+						saveHistoryToLocalStorage(INITIAL_HISTORY.slice());
+						markInitialHistoryShown();
+					} else {
+						setHistory(savedHistory);
+					}
+
+					setCommandHistory(savedCommandHistory);
 					setIsInitialized(true);
 				} catch (error) {
 					console.error("Failed to initialize file system:", error);
@@ -109,8 +129,65 @@ export default function CyberpunkTerminal({
 		return () => document.removeEventListener("keydown", handleKeyPress);
 	}, [isMac, navigate, isOpen, onClose]);
 
+	// LocalStorage helper functions
+	const saveHistoryToLocalStorage = (historyData: string[]) => {
+		try {
+			localStorage.setItem(TERMINAL_HISTORY_KEY, JSON.stringify(historyData));
+		} catch (error) {
+			console.warn("Failed to save history to localStorage:", error);
+		}
+	};
+
+	const loadHistoryFromLocalStorage = (): string[] => {
+		try {
+			const saved = localStorage.getItem(TERMINAL_HISTORY_KEY);
+			return saved ? JSON.parse(saved) : [];
+		} catch (error) {
+			console.warn("Failed to load history from localStorage:", error);
+			return [];
+		}
+	};
+
+	const saveCommandHistoryToLocalStorage = (cmdHistory: string[]) => {
+		try {
+			localStorage.setItem(COMMAND_HISTORY_KEY, JSON.stringify(cmdHistory));
+		} catch (error) {
+			console.warn("Failed to save command history to localStorage:", error);
+		}
+	};
+
+	const loadCommandHistoryFromLocalStorage = (): string[] => {
+		try {
+			const saved = localStorage.getItem(COMMAND_HISTORY_KEY);
+			return saved ? JSON.parse(saved) : [];
+		} catch (error) {
+			console.warn("Failed to load command history from localStorage:", error);
+			return [];
+		}
+	};
+
+	const hasShownInitialHistory = (): boolean => {
+		try {
+			return localStorage.getItem(INITIAL_SHOWN_KEY) === "true";
+		} catch (error) {
+			return false;
+		}
+	};
+
+	const markInitialHistoryShown = () => {
+		try {
+			localStorage.setItem(INITIAL_SHOWN_KEY, "true");
+		} catch (error) {
+			console.warn("Failed to mark initial history as shown:", error);
+		}
+	};
+
 	const addToHistory = (content: string) => {
-		setHistory((prev) => [...prev, content]);
+		setHistory((prev) => {
+			const newHistory = [...prev, content];
+			saveHistoryToLocalStorage(newHistory);
+			return newHistory;
+		});
 	};
 
 	const findCommonPrefix = (strings: string[]): string => {
@@ -141,8 +218,21 @@ export default function CyberpunkTerminal({
 		console.log("🎯 Tab completions result:", completions);
 
 		if (completions.length === 1) {
-			// If only one completion, fill the input directly
-			setInput(completions[0]);
+			// Handle different completion types more smartly
+			const completion = completions[0];
+
+			// For ./ and ../ commands, only complete the missing part
+			if (trimmedInput.startsWith("./") || trimmedInput.startsWith("../")) {
+				setInput(completion);
+			}
+			// For command completions (no space in input)
+			else if (!trimmedInput.includes(" ")) {
+				setInput(completion + " ");
+			}
+			// For file/path completions within commands
+			else {
+				setInput(completion);
+			}
 		} else if (completions.length > 1) {
 			// If multiple completions, show them in history
 			addToHistory(
@@ -180,7 +270,11 @@ export default function CyberpunkTerminal({
 		addToHistory(`${promptPrefix}${trimmedCmd}`);
 
 		// Add to command history for up/down arrow navigation
-		setCommandHistory((prev) => [...prev, trimmedCmd]);
+		setCommandHistory((prev) => {
+			const newCommandHistory = [...prev, trimmedCmd];
+			saveCommandHistoryToLocalStorage(newCommandHistory);
+			return newCommandHistory;
+		});
 		setHistoryIndex(-1);
 
 		try {
@@ -191,11 +285,13 @@ export default function CyberpunkTerminal({
 				terminalState,
 				setTerminalState,
 				handleOpenBlogPost,
-				handleOpenProject
+				handleOpenProject,
+				addToHistory
 			);
 
 			if (output === "CLEAR_TERMINAL") {
 				setHistory([]);
+				saveHistoryToLocalStorage([]);
 				return;
 			}
 
@@ -276,17 +372,25 @@ export default function CyberpunkTerminal({
 							>
 								{/* Background Effects */}
 								<div className="absolute inset-0 pointer-events-none">
-									{/* Matrix rain effect */}
-									<div className="absolute inset-0 opacity-5">
+									{/* Matrix rain effect - reduced in rescue mode */}
+									<div
+										className={`absolute inset-0 ${
+											isSystemInRescueMode() ? "opacity-1" : "opacity-5"
+										}`}
+									>
 										<div className="matrix-rain" />
 									</div>
 
-									{/* Scan lines */}
-									<div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent animate-pulse" />
+									{/* Scan lines - disabled in rescue mode */}
+									{!isSystemInRescueMode() && (
+										<div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent animate-pulse" />
+									)}
 
-									{/* Cyber grid */}
+									{/* Cyber grid - reduced in rescue mode */}
 									<div
-										className="absolute inset-0 opacity-10"
+										className={`absolute inset-0 ${
+											isSystemInRescueMode() ? "opacity-5" : "opacity-10"
+										}`}
 										style={{
 											backgroundImage: `
 												linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),

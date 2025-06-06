@@ -34,6 +34,15 @@ import {
 	handleExitCommand,
 	handleReloadCommand,
 } from "@/lib/terminal-commands/utility";
+import { handleNeofetchCommand } from "@/lib/terminal-commands/neofetch";
+import {
+	handleHistoryCommand,
+	handleClearHistoryCommand,
+} from "@/lib/terminal-commands/history";
+import { handleShutdownCommand } from "@/lib/terminal-commands/shutdown";
+import { handlePsCommand } from "@/lib/terminal-commands/ps";
+import { handleTopCommand } from "@/lib/terminal-commands/top";
+import { handleManCommand } from "@/lib/terminal-commands/man";
 
 // File system data storage
 let blogPosts: any = {};
@@ -169,12 +178,19 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 │  systemctl status <srv> → Show specific service status     │
 │  systemctl start <srv>  → Start a service                  │
 │  systemctl stop <srv>   → Stop a service                   │
+│  neofetch               → Display system information       │
 ├─────────────────────────────────────────────────────────────┤
 │  UTILITY COMMANDS                                           │
 ├─────────────────────────────────────────────────────────────┤
 │  whoami                 → Show current user info           │
 │  status                 → Show connection status           │
 │  clear                  → Clear terminal                   │
+│  history                → Show command history             │
+│  clear-history          → Clear command history            │
+│  shutdown [opts] [time] → Shutdown/restart system          │
+│  ps [options]           → Display running processes        │
+│  top [options]          → Display Linux processes          │
+│  man <command>          → Display manual pages             │
 │  exit, quit             → Close terminal                   │
 │  reload                 → Reload the application           │
 ├─────────────────────────────────────────────────────────────┤
@@ -205,12 +221,19 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 	pwd: "Show current directory path",
 	read: "View blog post or project",
 	systemctl: "System service control commands",
+	neofetch: "Display system information",
 	whoami: handleWhoamiCommand(isMac),
 	status: handleStatusCommand(),
 	clear: "Clear terminal screen",
+	history: "Show command history",
+	"clear-history": "Clear command history",
+	shutdown: "Shutdown/restart system",
 	exit: "Exit terminal",
 	quit: "Exit terminal",
 	reload: "Reload the application",
+	ps: "Display running processes",
+	top: "Display and update sorted information about running processes",
+	man: "Display manual pages for commands",
 });
 
 /**
@@ -223,7 +246,8 @@ export const executeCommand = (
 	terminalState: TerminalState,
 	setTerminalState: (state: TerminalState) => void,
 	onOpenBlogPost?: (blogId: string) => void,
-	onOpenProject?: (projectId: string) => void
+	onOpenProject?: (projectId: string) => void,
+	addToHistory?: (content: string) => void
 ): string => {
 	const trimmedCmd = cmd.trim();
 
@@ -248,7 +272,7 @@ export const executeCommand = (
 	// Handle ../ command as implicit cd command (like in real terminals)
 	if (trimmedCmd.startsWith("../")) {
 		return handleCdCommand(
-			trimmedCmd,
+			[trimmedCmd],
 			navigate,
 			terminalState,
 			setTerminalState,
@@ -262,10 +286,10 @@ export const executeCommand = (
 		case "help":
 			return getCommands(isMac).help;
 		case "ls":
-			return generateLsOutput(terminalState, args.join(" "));
+			return generateLsOutput(terminalState, args);
 		case "cd":
 			return handleCdCommand(
-				args.join(" "),
+				args,
 				navigate,
 				terminalState,
 				setTerminalState,
@@ -295,6 +319,23 @@ export const executeCommand = (
 			return handleReloadCommand();
 		case "systemctl":
 			return handleSystemctlCommand(args.join(" "), terminalState);
+		case "neofetch":
+			return handleNeofetchCommand();
+		case "history":
+			return handleHistoryCommand();
+		case "clear-history":
+			return handleClearHistoryCommand();
+		case "shutdown":
+			if (!addToHistory) {
+				return "Error: shutdown command requires history context.";
+			}
+			return handleShutdownCommand(args.join(" "), terminalState, addToHistory);
+		case "ps":
+			return handlePsCommand(args);
+		case "top":
+			return handleTopCommand(args);
+		case "man":
+			return handleManCommand(args);
 		default:
 			return `Error: command not found: ${command}\nType 'help' to see available commands.`;
 	}
