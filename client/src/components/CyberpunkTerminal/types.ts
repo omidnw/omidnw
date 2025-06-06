@@ -24,8 +24,16 @@ export interface TerminalState {
 export interface TerminalCommands {
 	help: string;
 	ls: string;
+	cd: string;
+	pwd: string;
+	read: string;
+	systemctl: string;
 	whoami: string;
-	getStatus: () => string;
+	status: string;
+	clear: string;
+	exit: string;
+	quit: string;
+	reload: string;
 }
 
 export interface TimeInfo {

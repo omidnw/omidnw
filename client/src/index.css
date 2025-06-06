@@ -3,6 +3,383 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Glitch Effects for Rescue Mode */
+@keyframes glitch-bg {
+	0%,
+	100% {
+		background-position: 0 0;
+		filter: hue-rotate(0deg);
+	}
+	10% {
+		background-position: -5px 0;
+		filter: hue-rotate(90deg);
+	}
+	20% {
+		background-position: 5px 0;
+		filter: hue-rotate(180deg);
+	}
+	30% {
+		background-position: -5px 0;
+		filter: hue-rotate(270deg);
+	}
+	40% {
+		background-position: 5px 0;
+		filter: hue-rotate(360deg);
+	}
+	50% {
+		background-position: 0 0;
+		filter: hue-rotate(0deg);
+	}
+	60% {
+		background-position: -10px 0;
+		filter: hue-rotate(45deg);
+	}
+	70% {
+		background-position: 10px 0;
+		filter: hue-rotate(135deg);
+	}
+	80% {
+		background-position: -5px 0;
+		filter: hue-rotate(225deg);
+	}
+	90% {
+		background-position: 5px 0;
+		filter: hue-rotate(315deg);
+	}
+}
+
+@keyframes glitch-layer-1 {
+	0%,
+	100% {
+		clip-path: inset(40% 0 43% 0);
+		transform: translate(-2px, 0);
+		background: rgba(255, 0, 0, 0.1);
+	}
+	20% {
+		clip-path: inset(92% 0 1% 0);
+		transform: translate(2px, 0);
+		background: rgba(0, 255, 0, 0.1);
+	}
+	40% {
+		clip-path: inset(43% 0 1% 0);
+		transform: translate(-2px, 0);
+		background: rgba(0, 0, 255, 0.1);
+	}
+	60% {
+		clip-path: inset(25% 0 58% 0);
+		transform: translate(2px, 0);
+		background: rgba(255, 255, 0, 0.1);
+	}
+	80% {
+		clip-path: inset(58% 0 43% 0);
+		transform: translate(-2px, 0);
+		background: rgba(255, 0, 255, 0.1);
+	}
+}
+
+@keyframes glitch-layer-2 {
+	0%,
+	100% {
+		clip-path: inset(25% 0 58% 0);
+		transform: translate(2px, 0);
+		background: rgba(0, 255, 255, 0.1);
+	}
+	15% {
+		clip-path: inset(58% 0 25% 0);
+		transform: translate(-2px, 0);
+		background: rgba(255, 0, 0, 0.1);
+	}
+	35% {
+		clip-path: inset(32% 0 23% 0);
+		transform: translate(2px, 0);
+		background: rgba(0, 255, 0, 0.1);
+	}
+	55% {
+		clip-path: inset(23% 0 32% 0);
+		transform: translate(-2px, 0);
+		background: rgba(0, 0, 255, 0.1);
+	}
+	75% {
+		clip-path: inset(91% 0 8% 0);
+		transform: translate(2px, 0);
+		background: rgba(255, 255, 0, 0.1);
+	}
+}
+
+@keyframes glitch-layer-3 {
+	0%,
+	100% {
+		clip-path: inset(91% 0 8% 0);
+		transform: translate(-1px, 0);
+		background: rgba(255, 0, 255, 0.1);
+	}
+	25% {
+		clip-path: inset(8% 0 91% 0);
+		transform: translate(1px, 0);
+		background: rgba(0, 255, 255, 0.1);
+	}
+	50% {
+		clip-path: inset(50% 0 49% 0);
+		transform: translate(-1px, 0);
+		background: rgba(255, 0, 0, 0.1);
+	}
+	75% {
+		clip-path: inset(49% 0 50% 0);
+		transform: translate(1px, 0);
+		background: rgba(0, 255, 0, 0.1);
+	}
+}
+
+@keyframes glitch-text {
+	0%,
+	100% {
+		transform: translate(0);
+		filter: hue-rotate(0deg);
+	}
+	10% {
+		transform: translate(-2px, 2px);
+		filter: hue-rotate(90deg);
+	}
+	20% {
+		transform: translate(-8px, -2px);
+		filter: hue-rotate(180deg);
+	}
+	30% {
+		transform: translate(8px, 2px);
+		filter: hue-rotate(270deg);
+	}
+	40% {
+		transform: translate(-2px, -2px);
+		filter: hue-rotate(360deg);
+	}
+	50% {
+		transform: translate(2px, 2px);
+		filter: hue-rotate(0deg);
+	}
+	60% {
+		transform: translate(-8px, 2px);
+		filter: hue-rotate(45deg);
+	}
+	70% {
+		transform: translate(8px, -2px);
+		filter: hue-rotate(135deg);
+	}
+	80% {
+		transform: translate(-2px, 2px);
+		filter: hue-rotate(225deg);
+	}
+	90% {
+		transform: translate(2px, -2px);
+		filter: hue-rotate(315deg);
+	}
+}
+
+@keyframes glitch-text-small {
+	0%,
+	100% {
+		transform: translate(0);
+	}
+	10% {
+		transform: translate(-1px, 1px);
+	}
+	20% {
+		transform: translate(-2px, -1px);
+	}
+	30% {
+		transform: translate(2px, 1px);
+	}
+	40% {
+		transform: translate(-1px, -1px);
+	}
+	50% {
+		transform: translate(1px, 1px);
+	}
+	60% {
+		transform: translate(-2px, 1px);
+	}
+	70% {
+		transform: translate(2px, -1px);
+	}
+	80% {
+		transform: translate(-1px, 1px);
+	}
+	90% {
+		transform: translate(1px, -1px);
+	}
+}
+
+/* Apply glitch animations */
+.glitch-bg {
+	animation: glitch-bg 2s infinite linear;
+}
+
+.glitch-layer-1 {
+	animation: glitch-layer-1 1.5s infinite linear;
+}
+
+.glitch-layer-2 {
+	animation: glitch-layer-2 1.8s infinite linear;
+}
+
+.glitch-layer-3 {
+	animation: glitch-layer-3 2.2s infinite linear;
+}
+
+.glitch-text {
+	animation: glitch-text 0.5s infinite linear;
+	position: relative;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+	content: attr(data-text);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.glitch-text::before {
+	animation: glitch-text 0.6s infinite linear reverse;
+	color: #ff0000;
+	z-index: -1;
+	clip-path: inset(0 0 0 0);
+	text-shadow: -2px 0 #ff0000;
+}
+
+.glitch-text::after {
+	animation: glitch-text 0.7s infinite linear reverse;
+	color: #00ffff;
+	z-index: -2;
+	clip-path: inset(0 0 0 0);
+	text-shadow: 2px 0 #00ffff;
+}
+
+.glitch-text-small {
+	animation: glitch-text-small 0.3s infinite linear;
+	position: relative;
+}
+
+.glitch-text-small::before,
+.glitch-text-small::after {
+	content: attr(data-text);
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+.glitch-text-small::before {
+	animation: glitch-text-small 0.4s infinite linear reverse;
+	color: #ff0000;
+	z-index: -1;
+	text-shadow: -1px 0 #ff0000;
+}
+
+.glitch-text-small::after {
+	animation: glitch-text-small 0.5s infinite linear reverse;
+	color: #00ffff;
+	z-index: -2;
+	text-shadow: 1px 0 #00ffff;
+}
+
+.glitch-container {
+	position: relative;
+	overflow: hidden;
+}
+
+/* Screen distortion effect */
+@keyframes screen-distortion {
+	0%,
+	100% {
+		transform: scaleX(1) skewX(0deg);
+		filter: contrast(1) brightness(1);
+	}
+	10% {
+		transform: scaleX(0.98) skewX(0.5deg);
+		filter: contrast(1.2) brightness(0.9);
+	}
+	20% {
+		transform: scaleX(1.02) skewX(-0.5deg);
+		filter: contrast(0.8) brightness(1.1);
+	}
+	30% {
+		transform: scaleX(0.99) skewX(0.3deg);
+		filter: contrast(1.1) brightness(0.95);
+	}
+	40% {
+		transform: scaleX(1.01) skewX(-0.3deg);
+		filter: contrast(0.9) brightness(1.05);
+	}
+	50% {
+		transform: scaleX(1) skewX(0deg);
+		filter: contrast(1) brightness(1);
+	}
+	60% {
+		transform: scaleX(0.97) skewX(0.7deg);
+		filter: contrast(1.3) brightness(0.8);
+	}
+	70% {
+		transform: scaleX(1.03) skewX(-0.7deg);
+		filter: contrast(0.7) brightness(1.2);
+	}
+	80% {
+		transform: scaleX(0.98) skewX(0.4deg);
+		filter: contrast(1.1) brightness(0.9);
+	}
+	90% {
+		transform: scaleX(1.02) skewX(-0.4deg);
+		filter: contrast(0.9) brightness(1.1);
+	}
+}
+
+.screen-distortion {
+	animation: screen-distortion 3s infinite ease-in-out;
+}
+
+/* Enhanced Matrix Rain with Glitch */
+.matrix-rain {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: linear-gradient(
+		0deg,
+		transparent 65%,
+		rgba(0, 255, 0, 0.03) 75%,
+		rgba(0, 255, 0, 0.05) 85%,
+		transparent 95%
+	);
+	background-size: 50px 50px;
+	animation: matrix-rain-glitch 0.5s linear infinite;
+}
+
+@keyframes matrix-rain-glitch {
+	0% {
+		background-position: 0 0;
+		filter: hue-rotate(0deg) contrast(1);
+	}
+	25% {
+		background-position: 0 -50px;
+		filter: hue-rotate(90deg) contrast(1.2);
+	}
+	50% {
+		background-position: 0 -100px;
+		filter: hue-rotate(180deg) contrast(0.8);
+	}
+	75% {
+		background-position: 0 -150px;
+		filter: hue-rotate(270deg) contrast(1.1);
+	}
+	100% {
+		background-position: 0 -200px;
+		filter: hue-rotate(360deg) contrast(1);
+	}
+}
+
 :root {
 	/* Cyberpunk Color Palette */
 	--background: 220 20% 6%;

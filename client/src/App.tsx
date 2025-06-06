@@ -15,6 +15,8 @@ import BlogPost from "@/pages/BlogPost";
 import ProjectPost from "@/pages/ProjectPost";
 import NotFound from "@/pages/not-found";
 import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
+import { RescueModeProvider } from "@/contexts/RescueModeContext";
+import RescueModeOverlay from "@/components/RescueModeOverlay";
 
 function Router() {
 	return (
@@ -37,16 +39,20 @@ function Router() {
 function App() {
 	return (
 		<ErrorBoundary>
-			<MusicPlayerProvider>
-				<QueryClientProvider client={queryClient}>
-					<TooltipProvider>
-						<Layout>
-							<Toaster />
-							<Router />
-						</Layout>
-					</TooltipProvider>
-				</QueryClientProvider>
-			</MusicPlayerProvider>
+			<RescueModeProvider>
+				<MusicPlayerProvider>
+					<QueryClientProvider client={queryClient}>
+						<TooltipProvider>
+							<Layout>
+								<Toaster />
+								<Router />
+							</Layout>
+							{/* Rescue Mode Overlay - Always rendered, shows when rescue mode is active */}
+							<RescueModeOverlay />
+						</TooltipProvider>
+					</QueryClientProvider>
+				</MusicPlayerProvider>
+			</RescueModeProvider>
 		</ErrorBoundary>
 	);
 }

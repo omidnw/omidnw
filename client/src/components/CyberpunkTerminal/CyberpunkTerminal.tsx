@@ -9,7 +9,9 @@ import {
 	handleKeyboardShortcuts,
 	initializeFileSystem,
 } from "./commands";
+import { isSystemInRescueMode } from "@/lib/terminal-commands/systemctl";
 import { INITIAL_HISTORY, VERSION } from "./constants";
+import { getTabCompletions } from "@/lib/terminal-commands/tab-completion";
 
 // Import modal components
 import BlogPostModal from "@/components/BlogPostModal";
@@ -126,117 +128,41 @@ export default function CyberpunkTerminal({
 	};
 
 	const handleTabCompletion = () => {
-		const trimmedInput = input.trim();
+		const trimmedInput = input.trimStart();
+		console.log("🔥 Tab pressed! Input:", {
+			input,
+			trimmedInput,
+			terminalState,
+		});
 		if (!trimmedInput) return;
 
-		const parts = trimmedInput.split(" ");
-		const command = parts[0].toLowerCase();
-		const argument = parts.slice(1).join(" ");
+		// Use the imported getTabCompletions function
+		const completions = getTabCompletions(trimmedInput, terminalState, isMac);
+		console.log("🎯 Tab completions result:", completions);
 
-		// Command completion (if no arguments yet)
-		if (parts.length === 1) {
-			const commands = [
-				"help",
-				"ls",
-				"cd",
-				"pwd",
-				"whoami",
-				"status",
-				"clear",
-				"exit",
-				"read",
-			];
-			const matches = commands.filter((cmd) =>
-				cmd.startsWith(command.toLowerCase())
+		if (completions.length === 1) {
+			// If only one completion, fill the input directly
+			setInput(completions[0]);
+		} else if (completions.length > 1) {
+			// If multiple completions, show them in history
+			addToHistory(
+				`${getCurrentDirectory(
+					terminalState.currentPath || []
+				)}$ ${trimmedInput}`
 			);
-			if (matches.length === 1) {
-				setInput(matches[0] + " ");
-			} else if (matches.length > 1) {
-				// Show available options
-				addToHistory(
-					`${getCurrentDirectory(
-						terminalState.currentPath || []
-					)}$ ${trimmedInput}`
-				);
-				addToHistory(`Available commands: ${matches.join("  ")}`);
-			}
-			return;
-		}
+			// Determine if showing commands or file/dir names
+			const isCommandCompletion = !trimmedInput.includes(" ");
+			const label = isCommandCompletion
+				? "Available commands"
+				: "Available options";
+			addToHistory(`${label}: ${completions.join("  ")}`);
 
-		// Path/file completion for cd and read commands
-		if (command === "cd" || command === "read") {
-			const currentPath = terminalState.currentPath || [];
-			const { fileSystem } = terminalState;
-
-			// Get available options in current directory
-			let availableItems: string[] = [];
-
-			if (currentPath.length === 0) {
-				// At root level
-				availableItems = [
-					"blog/",
-					"projects/",
-					"home/",
-					"about/",
-					"contact/",
-					"terminal/",
-				];
-				if (command === "cd") {
-					availableItems.push("../", "~/");
-				}
-			} else {
-				// In a subdirectory
-				let currentNode: any = fileSystem[currentPath[0]];
-				for (let i = 1; i < currentPath.length && currentNode; i++) {
-					if (currentNode.children && currentNode.children[currentPath[i]]) {
-						currentNode = currentNode.children[currentPath[i]];
-					} else {
-						currentNode = undefined;
-						break;
-					}
-				}
-
-				if (currentNode?.children) {
-					availableItems = Object.values(currentNode.children)
-						.map((item: any) => {
-							if (command === "cd") {
-								return item.type === "directory" ? `${item.name}/` : item.name;
-							} else {
-								// For read command, only show files
-								return item.type === "file" ? item.name : null;
-							}
-						})
-						.filter(Boolean) as string[];
-				}
-
-				if (command === "cd") {
-					availableItems.push("../", "~/");
-				}
-			}
-
-			// Filter based on current argument
-			const matches = availableItems.filter((item) =>
-				item.toLowerCase().startsWith(argument.toLowerCase())
-			);
-
-			if (matches.length === 1) {
-				setInput(`${command} ${matches[0]}`);
-			} else if (matches.length > 1) {
-				// Find common prefix for partial completion
-				const commonPrefix = findCommonPrefix(matches);
-				if (commonPrefix && commonPrefix.length > argument.length) {
-					setInput(`${command} ${commonPrefix}`);
-				} else {
-					// Show available options
-					addToHistory(
-						`${getCurrentDirectory(
-							terminalState.currentPath || []
-						)}$ ${trimmedInput}`
-					);
-					const label =
-						command === "cd" ? "Available directories" : "Available files";
-					addToHistory(`${label}: ${matches.join("  ")}`);
-				}
+			// Optional: Find common prefix and partially complete
+			// This helps when multiple options share a starting sequence.
+			const commonPrefix = findCommonPrefix(completions);
+			// Check if the common prefix is longer than the current input
+			if (commonPrefix && commonPrefix.length > trimmedInput.length) {
+				setInput(commonPrefix);
 			}
 		}
 	};
@@ -246,11 +172,12 @@ export default function CyberpunkTerminal({
 		if (!trimmedCmd) return;
 
 		// Add command to history
-		addToHistory(
-			`user@omidnw:${getCurrentDirectory(
-				terminalState.currentPath || []
-			)}$ ${trimmedCmd}`
-		);
+		const promptPrefix = isSystemInRescueMode()
+			? `💀 RESCUE MODE 💀:${getCurrentDirectory(
+					terminalState.currentPath || []
+			  )}# `
+			: `user@omidnw:${getCurrentDirectory(terminalState.currentPath || [])}$ `;
+		addToHistory(`${promptPrefix}${trimmedCmd}`);
 
 		// Add to command history for up/down arrow navigation
 		setCommandHistory((prev) => [...prev, trimmedCmd]);
@@ -426,11 +353,27 @@ export default function CyberpunkTerminal({
 										className="flex items-center gap-2"
 									>
 										<span className="font-mono text-primary text-sm flex-shrink-0">
-											user@omidnw:
-											<span className="text-secondary">
-												{getCurrentDirectory(terminalState.currentPath || [])}
-											</span>
-											$
+											{isSystemInRescueMode() ? (
+												<span className="text-red-500 font-bold">
+													💀 RESCUE MODE 💀:
+													<span className="text-red-400">
+														{getCurrentDirectory(
+															terminalState.currentPath || []
+														)}
+													</span>
+													#
+												</span>
+											) : (
+												<>
+													user@omidnw:
+													<span className="text-secondary">
+														{getCurrentDirectory(
+															terminalState.currentPath || []
+														)}
+													</span>
+													$
+												</>
+											)}
 										</span>
 										<input
 											ref={inputRef}

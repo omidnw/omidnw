@@ -17,6 +17,24 @@ import {
 	isGitHubConfigured,
 } from "@/lib/github-api";
 
+// Import command handlers
+import { handleCdCommand } from "@/lib/terminal-commands/cd";
+import { generateLsOutput } from "@/lib/terminal-commands/ls";
+import { handleReadCommand } from "@/lib/terminal-commands/read";
+import { handleExecuteCommand } from "@/lib/terminal-commands/execute";
+import {
+	handleSystemctlCommand,
+	isSystemInRescueMode,
+	getRescueModePrompt,
+} from "@/lib/terminal-commands/systemctl";
+import {
+	handleWhoamiCommand,
+	handleStatusCommand,
+	handleClearCommand,
+	handleExitCommand,
+	handleReloadCommand,
+} from "@/lib/terminal-commands/utility";
+
 // File system data storage
 let blogPosts: any = {};
 let projects: any = {};
@@ -102,6 +120,7 @@ export const initializeFileSystem = async (): Promise<
 
 	// Add projects to projects directory
 	if (fileSystem.projects.children) {
+		console.log("📁 Adding projects to file system:", Object.keys(projects));
 		Object.keys(projects).forEach((projectId) => {
 			fileSystem.projects.children![projectId] = {
 				name: projectId,
@@ -109,6 +128,10 @@ export const initializeFileSystem = async (): Promise<
 				content: "project",
 			};
 		});
+		console.log(
+			"✅ Projects added to file system:",
+			Object.keys(fileSystem.projects.children)
+		);
 	}
 
 	return fileSystem;
@@ -138,6 +161,14 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 │  ls                     → List directory contents          │
 │  pwd                    → Show current directory path      │
 │  read <filename>        → View blog post or project        │
+│  ./<project-id>         → Run project demo (in /projects)  │
+├─────────────────────────────────────────────────────────────┤
+│  SYSTEM COMMANDS                                            │
+├─────────────────────────────────────────────────────────────┤
+│  systemctl status       → Show all service status          │
+│  systemctl status <srv> → Show specific service status     │
+│  systemctl start <srv>  → Start a service                  │
+│  systemctl stop <srv>   → Stop a service                   │
 ├─────────────────────────────────────────────────────────────┤
 │  UTILITY COMMANDS                                           │
 ├─────────────────────────────────────────────────────────────┤
@@ -170,132 +201,17 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 │  ESC                    → Close terminal                   │
 └─────────────────────────────────────────────────────────────┘`,
 	ls: "", // Will be dynamically generated
-	whoami: `┌─────────────────────────────────────────────────────────────┐
-│  USER PROFILE                                               │
-├─────────────────────────────────────────────────────────────┤
-│  Name: Omid Reza Keshtkar                                  │
-│  Role: Full-Stack Developer                                │
-│  Location: Dubai, UAE                                      │
-│  GitHub: github.com/omidnw                                 │
-│  LinkedIn: linkedin.com/in/omid-reza-keshtkar             │
-│  X: x.com/omidrezakeshtka                                  │
-└─────────────────────────────────────────────────────────────┘`,
-	getStatus: () => {
-		const timeInfo = getTimeInfo();
-		const timeDiffText = getTimeDifferenceText(timeInfo.timeDiff);
-		const userTimezoneDisplay = getUserTimezoneDisplay(timeInfo.userTimezone);
-
-		return `╔═══════════════════════════════════════════════════════════════╗
-║  CONNECTION STATUS MATRIX v2.077                              ║
-╠═══════════════════════════════════════════════════════════════╣
-║                                                               ║
-║  🟢 NEURAL LINK STATUS: ONLINE                               ║
-║  📡 AVAILABILITY: READY FOR NEW PROJECTS                     ║
-║                                                               ║
-║  ┌─────────────────────────────────────────────────────────┐ ║
-║  │  TIME SYNCHRONIZATION MATRIX                            │ ║
-║  ├─────────────────────────────────────────────────────────┤ ║
-║  │  DUBAI_TIME (PRIMARY):  ${formatTime(timeInfo.uaeTime).padEnd(
-			8
-		)} UTC+4       │ ║
-║  │  YOUR_TIME (CLIENT):    ${formatTime(timeInfo.now).padEnd(
-			8
-		)} ${userTimezoneDisplay} │ ║
-║  │  SYNC_DELTA:            ${timeDiffText.padEnd(18)} │ ║
-║  └─────────────────────────────────────────────────────────┘ ║
-║                                                               ║
-║  ┌─────────────────────────────────────────────────────────┐ ║
-║  │  SYSTEM PERFORMANCE METRICS                            │ ║
-║  ├─────────────────────────────────────────────────────────┤ ║
-║  │  RESPONSE_TIME:         24-48 HOURS                    │ ║
-║  │  DEV_STATUS:            ACTIVE                          │ ║
-║  │  UPTIME:                99.9%                           │ ║
-║  │  NEURAL_BANDWIDTH:      HIGH                            │ ║
-║  └─────────────────────────────────────────────────────────┘ ║
-║                                                               ║
-║  ┌─────────────────────────────────────────────────────────┐ ║
-║  │  CONTACT PROTOCOLS                                      │ ║
-║  ├─────────────────────────────────────────────────────────┤ ║
-║  │  EMAIL:                 ACTIVE                          │ ║
-║  │  LINKEDIN:              MONITORING                      │ ║
-║  │  GITHUB:                ACTIVE                          │ ║
-║  │  DISCORD:               STANDBY                         │ ║
-║  └─────────────────────────────────────────────────────────┘ ║
-║                                                               ║
-║  Last updated: ${new Date()
-			.toLocaleString("en-US", {
-				year: "numeric",
-				month: "2-digit",
-				day: "2-digit",
-				hour: "2-digit",
-				minute: "2-digit",
-				second: "2-digit",
-				hour12: false,
-			})
-			.padEnd(19)} ║
-║                                                               ║
-╚═══════════════════════════════════════════════════════════════╝`;
-	},
+	cd: "", // Will be dynamically handled
+	pwd: "Show current directory path",
+	read: "View blog post or project",
+	systemctl: "System service control commands",
+	whoami: handleWhoamiCommand(isMac),
+	status: handleStatusCommand(),
+	clear: "Clear terminal screen",
+	exit: "Exit terminal",
+	quit: "Exit terminal",
+	reload: "Reload the application",
 });
-
-/**
- * Generate ls output based on current directory
- */
-export const generateLsOutput = (terminalState: TerminalState): string => {
-	const { fileSystem, currentPath } = terminalState;
-
-	// If at root level
-	if (!currentPath || currentPath.length === 0) {
-		return `drwxr-xr-x  2 user  staff   64 Jun 2025 home/
-drwxr-xr-x  2 user  staff   64 Jun 2025 about/
-drwxr-xr-x  2 user  staff   64 Jun 2025 projects/
-drwxr-xr-x  2 user  staff   64 Jun 2025 blog/
-drwxr-xr-x  2 user  staff   64 Jun 2025 contact/
-drwxr-xr-x  2 user  staff   64 Jun 2025 terminal/`;
-	}
-
-	// Navigate to current directory in file system
-	let currentNode = fileSystem[currentPath[0]];
-	for (let i = 1; i < currentPath.length; i++) {
-		if (currentNode?.children) {
-			currentNode = currentNode.children[currentPath[i]];
-		} else {
-			return `ls: cannot access '${getCurrentDirectory(
-				currentPath
-			)}': No such file or directory`;
-		}
-	}
-
-	if (!currentNode) {
-		return `ls: cannot access '${getCurrentDirectory(
-			currentPath
-		)}': No such file or directory`;
-	}
-
-	if (currentNode.type === "file") {
-		return currentNode.name;
-	}
-
-	// List directory contents
-	if (currentNode.children) {
-		const entries = Object.values(currentNode.children);
-		if (entries.length === 0) {
-			return "Directory is empty.";
-		}
-
-		return entries
-			.map((entry) => {
-				const type = entry.type === "directory" ? "d" : "-";
-				const permissions =
-					entry.type === "directory" ? "rwxr-xr-x" : "rw-r--r--";
-				const suffix = entry.type === "directory" ? "/" : "";
-				return `${type}${permissions}  1 user  staff   64 Jun 2025 ${entry.name}${suffix}`;
-			})
-			.join("\n");
-	}
-
-	return "Directory is empty.";
-};
 
 /**
  * Execute a command and return the output
@@ -309,220 +225,79 @@ export const executeCommand = (
 	onOpenBlogPost?: (blogId: string) => void,
 	onOpenProject?: (projectId: string) => void
 ): string => {
-	const [command, ...args] = cmd.trim().split(" ");
+	const trimmedCmd = cmd.trim();
+
+	// Check if system is in rescue mode
+	if (isSystemInRescueMode()) {
+		const [command, ...args] = trimmedCmd.split(" ");
+		if (command === "systemctl" && args.join(" ") === "start NetworkManager") {
+			return handleSystemctlCommand(args.join(" "), terminalState);
+		} else {
+			return `🚨 RESCUE MODE ACTIVE 🚨
+❌ Network connectivity lost. System is in emergency recovery mode.
+🔧 Only 'systemctl start NetworkManager' is allowed to restore connectivity.
+💡 Run: systemctl start NetworkManager`;
+		}
+	}
+
+	// Handle ./ command for executing files (like project demos)
+	if (trimmedCmd.startsWith("./")) {
+		return handleExecuteCommand(trimmedCmd, terminalState, projects);
+	}
+
+	// Handle ../ command as implicit cd command (like in real terminals)
+	if (trimmedCmd.startsWith("../")) {
+		return handleCdCommand(
+			trimmedCmd,
+			navigate,
+			terminalState,
+			setTerminalState,
+			terminalState.fileSystem
+		);
+	}
+
+	const [command, ...args] = trimmedCmd.split(" ");
 
 	switch (command.toLowerCase()) {
 		case "help":
 			return getCommands(isMac).help;
 		case "ls":
-			return generateLsOutput(terminalState);
+			return generateLsOutput(terminalState, args.join(" "));
 		case "cd":
 			return handleCdCommand(
 				args.join(" "),
 				navigate,
 				terminalState,
-				setTerminalState
+				setTerminalState,
+				terminalState.fileSystem
 			);
 		case "pwd":
 			return getCurrentDirectory(terminalState.currentPath || []);
 		case "whoami":
-			return getCommands(isMac).whoami;
+			return handleWhoamiCommand(isMac);
 		case "status":
-			return getCommands(isMac).getStatus();
+			return handleStatusCommand();
 		case "clear":
-			return "CLEAR_TERMINAL";
+			return handleClearCommand();
 		case "exit":
 		case "quit":
-			return "EXIT_TERMINAL";
+			return handleExitCommand();
 		case "read":
 			return handleReadCommand(
 				args.join(" "),
 				terminalState,
+				blogPosts,
+				projects,
 				onOpenBlogPost,
 				onOpenProject
 			);
 		case "reload":
-			window.location.reload();
-			return "Reloading matrix...";
+			return handleReloadCommand();
+		case "systemctl":
+			return handleSystemctlCommand(args.join(" "), terminalState);
 		default:
 			return `Error: command not found: ${command}\nType 'help' to see available commands.`;
 	}
-};
-
-/**
- * Handle cd command navigation
- */
-const handleCdCommand = (
-	path: string,
-	navigate: (path: string) => void,
-	terminalState: TerminalState,
-	setTerminalState: (state: TerminalState) => void
-): string => {
-	if (!path.trim()) {
-		// cd with no argument goes to root
-		setTerminalState({
-			...terminalState,
-			currentPath: [],
-		});
-		navigate("/");
-		return "Changed to root directory";
-	}
-
-	// Handle cd ~ (home directory = root)
-	if (path.trim() === "~") {
-		setTerminalState({
-			...terminalState,
-			currentPath: [],
-		});
-		navigate("/");
-		return "Changed to home directory (/)";
-	}
-
-	// Handle special navigation paths that navigate the actual website
-	if (
-		path.startsWith("/") &&
-		!path.includes("blog") &&
-		!path.includes("projects")
-	) {
-		switch (path) {
-			case "/":
-			case "/home":
-				navigate("/");
-				return "Navigating to Home...";
-			case "/about":
-				navigate("/about");
-				return "Navigating to About...";
-			case "/projects":
-				navigate("/projects");
-				return "Navigating to Projects...";
-			case "/blog":
-				navigate("/blog");
-				return "Navigating to Blog...";
-			case "/contact":
-				navigate("/contact");
-				return "Navigating to Contact...";
-			case "/terminal":
-				navigate("/terminal");
-				return "Opening Terminal Interface...";
-		}
-	}
-
-	// Handle file system navigation
-	const newPath = resolvePath(terminalState.currentPath || [], path);
-
-	// Handle root directory case
-	if (newPath.length === 0) {
-		setTerminalState({
-			...terminalState,
-			currentPath: [],
-		});
-		navigate("/");
-		return "Changed directory to /";
-	}
-
-	// Check if the path exists in file system
-	let currentNode: FileSystemNode | undefined =
-		terminalState.fileSystem[newPath[0]];
-	for (let i = 1; i < newPath.length; i++) {
-		if (currentNode?.children) {
-			currentNode = currentNode.children[newPath[i]];
-		} else {
-			currentNode = undefined;
-			break;
-		}
-	}
-
-	// If trying to cd into a file, show error
-	if (currentNode && currentNode.type === "file") {
-		if (currentNode.content === "blog") {
-			return `cd: ${newPath[newPath.length - 1]}: Not a directory
-Use 'read ${newPath[newPath.length - 1]}' to view this blog post.`;
-		} else if (currentNode.content === "project") {
-			return `cd: ${newPath[newPath.length - 1]}: Not a directory
-Use 'read ${newPath[newPath.length - 1]}' to view this project.`;
-		}
-		return `cd: ${newPath[newPath.length - 1]}: Not a directory`;
-	}
-
-	// If path doesn't exist
-	if (!currentNode) {
-		return `cd: ${path}: No such file or directory`;
-	}
-
-	// Update terminal state
-	setTerminalState({
-		...terminalState,
-		currentPath: newPath,
-	});
-
-	// Construct and navigate to the corresponding URL for file system paths
-	const urlPath = "/" + newPath.join("/");
-	navigate(urlPath);
-
-	return `Changed directory to ${getCurrentDirectory(newPath)}`;
-};
-
-/**
- * Handle read command to open blog posts and projects
- */
-const handleReadCommand = (
-	filename: string,
-	terminalState: TerminalState,
-	onOpenBlogPost?: (blogId: string) => void,
-	onOpenProject?: (projectId: string) => void
-): string => {
-	if (!filename.trim()) {
-		return `read: missing file argument
-Usage: read <filename>`;
-	}
-
-	const { currentPath, fileSystem } = terminalState;
-
-	// Check if we're in root directory
-	if (!currentPath || currentPath.length === 0) {
-		return `read: cannot access '${filename}': Not in a readable directory
-Use 'cd blog/' or 'cd projects/' to navigate to content directories first.`;
-	}
-
-	// Find the file in current directory
-	let currentNode = fileSystem[currentPath[0]];
-	for (let i = 1; i < currentPath.length; i++) {
-		if (currentNode?.children) {
-			currentNode = currentNode.children[currentPath[i]];
-		} else {
-			return `read: cannot access '${filename}': No such file or directory`;
-		}
-	}
-
-	if (!currentNode?.children) {
-		return `read: cannot access '${filename}': Not in a readable directory`;
-	}
-
-	const file = currentNode.children[filename];
-	if (!file) {
-		return `read: cannot access '${filename}': No such file or directory`;
-	}
-
-	if (file.type !== "file") {
-		return `read: '${filename}' is a directory`;
-	}
-
-	// Open the appropriate viewer based on file type
-	if (file.content === "blog") {
-		if (onOpenBlogPost) {
-			onOpenBlogPost(filename);
-			return `Opening blog post: ${blogPosts[filename]?.title || filename}...`;
-		}
-		return `Error: Blog post viewer not available`;
-	} else if (file.content === "project") {
-		if (onOpenProject) {
-			onOpenProject(filename);
-			return `Opening project: ${projects[filename]?.title || filename}...`;
-		}
-		return `Error: Project viewer not available`;
-	}
-
-	return `read: '${filename}' file type not supported`;
 };
 
 /**
