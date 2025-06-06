@@ -1,4 +1,4 @@
-import React, { Suspense, useMemo } from "react";
+import React, { Suspense, useMemo, useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 // import { Canvas } from "@react-three/fiber";
@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card";
 import { Terminal } from "lucide-react";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import GlobalMusicPlayer from "@/components/GlobalMusicPlayer";
+import CyberpunkTerminal from "@/components/CyberpunkTerminal";
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -135,38 +136,55 @@ const formatTime = (timeInSeconds: number): string => {
 	)}`;
 };
 
-function Navigation() {
+function Navigation({
+	onTerminalOpen,
+	isMac,
+}: {
+	onTerminalOpen: () => void;
+	isMac: boolean;
+}) {
 	return (
 		<nav
-			className="fixed top-0 left-0 right-0 z-50 p-2 sm:p-4"
+			className="fixed top-0 left-0 right-0 z-20 p-2 sm:p-4"
 			role="navigation"
 			aria-label="Main navigation"
 		>
 			<Card variant="cyberpunk" className="mx-auto max-w-4xl">
 				<div className="flex items-center justify-between p-2 sm:p-4">
-					{/* Logo */}
-					<Link href="/" aria-label="Go to home page">
-						<motion.div
-							className="flex items-center space-x-1 sm:space-x-2 cursor-pointer"
-							whileHover={{ scale: 1.05 }}
-							whileTap={{ scale: 0.95 }}
-						>
-							<Terminal
-								className="w-6 h-6 sm:w-8 sm:h-8 text-primary neon-glow"
-								aria-hidden="true"
-							/>
-							<span className="text-lg sm:text-2xl font-heading font-bold neon-glow text-primary">
-								PortFolio.sh
-							</span>
-						</motion.div>
-					</Link>
+					{/* Logo - Opens Terminal instead of navigating */}
+					<motion.div
+						className="flex items-center space-x-1 sm:space-x-2 cursor-pointer group"
+						whileHover={{ scale: 1.05 }}
+						whileTap={{ scale: 0.95 }}
+						onClick={onTerminalOpen}
+						role="button"
+						tabIndex={0}
+						aria-label="Open terminal interface"
+						onKeyDown={(e) => {
+							if (e.key === "Enter" || e.key === " ") {
+								e.preventDefault();
+								onTerminalOpen();
+							}
+						}}
+					>
+						<Terminal
+							className="w-6 h-6 sm:w-8 sm:h-8 text-primary neon-glow group-hover:text-secondary transition-colors"
+							aria-hidden="true"
+						/>
+						<span className="text-lg sm:text-2xl font-heading font-bold neon-glow text-primary group-hover:text-secondary transition-colors">
+							PortFolio.sh
+						</span>
+						<span className="text-xs font-mono text-primary/60 group-hover:text-secondary/60 transition-colors ml-1 sm:ml-2 hidden sm:inline">
+							[{isMac ? "Ctrl+Cmd+K" : "Ctrl+Alt+K"}]
+						</span>
+					</motion.div>
 
 					{/* Right side controls */}
 					<div className="flex items-center gap-1 sm:gap-2">
 						<div className="relative">
 							<GlobalMusicPlayer />
 						</div>
-						<HamburgerMenu />
+						<HamburgerMenu onTerminalOpen={onTerminalOpen} />
 					</div>
 				</div>
 			</Card>
@@ -195,11 +213,65 @@ const PageTransition = React.memo(
 PageTransition.displayName = "PageTransition";
 
 export default function Layout({ children }: LayoutProps) {
+	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+	const [isMac, setIsMac] = useState(false);
+	const [location] = useLocation();
+
+	// Read terminal state from localStorage on mount
+	useEffect(() => {
+		const savedState = localStorage.getItem("terminalState");
+		if (savedState === "open") {
+			setIsTerminalOpen(true);
+		}
+	}, []); // Empty dependency array means this runs once on mount
+
+	// Save terminal state to localStorage when it changes
+	useEffect(() => {
+		if (isTerminalOpen) {
+			localStorage.setItem("terminalState", "open");
+		} else {
+			localStorage.setItem("terminalState", "closed");
+			// Alternatively, to remove the item entirely:
+			// localStorage.removeItem('terminalState');
+		}
+	}, [isTerminalOpen]);
+
+	// Scroll to top on route change
+	useEffect(() => {
+		window.scrollTo(0, 0);
+	}, [location]);
+
+	// Detect macOS
+	useEffect(() => {
+		setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
+	}, []);
+
+	// Global keyboard shortcut for terminal
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			// For macOS: Ctrl+Cmd+K, For others: Ctrl+Alt+K
+			const isCorrectCombo = isMac
+				? e.ctrlKey && e.metaKey && e.key.toLowerCase() === "k"
+				: e.ctrlKey && e.altKey && e.key.toLowerCase() === "k";
+
+			if (isCorrectCombo) {
+				e.preventDefault();
+				setIsTerminalOpen(true);
+			}
+		};
+
+		document.addEventListener("keydown", handleKeyDown);
+		return () => document.removeEventListener("keydown", handleKeyDown);
+	}, [isMac]);
+
 	return (
 		<div className="min-h-screen bg-background text-foreground relative overflow-x-hidden">
 			<SkipLink />
 			<CyberBackground />
-			<Navigation />
+			<Navigation
+				onTerminalOpen={() => setIsTerminalOpen(true)}
+				isMac={isMac}
+			/>
 
 			<main
 				id="main-content"
@@ -210,6 +282,12 @@ export default function Layout({ children }: LayoutProps) {
 					<PageTransition>{children}</PageTransition>
 				</div>
 			</main>
+
+			{/* Cyberpunk Terminal */}
+			<CyberpunkTerminal
+				isOpen={isTerminalOpen}
+				onClose={() => setIsTerminalOpen(false)}
+			/>
 		</div>
 	);
 }

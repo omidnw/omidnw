@@ -15,6 +15,7 @@ import {
 	Twitter,
 	Menu,
 	X,
+	Terminal,
 } from "lucide-react";
 
 const navigationItems = [
@@ -23,6 +24,7 @@ const navigationItems = [
 	{ name: "Projects", path: "/projects", icon: Briefcase },
 	{ name: "Blog", path: "/blog", icon: BookOpen },
 	{ name: "Contact", path: "/contact", icon: Mail },
+	{ name: "Terminal", path: "/terminal", icon: Terminal, isSpecial: true },
 ];
 
 const socialLinks = [
@@ -48,11 +50,21 @@ const socialLinks = [
 
 interface HamburgerMenuProps {
 	className?: string;
+	onTerminalOpen?: () => void;
 }
 
-export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
+export default function HamburgerMenu({
+	className = "",
+	onTerminalOpen,
+}: HamburgerMenuProps) {
 	const [isOpen, setIsOpen] = useState(false);
 	const [location] = useLocation();
+	const [isMac, setIsMac] = useState(false);
+
+	// Detect macOS
+	useEffect(() => {
+		setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
+	}, []);
 
 	// Close menu when route changes
 	useEffect(() => {
@@ -350,7 +362,7 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 															}}
 															transition={{ duration: 2, repeat: Infinity }}
 														>
-															&gt; NAVIGATION.sh
+															&gt; NAVIGATION.exe
 														</m.h2>
 														<div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
 													</div>
@@ -362,7 +374,11 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 													>
 														{navigationItems.map((item, index) => {
 															const Icon = item.icon;
-															const isActive = location === item.path;
+															const isActive =
+																location === item.path && !item.isSpecial;
+															const isTerminal =
+																item.isSpecial && item.path === "/terminal";
+
 															return (
 																<m.div
 																	key={item.path}
@@ -375,39 +391,66 @@ export default function HamburgerMenu({ className = "" }: HamburgerMenuProps) {
 																		stiffness: 100,
 																	}}
 																>
-																	<Link href={item.path}>
+																	{isTerminal ? (
 																		<button
-																			className={`w-full flex items-center justify-start px-3 sm:px-4 py-3 sm:py-4 rounded-md font-mono text-left transition-all duration-300 group min-h-[48px] touch-manipulation ${
-																				isActive
-																					? "bg-primary/20 border border-primary text-primary shadow-lg shadow-primary/25"
-																					: "bg-background/50 border border-border hover:border-primary/50 hover:bg-primary/10 text-foreground hover:text-primary"
-																			}`}
-																			aria-current={
-																				isActive ? "page" : undefined
-																			}
+																			onClick={() => {
+																				setIsOpen(false);
+																				onTerminalOpen?.();
+																			}}
+																			className="w-full flex items-center justify-start px-3 sm:px-4 py-3 sm:py-4 rounded-md font-mono text-left transition-all duration-300 group min-h-[48px] touch-manipulation bg-secondary/20 border border-secondary/50 hover:border-secondary/40 hover:bg-secondary/40 text-secondary hover:text-secondary/80"
 																		>
-																			<span className="mr-2 sm:mr-3 text-sm sm:text-lg">
+																			<span className="mr-2 sm:mr-3 text-sm sm:text-lg text-secondary">
 																				&gt;
 																			</span>
 																			<Icon
-																				className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0"
+																				className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0 text-secondary group-hover:text-secondary/80"
 																				aria-hidden="true"
 																			/>
 																			<span className="flex-1 text-sm sm:text-base">
 																				{item.name.toUpperCase()}
 																			</span>
-																			{isActive && (
-																				<span className="text-xs opacity-60 hidden sm:inline">
-																					ACTIVE
-																				</span>
-																			)}
-																			{isActive && (
-																				<span className="text-xs opacity-60 sm:hidden">
-																					•
-																				</span>
-																			)}
+																			<span className="text-xs opacity-60 hidden sm:inline">
+																				[{isMac ? "Ctrl+Cmd+K" : "Ctrl+Alt+K"}]
+																			</span>
+																			<span className="text-xs opacity-60 sm:hidden">
+																				{isMac ? "Cmd+K" : "Alt+K"}
+																			</span>
 																		</button>
-																	</Link>
+																	) : (
+																		<Link href={item.path}>
+																			<button
+																				className={`w-full flex items-center justify-start px-3 sm:px-4 py-3 sm:py-4 rounded-md font-mono text-left transition-all duration-300 group min-h-[48px] touch-manipulation ${
+																					isActive
+																						? "bg-primary/20 border border-primary text-primary shadow-lg shadow-primary/25"
+																						: "bg-background/50 border border-border hover:border-primary/50 hover:bg-primary/10 text-foreground hover:text-primary"
+																				}`}
+																				aria-current={
+																					isActive ? "page" : undefined
+																				}
+																			>
+																				<span className="mr-2 sm:mr-3 text-sm sm:text-lg">
+																					&gt;
+																				</span>
+																				<Icon
+																					className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0"
+																					aria-hidden="true"
+																				/>
+																				<span className="flex-1 text-sm sm:text-base">
+																					{item.name.toUpperCase()}
+																				</span>
+																				{isActive && (
+																					<span className="text-xs opacity-60 hidden sm:inline">
+																						ACTIVE
+																					</span>
+																				)}
+																				{isActive && (
+																					<span className="text-xs opacity-60 sm:hidden">
+																						•
+																					</span>
+																				)}
+																			</button>
+																		</Link>
+																	)}
 																</m.div>
 															);
 														})}

@@ -10,6 +10,7 @@ import About from "@/pages/About";
 import Blog from "@/pages/Blog";
 import Projects from "@/pages/Projects";
 import Contact from "@/pages/Contact";
+import Terminal from "@/pages/Terminal";
 import BlogPost from "@/pages/BlogPost";
 import ProjectPost from "@/pages/ProjectPost";
 import NotFound from "@/pages/not-found";
@@ -25,6 +26,7 @@ function Router() {
 			<Route path="/projects" component={Projects} />
 			<Route path="/projects/:slug" component={ProjectPost} />
 			<Route path="/contact" component={Contact} />
+			<Route path="/terminal" component={Terminal} />
 			{/* Add more routes here */}
 			{/* Fallback to 404 */}
 			<Route component={NotFound} />

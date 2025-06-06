@@ -61,7 +61,7 @@ export default function ImageModal({
 					animate={{ opacity: 1 }}
 					exit={{ opacity: 0 }}
 					transition={{ duration: 0.3 }}
-					className="fixed inset-0 z-[10000] bg-black/90 backdrop-blur-lg flex items-center justify-center p-2 sm:p-4"
+					className="fixed inset-0 z-[60] bg-black/90 backdrop-blur-lg flex items-center justify-center p-2 sm:p-4"
 					onClick={onClose} // Close on backdrop click
 				>
 					{/* Modal Content Container */}
