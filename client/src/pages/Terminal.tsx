@@ -1,8 +1,12 @@
 import React, { useEffect } from "react";
 import { useLocation } from "wouter";
 import CyberpunkTerminal from "@/components/CyberpunkTerminal";
+import { useSEO } from "@/lib/seo";
 
 export default function Terminal() {
+	// SEO optimization for terminal page
+	useSEO("terminal");
+
 	const [, navigate] = useLocation();
 
 	// Redirect to home when terminal closes

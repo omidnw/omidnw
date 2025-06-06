@@ -44,6 +44,9 @@ import { GITHUB_CONFIG } from "@/lib/github-config";
 // Local projects loader
 import { loadLocalProjects } from "@/lib/local-projects";
 
+// SEO optimization
+import { useSEO } from "@/lib/seo";
+
 // Define status variants for badges
 const statusVariants = {
 	completed: "default" as const,
@@ -69,6 +72,9 @@ function getStatusVariant(status: string) {
 }
 
 export default function Projects() {
+	// SEO optimization for projects page
+	useSEO("projects");
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const [tagSearch, setTagSearch] = useState("");
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -407,6 +413,10 @@ export default function Projects() {
 						>
 							<div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-4">
 								<h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl xl:text-7xl font-heading font-black neon-glow text-primary">
+									{/* SEO-optimized title */}
+									<span className="sr-only">
+										Omid Reza Keshtkar's Cyberpunk{" "}
+									</span>
 									PROJECT_MATRIX.load()
 								</h1>
 
@@ -446,8 +456,9 @@ export default function Projects() {
 							</div>
 
 							<p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground font-mono max-w-2xl mx-auto mb-4 px-4">
-								Digital constructs and cybernetic innovations - showcasing the
-								evolution of code into reality
+								Digital constructs and cybernetic innovations by Omid Reza
+								Keshtkar - showcasing the evolution of AI, TypeScript, React,
+								and full-stack development projects into reality
 							</p>
 
 							{/* Connection status info */}

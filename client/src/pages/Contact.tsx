@@ -29,6 +29,7 @@ import {
 	Clock,
 } from "lucide-react";
 import CyberpunkDubaiMap from "@/components/CyberpunkDubaiMap";
+import { useSEO } from "@/lib/seo";
 
 interface ContactForm {
 	name: string;
@@ -45,6 +46,9 @@ interface FormErrors {
 }
 
 export default function Contact() {
+	// SEO optimization for contact page
+	useSEO("contact");
+
 	const [formData, setFormData] = useState<ContactForm>({
 		name: "",
 		email: "",
@@ -235,11 +239,14 @@ export default function Contact() {
 					className="text-center py-6 sm:py-8 mb-6 sm:mb-8"
 				>
 					<h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
+						{/* SEO-optimized title */}
+						<span className="sr-only">Contact Omid Reza Keshtkar - </span>
 						CONTACT_MATRIX.init()
 					</h1>
 					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-2 sm:px-4">
-						Initiate connection protocol - let's build something extraordinary
-						together
+						Initiate connection protocol with Omid Reza Keshtkar, Software QA
+						Engineer and Full Stack Developer from Dubai - let's build something
+						extraordinary together
 					</p>
 				</m.header>
 

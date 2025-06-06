@@ -21,6 +21,7 @@ import {
 	Smartphone,
 } from "lucide-react";
 import type { LucideProps } from "lucide-react";
+import { useSEO } from "@/lib/seo";
 
 // Define a type for interest items
 interface InterestItem {
@@ -194,7 +195,7 @@ const ProfileCard = React.memo(() => {
 						/>
 					</div>
 					<CardTitle className="text-xl sm:text-2xl md:text-3xl mb-2 font-heading text-primary neon-glow">
-						OmidReza Keshtkar
+						Omid Reza Keshtkar
 					</CardTitle>
 					<p className="text-accent font-mono text-sm sm:text-base md:text-lg">
 						Software QA & Full Stack Developer
@@ -443,6 +444,9 @@ const Interests = React.memo(() => {
 Interests.displayName = "Interests";
 
 export default function About() {
+	// SEO optimization for about page
+	useSEO("about");
+
 	return (
 		<LazyMotion features={domMax}>
 			<div className="min-h-screen">
@@ -454,6 +458,8 @@ export default function About() {
 						transition={{ duration: 0.6 }}
 						className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary"
 					>
+						{/* SEO-optimized title */}
+						<span className="sr-only">About Omid Reza Keshtkar - </span>
 						ABOUT_ME.sh
 					</m.h1>
 					<m.p
@@ -462,7 +468,9 @@ export default function About() {
 						transition={{ duration: 0.6, delay: 0.2 }}
 						className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4"
 					>
-						Diving deep into the neural pathways of a cybernetic developer
+						Diving deep into the neural pathways of Omid Reza Keshtkar, a
+						cybernetic developer from Dubai specializing in Software QA and Full
+						Stack Development
 					</m.p>
 				</header>
 

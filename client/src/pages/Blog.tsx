@@ -41,7 +41,12 @@ import { GITHUB_CONFIG } from "@/lib/github-config";
 // Local blogs loader
 import { loadLocalBlogPosts } from "@/lib/local-blogs";
 
+// SEO optimization
+import { useSEO } from "@/lib/seo";
+
 export default function Blog() {
+	// SEO optimization for blog page
+	useSEO("blog");
 	const [searchTerm, setSearchTerm] = useState("");
 	const [tagSearch, setTagSearch] = useState("");
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -308,11 +313,16 @@ export default function Blog() {
 					className="text-center py-8 sm:py-12 mb-6 sm:mb-8"
 				>
 					<h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
+						{/* SEO-optimized title */}
+						<span className="sr-only">
+							Omid Reza Keshtkar's Cyberpunk Developer{" "}
+						</span>
 						NEURAL_BLOG.sh
 					</h1>
 					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4">
-						Transmissions from the digital frontier - insights, tutorials, and
-						thoughts on cybernetic development
+						Transmissions from the digital frontier - Omid Reza Keshtkar's
+						insights, tutorials, and thoughts on cyberpunk development, AI,
+						full-stack technologies, and neural network innovations
 					</p>
 					{/* Data source indicator */}
 					<div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs font-mono">

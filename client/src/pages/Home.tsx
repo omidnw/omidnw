@@ -24,6 +24,7 @@ import {
 	Rocket,
 	Palette,
 } from "lucide-react";
+import { useSEO } from "@/lib/seo";
 
 const getProficiencyWord = (level: number): string => {
 	if (level >= 90) return "Expert";
@@ -228,6 +229,8 @@ function Hero() {
 						}}
 						transition={{ duration: 2, repeat: Infinity }}
 					>
+						{/* SEO-optimized heading with name and profession */}
+						<span className="sr-only">Omid Reza Keshtkar - </span>
 						CYBER
 						<br />
 						<span className="text-secondary">PORTFOLIO</span>
@@ -250,8 +253,10 @@ function Hero() {
 					transition={{ duration: 1, delay: 1 }}
 					className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto font-mono leading-relaxed px-4"
 				>
-					Welcome to my digital realm. I craft immersive web experiences using
-					cutting-edge technologies in the cyberpunk era.
+					Welcome to Omid Reza Keshtkar's cyberpunk digital realm. Software QA
+					Engineer and Full Stack Developer from Dubai, crafting immersive web
+					experiences using cutting-edge AI technologies, TypeScript, React, and
+					neural network innovations.
 				</m.p>
 
 				<m.div
@@ -497,12 +502,18 @@ const StatusBar = React.memo(() => {
 StatusBar.displayName = "StatusBar";
 
 export default function Home() {
+	// SEO optimization for home page
+	useSEO("home");
+
 	return (
 		<LazyMotion features={domMax}>
 			<div className="text-foreground selection:bg-accent selection:text-background">
-				<Hero />
-				<SkillsGrid />
-				<StatusBar />
+				{/* Main content with semantic HTML for better SEO */}
+				<main role="main">
+					<Hero />
+					<SkillsGrid />
+					<StatusBar />
+				</main>
 			</div>
 		</LazyMotion>
 	);
