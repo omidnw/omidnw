@@ -327,6 +327,36 @@ export const getTabCompletions = (
 		return [];
 	}
 
+	// Handle tetris command completion
+	if (command === "tetris") {
+		const tetrisOptions = ["space", "a", "d", "s", "w", "q", "quit"];
+
+		if (parts.length === 2) {
+			return tetrisOptions
+				.filter((option) =>
+					option.toLowerCase().startsWith(partialArg.toLowerCase())
+				)
+				.map((option) => `tetris ${option}`);
+		}
+
+		return [];
+	}
+
+	// Handle snake command completion
+	if (command === "snake") {
+		const snakeOptions = ["space", "w", "a", "s", "d", "q", "quit"];
+
+		if (parts.length === 2) {
+			return snakeOptions
+				.filter((option) =>
+					option.toLowerCase().startsWith(partialArg.toLowerCase())
+				)
+				.map((option) => `snake ${option}`);
+		}
+
+		return [];
+	}
+
 	// Determine the target directory content and prefix based on the command
 	if (command === "cd" || command === "read" || command === "ls") {
 		const resolvedInputPath = resolveTerminalPath(

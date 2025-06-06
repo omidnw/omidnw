@@ -43,6 +43,8 @@ import { handleShutdownCommand } from "@/lib/terminal-commands/shutdown";
 import { handlePsCommand } from "@/lib/terminal-commands/ps";
 import { handleTopCommand } from "@/lib/terminal-commands/top";
 import { handleManCommand } from "@/lib/terminal-commands/man";
+import { handleTetrisCommand } from "@/lib/terminal-commands/tetris";
+import { handleSnakeCommand } from "@/lib/terminal-commands/snake";
 
 // File system data storage
 let blogPosts: any = {};
@@ -191,6 +193,8 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 │  ps [options]           → Display running processes        │
 │  top [options]          → Display Linux processes          │
 │  man <command>          → Display manual pages             │
+│  tetris                 → Play Cyber Tetris game          │
+│  snake                  → Play Cyber Snake game           │
 │  exit, quit             → Close terminal                   │
 │  reload                 → Reload the application           │
 ├─────────────────────────────────────────────────────────────┤
@@ -234,6 +238,8 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 	ps: "Display running processes",
 	top: "Display and update sorted information about running processes",
 	man: "Display manual pages for commands",
+	tetris: "Play Cyber Tetris game",
+	snake: "Play Cyber Snake game",
 });
 
 /**
@@ -336,6 +342,10 @@ export const executeCommand = (
 			return handleTopCommand(args);
 		case "man":
 			return handleManCommand(args);
+		case "tetris":
+			return handleTetrisCommand(args, terminalState);
+		case "snake":
+			return handleSnakeCommand(args, terminalState);
 		default:
 			return `Error: command not found: ${command}\nType 'help' to see available commands.`;
 	}

@@ -41,6 +41,8 @@ export interface TerminalCommands {
 	ps: string;
 	top: string;
 	man: string;
+	tetris: string;
+	snake: string;
 }
 
 export interface TimeInfo {

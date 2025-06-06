@@ -16,6 +16,7 @@ import { getTabCompletions } from "@/lib/terminal-commands/tab-completion";
 // Import modal components
 import BlogPostModal from "@/components/BlogPostModal";
 import ProjectModal from "@/components/ProjectModal";
+import { GameModal, GameType } from "@/components/GameModal";
 
 export default function CyberpunkTerminal({
 	isOpen,
@@ -45,6 +46,8 @@ export default function CyberpunkTerminal({
 	const [projectModalOpen, setProjectModalOpen] = useState(false);
 	const [selectedBlogId, setSelectedBlogId] = useState("");
 	const [selectedProjectId, setSelectedProjectId] = useState("");
+	const [gameModalOpen, setGameModalOpen] = useState(false);
+	const [gameType, setGameType] = useState<GameType>("tetris");
 
 	const inputRef = useRef<HTMLInputElement>(null);
 	const terminalRef = useRef<HTMLDivElement>(null);
@@ -300,6 +303,20 @@ export default function CyberpunkTerminal({
 				return;
 			}
 
+			if (output === "OPEN_TETRIS_MODAL") {
+				setGameType("tetris");
+				setGameModalOpen(true);
+				addToHistory("Opening Cyber Tetris...");
+				return;
+			}
+
+			if (output === "OPEN_SNAKE_MODAL") {
+				setGameType("snake");
+				setGameModalOpen(true);
+				addToHistory("Opening Cyber Snake...");
+				return;
+			}
+
 			if (output) {
 				addToHistory(output);
 			}
@@ -519,6 +536,13 @@ export default function CyberpunkTerminal({
 							isOpen={projectModalOpen}
 							onClose={() => setProjectModalOpen(false)}
 							projectId={selectedProjectId}
+						/>
+
+						{/* Game Modal */}
+						<GameModal
+							isOpen={gameModalOpen}
+							onClose={() => setGameModalOpen(false)}
+							gameType={gameType}
 						/>
 					</>
 				)}
