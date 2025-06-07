@@ -12,90 +12,6 @@ import { MapPin } from "lucide-react";
 // Use the environment variable for the Maptiler API Key
 const MAPTILER_KEY = import.meta.env.VITE_MAPTILER_API_KEY;
 
-interface LocationMarkerInterface {
-	longitude: number;
-	latitude: number;
-	name: string;
-	type: "sector" | "node";
-	color: string;
-}
-
-const locations: LocationMarkerInterface[] = [
-	{
-		longitude: 55.2708,
-		latitude: 25.2048,
-		name: "SECTOR_01: Downtown",
-		type: "sector",
-		color: "cyan",
-	},
-	{
-		longitude: 55.1478,
-		latitude: 25.0867,
-		name: "SECTOR_02: Marina",
-		type: "sector",
-		color: "pink",
-	},
-	{
-		longitude: 55.2567,
-		latitude: 25.1875,
-		name: "SECTOR_03: Business Bay",
-		type: "sector",
-		color: "yellow",
-	},
-	{
-		longitude: 55.2768,
-		latitude: 25.1879,
-		name: "SECTOR_04: DIFC",
-		type: "sector",
-		color: "green",
-	},
-	{
-		longitude: 55.1696,
-		latitude: 25.0955,
-		name: "NODE_DIC: Internet City",
-		type: "node",
-		color: "blue",
-	},
-	{
-		longitude: 55.153,
-		latitude: 25.0779,
-		name: "NODE_JLT: JLT",
-		type: "node",
-		color: "purple",
-	},
-];
-
-// Define a basic line layer style for connections
-const connectionLineStyle: any = {
-	id: "connections",
-	type: "line",
-	paint: {
-		"line-color": "rgba(0, 220, 255, 0.6)", // Neon blue/cyan
-		"line-width": 1,
-		"line-dasharray": [2, 2],
-	},
-};
-
-const lineFeatures = locations.slice(0, -1).map((loc, i) => ({
-	type: "Feature" as const, // Add 'as const' for stricter typing
-	geometry: {
-		type: "LineString" as const,
-		coordinates: [
-			[loc.longitude, loc.latitude],
-			[
-				locations[(i + 1) % locations.length].longitude,
-				locations[(i + 1) % locations.length].latitude,
-			], // Connect to next, wrap around for last to first
-		],
-	},
-	properties: {},
-}));
-
-const geojsonConnections: GeoJSON.FeatureCollection<GeoJSON.LineString> = {
-	type: "FeatureCollection" as const,
-	features: lineFeatures,
-};
-
 const CyberpunkDubaiMap: React.FC = () => {
 	const [initialViewState] = useState({
 		longitude: 55.2708,
@@ -104,9 +20,6 @@ const CyberpunkDubaiMap: React.FC = () => {
 		pitch: 45,
 		bearing: -10,
 	});
-
-	const [hoveredMarker, setHoveredMarker] =
-		useState<LocationMarkerInterface | null>(null);
 
 	// Define mapStyle using the environment variable
 	const mapStyle = `https://api.maptiler.com/maps/darkmatter/style.json?key=${MAPTILER_KEY}`;
@@ -193,50 +106,6 @@ const CyberpunkDubaiMap: React.FC = () => {
 				mapStyle={mapStyle}
 			>
 				<NavigationControl position="top-right" />
-
-				{/* Render Markers */}
-				{locations.map((loc) => (
-					<Marker
-						key={loc.name}
-						longitude={loc.longitude}
-						latitude={loc.latitude}
-						anchor="center"
-					>
-						<div
-							className="group cursor-pointer"
-							onMouseEnter={() => setHoveredMarker(loc)}
-							onMouseLeave={() => setHoveredMarker(null)}
-						>
-							<MapPin
-								className={`w-5 h-5 transition-all duration-200 ease-in-out stroke-1
-                  ${
-										hoveredMarker === loc
-											? "scale-150 fill-opacity-80"
-											: "fill-opacity-50"
-									}
-                  text-${loc.color}-400 fill-${loc.color}-500/30`}
-							/>
-							{hoveredMarker === loc && (
-								<div
-									className={`absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2
-                             whitespace-nowrap rounded-md bg-background/90 px-2 py-1
-                             text-xs font-mono shadow-lg border border-primary/50 text-${loc.color}-400`}
-								>
-									{loc.name}
-									<div
-										className="absolute left-1/2 top-full h-0 w-0 transform -translate-x-1/2
-                               border-x-4 border-x-transparent border-t-4 border-t-background/90"
-									/>
-								</div>
-							)}
-						</div>
-					</Marker>
-				))}
-
-				{/* Render Connection Lines */}
-				<Source id="route-connections" type="geojson" data={geojsonConnections}>
-					<Layer {...connectionLineStyle} />
-				</Source>
 
 				{/* Technical Annotations & Status (Can be overlaid using absolute positioning if needed) */}
 				<div className="absolute bottom-2 left-2 flex items-center gap-2 text-xs font-mono z-20 pointer-events-none">

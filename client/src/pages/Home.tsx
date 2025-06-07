@@ -141,7 +141,7 @@ function GlitchText() {
 			key={currentText}
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
-			className="text-accent font-bold glitch-text"
+			className="text-primary font-bold"
 			aria-live="polite"
 			aria-label={`Current role: ${glitchText[currentText]}`}
 		>
