@@ -27,6 +27,8 @@ interface MusicPlayerContextType {
 	toggleLoop: () => void;
 	autoPlay: boolean;
 	toggleAutoPlay: () => void;
+	attemptAutoplay: () => Promise<boolean>;
+	isAutoplaySupported: () => Promise<string>;
 }
 
 export const MusicPlayerContext = createContext<
@@ -373,6 +375,106 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
 		setAutoPlay((prevAutoPlay) => !prevAutoPlay);
 	}, []);
 
+	// Advanced autoplay detection using Navigator.getAutoplayPolicy if available
+	const isAutoplaySupported = useCallback(async (): Promise<string> => {
+		if (typeof window === "undefined") return "unknown";
+
+		// Use the modern Navigator.getAutoplayPolicy API if available
+		if ("getAutoplayPolicy" in navigator) {
+			try {
+				const policy = (navigator as any).getAutoplayPolicy("mediaelement");
+				return policy; // Returns: "allowed", "allowed-muted", or "disallowed"
+			} catch (error) {
+				console.warn("getAutoplayPolicy failed:", error);
+			}
+		}
+
+		// Fallback: try to play a silent audio element to test autoplay support
+		try {
+			const testAudio = new Audio();
+			testAudio.volume = 0;
+			testAudio.muted = true;
+			testAudio.src =
+				"data:audio/wav;base64,UklGRigAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA="; // Silent audio
+			const playPromise = testAudio.play();
+
+			if (playPromise) {
+				await playPromise;
+				testAudio.pause();
+				testAudio.remove?.();
+				return "allowed-muted";
+			}
+		} catch (error) {
+			return "disallowed";
+		}
+
+		return "unknown";
+	}, []);
+
+	// Attempt to play with various fallback strategies
+	const attemptAutoplay = useCallback(async (): Promise<boolean> => {
+		if (!audioRef.current) return false;
+
+		const audio = audioRef.current;
+
+		try {
+			// Strategy 1: Try muted autoplay first
+			const originalVolume = audio.volume;
+			const originalMuted = audio.muted;
+
+			audio.muted = true;
+			audio.volume = 0;
+
+			const playPromise = audio.play();
+			if (playPromise) {
+				await playPromise;
+
+				// If muted autoplay works, gradually unmute if user preference allows
+				if (!isMuted && volume > 0) {
+					setTimeout(() => {
+						if (audio && !audio.paused) {
+							audio.muted = originalMuted;
+							audio.volume = originalVolume;
+						}
+					}, 1000); // Wait 1 second before unmuting
+				}
+
+				return true;
+			}
+		} catch (error: any) {
+			console.warn("Autoplay attempt failed:", error.name);
+
+			// Strategy 2: Set up interaction-based autoplay
+			if (error.name === "NotAllowedError") {
+				const interactionHandler = () => {
+					if (audioRef.current && autoPlay) {
+						audioRef.current.play().catch(console.warn);
+					}
+					// Remove listeners after first interaction
+					document.removeEventListener("click", interactionHandler);
+					document.removeEventListener("keydown", interactionHandler);
+					document.removeEventListener("touchstart", interactionHandler);
+				};
+
+				// Wait for any user interaction
+				document.addEventListener("click", interactionHandler, {
+					once: true,
+					passive: true,
+				});
+				document.addEventListener("keydown", interactionHandler, {
+					once: true,
+					passive: true,
+				});
+				document.addEventListener("touchstart", interactionHandler, {
+					once: true,
+					passive: true,
+				});
+			}
+		}
+
+		return false;
+	}, [isMuted, volume, autoPlay]);
+
 	const value = {
 		isPlaying,
 		togglePlayPause,
@@ -392,6 +494,8 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
 		toggleLoop,
 		autoPlay,
 		toggleAutoPlay,
+		attemptAutoplay,
+		isAutoplaySupported,
 	};
 
 	return (

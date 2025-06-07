@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useMusicPlayer } from "@/contexts/MusicPlayerContext";
 import { Button } from "@/components/ui/button";
@@ -48,12 +48,24 @@ export default function GlobalMusicPlayer() {
 		toggleLoop,
 		autoPlay,
 		toggleAutoPlay,
+		attemptAutoplay,
+		isAutoplaySupported,
 	} = useMusicPlayer();
 
 	const [isExpanded, setIsExpanded] = useState(false);
 	const [hasAutoPlayed, setHasAutoPlayed] = useState(false);
+	const [autoplayStatus, setAutoplayStatus] = useState<string>("unknown");
+	const playerRef = useRef<HTMLDivElement>(null);
 
-	// Auto-play when audio is ready (respecting browser autoplay policies and user preference)
+	// Check autoplay support on mount
+	useEffect(() => {
+		isAutoplaySupported().then((status) => {
+			setAutoplayStatus(status);
+			console.log("🎵 Autoplay Policy:", status);
+		});
+	}, [isAutoplaySupported]);
+
+	// Enhanced auto-play with bypass strategies
 	useEffect(() => {
 		if (
 			!hasAutoPlayed &&
@@ -63,12 +75,34 @@ export default function GlobalMusicPlayer() {
 			!error &&
 			!isPlaying
 		) {
-			// Use a timeout to ensure the component is fully mounted
-			const autoPlayTimer = setTimeout(() => {
-				togglePlayPause();
-				setHasAutoPlayed(true);
-			}, 500);
+			const attemptPlay = async () => {
+				try {
+					console.log("🎵 Attempting advanced autoplay...");
+					const success = await attemptAutoplay();
 
+					if (success) {
+						console.log("✅ Advanced autoplay succeeded!");
+						setHasAutoPlayed(true);
+					} else {
+						console.log("⏸️ Autoplay blocked - waiting for user interaction");
+						// Fallback to traditional method
+						setTimeout(() => {
+							togglePlayPause();
+							setHasAutoPlayed(true);
+						}, 500);
+					}
+				} catch (error) {
+					console.warn("❌ Autoplay failed:", error);
+					// Final fallback
+					setTimeout(() => {
+						togglePlayPause();
+						setHasAutoPlayed(true);
+					}, 500);
+				}
+			};
+
+			// Small delay to ensure everything is ready
+			const autoPlayTimer = setTimeout(attemptPlay, 300);
 			return () => clearTimeout(autoPlayTimer);
 		}
 	}, [
@@ -79,6 +113,7 @@ export default function GlobalMusicPlayer() {
 		hasAutoPlayed,
 		togglePlayPause,
 		autoPlay,
+		attemptAutoplay,
 	]);
 
 	const handleClick = () => {
@@ -102,8 +137,29 @@ export default function GlobalMusicPlayer() {
 		setIsExpanded(!isExpanded);
 	};
 
+	// Handle click outside to close expanded player
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (
+				isExpanded &&
+				playerRef.current &&
+				!playerRef.current.contains(event.target as Node)
+			) {
+				setIsExpanded(false);
+			}
+		};
+
+		if (isExpanded) {
+			document.addEventListener("mousedown", handleClickOutside);
+		}
+
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isExpanded]);
+
 	return (
-		<div className="relative">
+		<div className="relative" ref={playerRef}>
 			{/* Main Button */}
 			<Button
 				variant="ghost"
@@ -188,10 +244,11 @@ export default function GlobalMusicPlayer() {
 								<Slider
 									value={[currentTime]}
 									max={duration || 100}
-									step={1}
+									step={0.1}
+									onValueChange={handleSeek}
 									onValueCommit={handleSeek}
-									className="w-full h-1 [&>span:first-child]:h-1 [&>span:first-child>span]:h-4 [&>span:first-child>span]:w-4 [&>span:first-child>span]:border-2 touch-manipulation"
-									aria-label="Track progress"
+									className="w-full h-1 [&>span:first-child]:h-1 [&>span:first-child>span]:h-4 [&>span:first-child>span]:w-4 [&>span:first-child>span]:border-2 touch-manipulation hover:cursor-pointer"
+									aria-label="Track progress - Click or drag to seek"
 								/>
 								<div className="flex justify-between text-xs font-mono text-muted-foreground mt-1">
 									<span>{formatTime(currentTime)}</span>
@@ -287,10 +344,33 @@ export default function GlobalMusicPlayer() {
 									<div className="flex-1 min-w-0">
 										<label className="text-xs font-mono text-foreground cursor-pointer block">
 											Auto-play
+											{autoplayStatus !== "unknown" && (
+												<span
+													className={cn(
+														"ml-2 px-1.5 py-0.5 rounded text-xs font-bold",
+														autoplayStatus === "allowed"
+															? "bg-green-500/20 text-green-400 border border-green-500/30"
+															: autoplayStatus === "allowed-muted"
+															? "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30"
+															: "bg-red-500/20 text-red-400 border border-red-500/30"
+													)}
+												>
+													{autoplayStatus === "allowed"
+														? "✓ ALLOWED"
+														: autoplayStatus === "allowed-muted"
+														? "🔇 MUTED ONLY"
+														: "✗ BLOCKED"}
+												</span>
+											)}
 										</label>
 										<p className="text-xs text-muted-foreground mt-0.5 leading-tight">
-											Auto-resume after page refresh. May be blocked by browser
-											policies.
+											{autoplayStatus === "allowed"
+												? "Browser allows audio autoplay! Music will start automatically."
+												: autoplayStatus === "allowed-muted"
+												? "Browser allows muted autoplay. Audio will start silently then unmute."
+												: autoplayStatus === "disallowed"
+												? "Browser blocks autoplay. Music will start after first interaction."
+												: "Auto-resume after page refresh. May be blocked by browser policies."}
 										</p>
 									</div>
 									<Switch

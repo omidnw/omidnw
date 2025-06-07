@@ -474,8 +474,22 @@ export const getTabCompletions = (
 					item.name !== ".."
 				)
 					completedPath += "/";
+
+				// Special handling for ../ prefix in partial argument
+				if (partialArg.startsWith("../")) {
+					// If the partial argument starts with ../, preserve the full path structure
+					if (!completedPath.startsWith("../")) {
+						completedPath = `../${item.name}`;
+						if (
+							item.type === "directory" &&
+							item.name !== "." &&
+							item.name !== ".."
+						)
+							completedPath += "/";
+					}
+				}
 				// Add leading / if baseCompletionPath is empty and it's an absolute path completion
-				if (
+				else if (
 					baseCompletionPath === "" &&
 					!partialArg.startsWith(".") &&
 					item.name !== "." &&
@@ -486,16 +500,32 @@ export const getTabCompletions = (
 			} else if (command === "read") {
 				// Construct the completed path
 				let completedPath = baseCompletionPath + item.name;
+
+				// Special handling for ../ prefix in partial argument
+				if (partialArg.startsWith("../")) {
+					// If the partial argument starts with ../, preserve the full path structure
+					if (!completedPath.startsWith("../")) {
+						completedPath = `../${item.name}`;
+					}
+				}
 				// Add leading / if baseCompletionPath is empty and it's an absolute path completion
-				if (baseCompletionPath === "" && !partialArg.startsWith("."))
+				else if (baseCompletionPath === "" && !partialArg.startsWith("."))
 					completedPath = "/" + completedPath; // Handle root completion
 				return `${command} ${completedPath} `;
 			} else if (command === "ls") {
 				const completionSuffix = item.type === "directory" ? "/" : "";
 				// Construct the completed path
 				let completedPath = baseCompletionPath + item.name + completionSuffix;
+
+				// Special handling for ../ prefix in partial argument
+				if (partialArg.startsWith("../")) {
+					// If the partial argument starts with ../, preserve the full path structure
+					if (!completedPath.startsWith("../")) {
+						completedPath = `../${item.name}${completionSuffix}`;
+					}
+				}
 				// Add leading / if baseCompletionPath is empty and it's an absolute path completion
-				if (
+				else if (
 					baseCompletionPath === "" &&
 					!partialArg.startsWith(".") &&
 					item.type === "directory"
