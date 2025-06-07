@@ -122,7 +122,7 @@ const glitchText = [
 const stats = [
 	{ label: "PROJECTS", value: 5, suffix: "+" },
 	{ label: "EXPERIENCE", value: 5, suffix: "+ Years" },
-	{ label: "BLOGS", value: 1, suffix: "" },
+	{ label: "BLOGS", value: 0, suffix: "" },
 ] as const;
 
 function GlitchText() {
