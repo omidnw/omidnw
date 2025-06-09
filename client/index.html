@@ -1,6 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- Google Tag Manager -->
+		<script>
+			(function (w, d, s, l, i) {
+				w[l] = w[l] || [];
+				w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+				var f = d.getElementsByTagName(s)[0],
+					j = d.createElement(s),
+					dl = l != "dataLayer" ? "&l=" + l : "";
+				j.async = true;
+				j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+				f.parentNode.insertBefore(j, f);
+			})(window, document, "script", "dataLayer", "GTM-5XJHC756");
+		</script>
+		<!-- End Google Tag Manager -->
 		<meta charset="UTF-8" />
 		<meta
 			name="viewport"
@@ -26,14 +40,14 @@
 		<meta name="author" content="OmidReza Keshtkar" />
 		<meta name="robots" content="index, follow" />
 		<meta name="language" content="English" />
-		<link rel="canonical" href="https://omidnw.vercel.app" />
+		<link rel="canonical" href="https://omidrezakeshtkar.dev" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="profile" />
-		<meta property="og:url" content="https://omidnw.vercel.app" />
+		<meta property="og:url" content="https://omidrezakeshtkar.dev" />
 		<meta
 			property="og:title"
-			content="OmidReza Keshtkar | Cyberpunk Software QA & Full Stack Developer"
+			content="Omid Reza Keshtkar | Cyberpunk Software QA & Full Stack Developer"
 		/>
 		<meta
 			property="og:description"
@@ -41,30 +55,53 @@
 		/>
 		<meta
 			property="og:image"
-			content="https://omidnw.vercel.app/images/og-image.jpg"
+			content="https://omidrezakeshtkar.dev/images/og-image.jpg"
 		/>
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
 		<meta
 			property="og:site_name"
 			content="OmidReza Keshtkar - Cyberpunk Developer Portfolio"
 		/>
 		<meta property="og:locale" content="en_US" />
+		<meta property="article:author" content="OmidReza Keshtkar" />
 
 		<!-- Twitter -->
-		<meta property="twitter:card" content="summary_large_image" />
-		<meta property="twitter:url" content="https://omidnw.vercel.app" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@omidrezakeshtka" />
+		<meta name="twitter:creator" content="@omidrezakeshtka" />
+		<meta name="twitter:url" content="https://omidrezakeshtkar.dev" />
 		<meta
-			property="twitter:title"
+			name="twitter:title"
 			content="OmidReza Keshtkar | Cyberpunk Software QA & Full Stack Developer"
 		/>
 		<meta
-			property="twitter:description"
+			name="twitter:description"
 			content="Cyberpunk-inspired portfolio of OmidReza Keshtkar, Software QA Engineer and Full Stack Developer from Dubai. Explore cutting-edge web experiences, AI projects, and neural network innovations."
 		/>
 		<meta
-			property="twitter:image"
-			content="https://omidnw.vercel.app/images/og-image.jpg"
+			name="twitter:image"
+			content="https://omidrezakeshtkar.dev/images/og-image.jpg"
 		/>
-		<meta property="twitter:creator" content="@omidnw" />
+		<meta
+			name="twitter:image:alt"
+			content="OmidReza Keshtkar's Portfolio Preview"
+		/>
+
+		<!-- Telegram -->
+		<meta property="telegram:channel" content="@omidrezakeshtkar" />
+		<meta
+			property="telegram:title"
+			content="OmidReza Keshtkar | Cyberpunk Developer Portfolio"
+		/>
+		<meta
+			property="telegram:description"
+			content="Explore my cyberpunk-themed portfolio featuring cutting-edge web experiences and AI innovations"
+		/>
+		<meta
+			property="telegram:image"
+			content="https://omidrezakeshtkar.dev/images/og-image.jpg"
+		/>
 
 		<!-- Additional Meta Tags -->
 		<meta name="theme-color" content="#ff00ff" />
@@ -74,11 +111,15 @@
 			name="apple-mobile-web-app-status-bar-style"
 			content="black-translucent"
 		/>
+		<meta name="format-detection" content="telephone=no" />
+		<meta name="mobile-web-app-capable" content="yes" />
+		<meta name="application-name" content="Omid Reza Portfolio" />
 
 		<!-- Favicon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<link rel="icon" type="image/png" href="/favicon.png" />
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="manifest" href="/manifest.json" />
 
 		<!-- Structured Data -->
 		<script type="application/ld+json">
@@ -88,6 +129,7 @@
 				"name": "OmidReza Keshtkar",
 				"alternateName": "Omid Reza Keshtkar",
 				"jobTitle": ["Software QA Engineer", "Full Stack Developer"],
+				"image": "https://omidrezakeshtkar.dev/images/profile.jpg",
 				"worksFor": {
 					"@type": "Organization",
 					"name": "Troweb Inc.",
@@ -102,7 +144,7 @@
 					"addressLocality": "Dubai",
 					"addressCountry": "UAE"
 				},
-				"url": "https://omidnw.vercel.app",
+				"url": "https://omidrezakeshtkar.dev",
 				"sameAs": [
 					"https://github.com/omidrezakeshtkar",
 					"https://github.com/omidnw",
@@ -124,6 +166,16 @@
 		</script>
 	</head>
 	<body>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript
+			><iframe
+				src="https://www.googletagmanager.com/ns.html?id=GTM-5XJHC756"
+				height="0"
+				width="0"
+				style="display: none; visibility: hidden"
+			></iframe
+		></noscript>
+		<!-- End Google Tag Manager (noscript) -->
 		<div id="root"></div>
 		<script type="module" src="/src/main.tsx"></script>
 		<!-- This is a replit script which adds a banner on the top of the page when opened in development mode outside the replit environment -->
@@ -133,3 +185,4 @@
 		></script>
 	</body>
 </html>
+	
