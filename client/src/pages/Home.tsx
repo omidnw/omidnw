@@ -229,11 +229,9 @@ function Hero() {
 						}}
 						transition={{ duration: 2, repeat: Infinity }}
 					>
-						{/* SEO-optimized heading with name and profession */}
-						<span className="sr-only">Omid Reza Keshtkar - </span>
-						CYBER
+						OMID REZA
 						<br />
-						<span className="text-secondary">PORTFOLIO</span>
+						<span className="text-secondary">KESHTKAR</span>
 					</m.h1>
 				</m.div>
 

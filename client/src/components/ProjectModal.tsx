@@ -11,13 +11,13 @@ import {
 	Tag,
 	Hash,
 	Play,
-	Github,
 	ExternalLink,
 	AlertCircle,
 	Star,
 	Zap,
 	Check,
 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 // GitHub API integration & data types
 import {
@@ -72,7 +72,7 @@ export default function ProjectModal({
 					} catch (githubError) {
 						console.warn(
 							`GitHub project fetch failed for ${projectId}:`,
-							githubError
+							githubError,
 						);
 						loadedProject = await loadLocalProjectById(projectId);
 					}
@@ -282,16 +282,16 @@ export default function ProjectModal({
 																	{
 																		year: "numeric",
 																		month: "short",
-																	}
+																	},
 																)}{" "}
 																-{" "}
 																{project.endDate
 																	? new Date(
-																			project.endDate
-																	  ).toLocaleDateString("en-US", {
+																			project.endDate,
+																		).toLocaleDateString("en-US", {
 																			year: "numeric",
 																			month: "short",
-																	  })
+																		})
 																	: "Present"}
 															</span>
 														</div>
@@ -360,7 +360,7 @@ export default function ProjectModal({
 																}
 																className="font-mono touch-manipulation min-h-[40px]"
 															>
-																<Github className="w-3 h-3 mr-2" />
+																<SiGithub className="w-3 h-3 mr-2" />
 																Source
 															</Button>
 														)}
@@ -408,12 +408,12 @@ export default function ProjectModal({
 															onClick={(e) => {
 																const target = e.target as HTMLElement;
 																const imgElement = target.closest(
-																	"img"
+																	"img",
 																) as HTMLImageElement | null;
 																if (imgElement) {
 																	e.preventDefault(); // Prevent default link behavior if image is inside a link
 																	handleImageClick(
-																		imgElement.getAttribute("src") || ""
+																		imgElement.getAttribute("src") || "",
 																	);
 																}
 															}}
@@ -430,7 +430,7 @@ export default function ProjectModal({
 												</span>
 												{[...project.tags, project.category]
 													.filter(
-														(tag, index, arr) => arr.indexOf(tag) === index
+														(tag, index, arr) => arr.indexOf(tag) === index,
 													)
 													.map((tag) => (
 														<Badge

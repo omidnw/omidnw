@@ -16,10 +16,10 @@ import {
 	Gamepad2,
 	BookOpen,
 	Film,
-	Github,
 	Rss,
 	Smartphone,
 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { LucideProps } from "lucide-react";
 import { useSEO } from "@/lib/seo";
 
@@ -37,6 +37,14 @@ interface InterestItem {
 const timeline = [
 	{
 		year: "Present",
+		title: "Automation Test Engineer",
+		company: "NotionWave Inc.",
+		description:
+			"This role is essentially software QA, but with a full stack developer and QA mindset to build automation code that tests different parts of a project more effectively.",
+		type: "work",
+	},
+	{
+		year: "2025",
 		title: "Software QA",
 		company: "Troweb Inc., Dubai, UAE",
 		description: "Ensuring the quality and reliability of software products.",
@@ -155,7 +163,7 @@ const interests: readonly InterestItem[] = [
 	},
 	{
 		name: "Open Source",
-		icon: Github,
+		icon: SiGithub,
 		description: "Contributing to and creating open-source projects",
 	},
 	{
@@ -249,7 +257,7 @@ const Timeline = React.memo(() => {
 			education: GraduationCap,
 			milestone: Heart,
 		}),
-		[]
+		[],
 	);
 
 	return (
@@ -367,7 +375,7 @@ const TechStack = React.memo(() => {
 										<Badge
 											key={skill}
 											variant="secondary"
-											className="text-xs font-mono neon-glow"
+											className="text-xs font-mono text-foreground bg-secondary/80"
 										>
 											{skill}
 										</Badge>

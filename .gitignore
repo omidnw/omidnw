@@ -6,3 +6,34 @@ vite.config.ts.*
 *.tar.gz
 .env
 !.env.example
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+data/*.db
+data/*.db-*
+
+# Admin security
+data/admin-urls.json
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+.cursor/
+.kiro/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+build/

@@ -45,8 +45,20 @@ import { handleTopCommand } from "@/lib/terminal-commands/top";
 import { handleManCommand } from "@/lib/terminal-commands/man";
 import { handleTetrisCommand } from "@/lib/terminal-commands/tetris";
 import { handleSnakeCommand } from "@/lib/terminal-commands/snake";
+import { handleAliasCommand, handleUnaliasCommand } from "@/lib/terminal-commands/alias";
+import {
+	handleThemeCommand,
+	handleEchoCommand,
+	handleDateCommand,
+	handleTimeCommand,
+	handleUptimeCommand,
+} from "@/lib/terminal-commands/theme";
+import {
+	parsePipedCommand,
+	applyPipeFilters,
+} from "@/lib/terminal-commands/pipe-utils";
+import { handleMusicCommand } from "@/lib/terminal-commands/music";
 
-// File system data storage
 let blogPosts: any = {};
 let projects: any = {};
 
@@ -198,6 +210,38 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 │  exit, quit             → Close terminal                   │
 │  reload                 → Reload the application           │
 ├─────────────────────────────────────────────────────────────┤
+│  CUSTOMIZATION                                              │
+├─────────────────────────────────────────────────────────────┤
+│  alias <name>=<cmd>     → Create command alias            │
+│  unalias <name>         → Remove command alias            │
+│  theme [name]           → Change/list terminal themes     │
+├─────────────────────────────────────────────────────────────┤
+│  INFORMATION                                                │
+├─────────────────────────────────────────────────────────────┤
+│  echo <text>            → Display text                    │
+│  date                   → Show current date/time          │
+│  time                   → Show current time               │
+│  uptime                 → Show system uptime              │
+├─────────────────────────────────────────────────────────────┤
+│  MUSIC PLAYER                                               │
+├─────────────────────────────────────────────────────────────┤
+│  music                  → Show music player TUI           │
+│  music play             → Resume/start playback           │
+│  music pause            → Pause playback                  │
+│  music stop             → Stop and reset                  │
+│  music volume <0-100>   → Set volume level                │
+│  music mute             → Toggle mute                     │
+│  music loop             → Toggle loop                     │
+├─────────────────────────────────────────────────────────────┤
+│  PIPING (Experimental)                                      │
+├─────────────────────────────────────────────────────────────┤
+│  <cmd> | grep <pattern> → Filter output by pattern        │
+│  <cmd> | sort [-r]      → Sort output lines               │
+│  <cmd> | head [-n]      → Show first N lines              │
+│  <cmd> | tail [-n]      → Show last N lines               │
+│  <cmd> | wc [-l|-w|-c]  → Count lines/words/chars         │
+│  <cmd> | uniq           → Remove duplicate lines          │
+├─────────────────────────────────────────────────────────────┤
 │  SHORTCUTS                                                  │
 ├─────────────────────────────────────────────────────────────┤
 │  ${
@@ -240,6 +284,14 @@ export const getCommands = (isMac: boolean): TerminalCommands => ({
 	man: "Display manual pages for commands",
 	tetris: "Play Cyber Tetris game",
 	snake: "Play Cyber Snake game",
+	alias: "Create command aliases",
+	unalias: "Remove command aliases",
+	theme: "Change terminal theme",
+	echo: "Display a line of text",
+	date: "Display current date and time",
+	time: "Display current time",
+	uptime: "Show how long the system has been running",
+	music: "Control music player",
 });
 
 /**
@@ -253,13 +305,26 @@ export const executeCommand = (
 	setTerminalState: (state: TerminalState) => void,
 	onOpenBlogPost?: (blogId: string) => void,
 	onOpenProject?: (projectId: string) => void,
-	addToHistory?: (content: string) => void
+	addToHistory?: (content: string) => void,
+	resolveAlias?: (command: string) => string,
+	getMusicPlayerState?: () => any
 ): string => {
-	const trimmedCmd = cmd.trim();
+	let trimmedCmd = cmd.trim();
 
-	// Check if system is in rescue mode
+	if (resolveAlias) {
+		trimmedCmd = resolveAlias(trimmedCmd);
+	}
+
+	const pipedCommands = parsePipedCommand(trimmedCmd);
+	const mainCommand = pipedCommands[0];
+	const pipeFilters = pipedCommands.slice(1);
+
+	if (mainCommand === "!!") {
+		return "Error: Cannot execute !! - no previous command. Use arrow keys to navigate history.";
+	}
+
 	if (isSystemInRescueMode()) {
-		const [command, ...args] = trimmedCmd.split(" ");
+		const [command, ...args] = mainCommand.split(" ");
 		if (command === "systemctl" && args.join(" ") === "start NetworkManager") {
 			return handleSystemctlCommand(args.join(" "), terminalState);
 		} else {
@@ -270,15 +335,14 @@ export const executeCommand = (
 		}
 	}
 
-	// Handle ./ command for executing files (like project demos)
-	if (trimmedCmd.startsWith("./")) {
-		return handleExecuteCommand(trimmedCmd, terminalState, projects);
+	if (mainCommand.startsWith("./")) {
+		const output = handleExecuteCommand(mainCommand, terminalState, projects);
+		return pipeFilters.length > 0 ? applyPipeFilters(output, pipeFilters) : output;
 	}
 
-	// Handle ../ command as implicit cd command (like in real terminals)
-	if (trimmedCmd.startsWith("../")) {
+	if (mainCommand.startsWith("../")) {
 		return handleCdCommand(
-			[trimmedCmd],
+			[mainCommand],
 			navigate,
 			terminalState,
 			setTerminalState,
@@ -286,13 +350,17 @@ export const executeCommand = (
 		);
 	}
 
-	const [command, ...args] = trimmedCmd.split(" ");
+	const [command, ...args] = mainCommand.split(" ");
+
+	let output = "";
 
 	switch (command.toLowerCase()) {
 		case "help":
-			return getCommands(isMac).help;
+			output = getCommands(isMac).help;
+			break;
 		case "ls":
-			return generateLsOutput(terminalState, args);
+			output = generateLsOutput(terminalState, args);
+			break;
 		case "cd":
 			return handleCdCommand(
 				args,
@@ -302,11 +370,14 @@ export const executeCommand = (
 				terminalState.fileSystem
 			);
 		case "pwd":
-			return getCurrentDirectory(terminalState.currentPath || []);
+			output = getCurrentDirectory(terminalState.currentPath || []);
+			break;
 		case "whoami":
-			return handleWhoamiCommand(isMac);
+			output = handleWhoamiCommand(isMac);
+			break;
 		case "status":
-			return handleStatusCommand();
+			output = handleStatusCommand();
+			break;
 		case "clear":
 			return handleClearCommand();
 		case "exit":
@@ -324,11 +395,14 @@ export const executeCommand = (
 		case "reload":
 			return handleReloadCommand();
 		case "systemctl":
-			return handleSystemctlCommand(args.join(" "), terminalState);
+			output = handleSystemctlCommand(args.join(" "), terminalState);
+			break;
 		case "neofetch":
-			return handleNeofetchCommand();
+			output = handleNeofetchCommand();
+			break;
 		case "history":
-			return handleHistoryCommand();
+			output = handleHistoryCommand();
+			break;
 		case "clear-history":
 			return handleClearHistoryCommand();
 		case "shutdown":
@@ -337,18 +411,43 @@ export const executeCommand = (
 			}
 			return handleShutdownCommand(args.join(" "), terminalState, addToHistory);
 		case "ps":
-			return handlePsCommand(args);
+			output = handlePsCommand(args);
+			break;
 		case "top":
-			return handleTopCommand(args);
+			output = handleTopCommand(args);
+			break;
 		case "man":
-			return handleManCommand(args);
+			output = handleManCommand(args);
+			break;
 		case "tetris":
 			return handleTetrisCommand(args, terminalState);
 		case "snake":
 			return handleSnakeCommand(args, terminalState);
+		case "alias":
+			return handleAliasCommand(args);
+		case "unalias":
+			return handleUnaliasCommand(args);
+		case "theme":
+			return handleThemeCommand(args);
+		case "echo":
+			output = handleEchoCommand(args);
+			break;
+		case "date":
+			output = handleDateCommand();
+			break;
+		case "time":
+			output = handleTimeCommand();
+			break;
+		case "uptime":
+			output = handleUptimeCommand();
+			break;
+		case "music":
+			return handleMusicCommand(args, getMusicPlayerState || (() => null));
 		default:
-			return `Error: command not found: ${command}\nType 'help' to see available commands.`;
+			output = `Error: command not found: ${command}\nType 'help' to see available commands.`;
 	}
+
+	return pipeFilters.length > 0 ? applyPipeFilters(output, pipeFilters) : output;
 };
 
 /**

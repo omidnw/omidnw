@@ -1,0 +1,218 @@
+/* ============================================
+   EXTENDED CYBERPUNK COLOR PALETTES
+   ============================================
+   
+   This file contains 15 professional cyberpunk color palettes
+   organized by mood and use case. These palettes complement
+   the base color system defined in theme.css.
+   
+   Palette Categories:
+   - Energetic: Neon Dreams, Electric City, Urban Jungle
+   - Sophisticated: Tech Noir, Chrome Reflections, Future Shock
+   - Warm/Harmonious: Cyber Sunset, Digital Abyss, Virtual Reality
+   - Balanced: Glitch Vibes, Holo Future, Cybernetic Glow
+   - Dramatic: Neon Pulse, Quantum Flux
+   - Retro-Futuristic: Synthwave Nights
+   ============================================ */
+
+:root {
+	/* ============================================
+     1. NEON DREAMS (Energetic)
+     Mood: Energetic, dynamic, captivating
+     Use Cases: Fashion, bold statements, eye-catching elements
+     ============================================ */
+	--color-neon-dreams-orange: #ff9a00;
+	--color-neon-dreams-teal: #00ced1;
+	--color-neon-dreams-purple: #9b59b6;
+	--color-neon-dreams-yellow: #ffd700;
+	--color-neon-dreams-coral: #ff6b6b;
+
+	/* ============================================
+     2. ELECTRIC CITY (High-Energy)
+     Mood: High-energy, modern, urban
+     Use Cases: Tech branding, digital interfaces, CTAs
+     ============================================ */
+	--color-electric-city-navy: #1b1b2a;
+	--color-electric-city-magenta: #ff007a;
+	--color-electric-city-neon-green: #00ffb3;
+	--color-electric-city-cyan: #00e5ff;
+	--color-electric-city-violet: #8b00ff;
+
+	/* ============================================
+     3. CYBER SUNSET (Warm)
+     Mood: Warm, tranquil, harmonious
+     Use Cases: Wellness sections, calm areas, backgrounds
+     ============================================ */
+	--color-cyber-sunset-coral: #ff6f61;
+	--color-cyber-sunset-orange: #ff9a00;
+	--color-cyber-sunset-yellow: #ffea00;
+	--color-cyber-sunset-sky-blue: #00bfff;
+	--color-cyber-sunset-violet: #6a00ff;
+
+	/* ============================================
+     4. GLITCH VIBES (Balanced)
+     Mood: Balanced, engaging, distinct
+     Use Cases: Modern web design, interactive elements
+     ============================================ */
+	--color-glitch-vibes-cyan: #00ffff;
+	--color-glitch-vibes-orange-red: #ff4500;
+	--color-glitch-vibes-electric-blue: #0080ff;
+	--color-glitch-vibes-hot-pink: #ff1493;
+	--color-glitch-vibes-lime: #00ff00;
+
+	/* ============================================
+     5. TECH NOIR (Sophisticated)
+     Mood: Sophisticated, intense, elegant
+     Use Cases: Luxury elements, premium features, admin dashboard
+     ============================================ */
+	--color-tech-noir-charcoal: #2c2c2e;
+	--color-tech-noir-fiery-red: #ff3d00;
+	--color-tech-noir-purple: #a700ff;
+	--color-tech-noir-teal: #00bfae;
+	--color-tech-noir-yellow: #ffd600;
+
+	/* ============================================
+     6. HOLO FUTURE (Futuristic)
+     Mood: Futuristic, sophisticated, playful
+     Use Cases: Event designs, tech conferences, innovation sections
+     ============================================ */
+	--color-holo-future-blue: #4a90e2;
+	--color-holo-future-magenta: #d5006d;
+	--color-holo-future-orange: #f5a623;
+	--color-holo-future-green: #7ed321;
+	--color-holo-future-yellow: #f8e71c;
+
+	/* ============================================
+     7. SYNTHWAVE NIGHTS (Retro-Futuristic)
+     Mood: Retro-futuristic, nostalgic, striking
+     Use Cases: Creative projects, artistic sections, blog layouts
+     ============================================ */
+	--color-synthwave-purple: #8e44ad;
+	--color-synthwave-yellow: #f1c40f;
+	--color-synthwave-pink: #ff006e;
+	--color-synthwave-blue: #3a86ff;
+	--color-synthwave-cyan: #06fff0;
+
+	/* ============================================
+     8. URBAN JUNGLE (Vibrant)
+     Mood: Vibrant, energetic, lively
+     Use Cases: Marketing campaigns, project showcases
+     ============================================ */
+	--color-urban-jungle-green: #2ecc71;
+	--color-urban-jungle-orange: #e67e22;
+	--color-urban-jungle-red: #e74c3c;
+	--color-urban-jungle-blue: #3498db;
+	--color-urban-jungle-purple: #9b59b6;
+
+	/* ============================================
+     9. DIGITAL ABYSS (Dynamic)
+     Mood: Dynamic, harmonious, balanced
+     Use Cases: Seasonal promotions, feature highlights
+     ============================================ */
+	--color-digital-abyss-teal: #00bfae;
+	--color-digital-abyss-yellow: #ffd600;
+	--color-digital-abyss-deep-blue: #001f3f;
+	--color-digital-abyss-magenta: #ff00aa;
+	--color-digital-abyss-lime: #ccff00;
+
+	/* ============================================
+     10. CHROME REFLECTIONS (Modern)
+     Mood: Modern, sleek, sophisticated
+     Use Cases: Tech products, innovation sections, portfolio items
+     ============================================ */
+	--color-chrome-silver: #bdc3c7;
+	--color-chrome-blue: #2980b9;
+	--color-chrome-purple: #8e44ad;
+	--color-chrome-orange: #d35400;
+	--color-chrome-yellow: #f39c12;
+
+	/* ============================================
+     11. NEON PULSE (Dramatic)
+     Mood: Dramatic, eye-catching, energetic
+     Use Cases: E-commerce, product highlights, featured content
+     ============================================ */
+	--color-neon-pulse-coral: #ff6f61;
+	--color-neon-pulse-sky-blue: #00bfff;
+	--color-neon-pulse-magenta: #ff007a;
+	--color-neon-pulse-yellow: #ffd600;
+	--color-neon-pulse-violet: #8c1bff;
+
+	/* ============================================
+     12. FUTURE SHOCK (Intense)
+     Mood: Intense, sophisticated, modern
+     Use Cases: Corporate branding, professional sections
+     ============================================ */
+	--color-future-shock-navy: #2c3e50;
+	--color-future-shock-red: #e74c3c;
+	--color-future-shock-orange: #f39c12;
+	--color-future-shock-teal: #1abc9c;
+	--color-future-shock-purple: #9b59b6;
+
+	/* ============================================
+     13. CYBERNETIC GLOW (Elegant)
+     Mood: Elegant, balanced, futuristic
+     Use Cases: Artisan products, craftsmanship highlights
+     ============================================ */
+	--color-cybernetic-orange-red: #ff4500;
+	--color-cybernetic-gold: #ffd700;
+	--color-cybernetic-cyan: #00ffff;
+	--color-cybernetic-blue-violet: #8a2be2;
+	--color-cybernetic-hot-pink: #ff69b4;
+
+	/* ============================================
+     14. QUANTUM FLUX (Bold)
+     Mood: Bold, captivating, dynamic
+     Use Cases: Festival marketing, event promotions, announcements
+     ============================================ */
+	--color-quantum-charcoal: #4a4a4a;
+	--color-quantum-fiery-red: #ff3d00;
+	--color-quantum-teal: #00bfae;
+	--color-quantum-yellow: #ffd600;
+	--color-quantum-violet: #8c1bff;
+
+	/* ============================================
+     15. VIRTUAL REALITY (Harmonious)
+     Mood: Harmonious, balanced, modern
+     Use Cases: Tech startups, interior designs, versatile applications
+     ============================================ */
+	--color-virtual-reality-yellow: #ffea00;
+	--color-virtual-reality-sky-blue: #00bfff;
+	--color-virtual-reality-magenta: #ff007a;
+	--color-virtual-reality-purple: #8e44ad;
+	--color-virtual-reality-deep-magenta: #d5006d;
+
+	/* ============================================
+     SEMANTIC COLOR MAPPINGS
+     ============================================
+     These mappings provide purpose-driven color selections
+     that reference colors from both base and extended palettes.
+     ============================================ */
+
+	/* Accent Colors for CTAs and Highlights */
+	--color-accent-cta-primary: var(--color-electric-city-magenta);
+	--color-accent-cta-secondary: var(--color-neon-pulse-sky-blue);
+	--color-accent-highlight: var(--color-tech-noir-yellow);
+	--color-accent-success: var(--color-urban-jungle-green);
+	--color-accent-warning: var(--color-cyber-sunset-orange);
+	--color-accent-danger: var(--color-tech-noir-fiery-red);
+
+	/* Gradient Combinations */
+	--color-gradient-hero-start: var(--color-tech-noir-charcoal);
+	--color-gradient-hero-end: var(--color-electric-city-navy);
+	--color-gradient-sunset-start: var(--color-cyber-sunset-coral);
+	--color-gradient-sunset-end: var(--color-cyber-sunset-violet);
+	--color-gradient-neon-start: var(--color-neon-pulse-magenta);
+	--color-gradient-neon-end: var(--color-neon-pulse-violet);
+	--color-gradient-tech-start: var(--color-chrome-blue);
+	--color-gradient-tech-end: var(--color-chrome-purple);
+
+	/* Context-Specific Colors */
+	--color-luxury-primary: var(--color-tech-noir-purple);
+	--color-luxury-accent: var(--color-cybernetic-gold);
+	--color-tech-primary: var(--color-electric-city-neon-green);
+	--color-tech-accent: var(--color-holo-future-blue);
+	--color-creative-primary: var(--color-synthwave-pink);
+	--color-creative-accent: var(--color-synthwave-cyan);
+	--color-energetic-primary: var(--color-neon-dreams-orange);
+	--color-energetic-accent: var(--color-glitch-vibes-lime);
+}

@@ -84,7 +84,8 @@ async function importProjectFiles(): Promise<Record<string, string>> {
 		// The path should be relative to the current file (lib/local-projects.ts)
 		// which needs to go up one level to src, then into projects
 		const modules = import.meta.glob("../projects/*.mdx", {
-			as: "raw",
+			import: "default",
+			query: "?raw",
 			eager: true,
 		});
 
@@ -104,40 +105,8 @@ async function importProjectFiles(): Promise<Record<string, string>> {
 		return projectFiles;
 	} catch (error) {
 		console.error("Failed to import project files:", error);
-
-		// If import.meta.glob fails, let's try a fallback approach
-		console.log("🔄 Attempting alternative import method...");
-		return await importProjectFilesFallback();
+		return {};
 	}
-}
-
-// Fallback method to import project files individually
-async function importProjectFilesFallback(): Promise<Record<string, string>> {
-	const projectFiles: Record<string, string> = {};
-
-	// List of known project files (you can expand this list)
-	const knownProjects = [
-		"anime-management",
-		"blockchain-dapp",
-		"mobile-app",
-		"neural-portfolio",
-	];
-
-	for (const projectId of knownProjects) {
-		try {
-			// Try to dynamically import each project file
-			const modulePromise = import(`../projects/${projectId}.mdx?raw`);
-			const module = await modulePromise;
-			if (module && typeof module.default === "string") {
-				projectFiles[projectId] = module.default;
-				console.log(`✅ Loaded project: ${projectId}`);
-			}
-		} catch (error) {
-			console.warn(`⚠️ Failed to load project ${projectId}:`, error);
-		}
-	}
-
-	return projectFiles;
 }
 
 // Convert MDX content to ProjectData
@@ -189,7 +158,7 @@ export async function loadLocalProjects(): Promise<ProjectData[]> {
 
 // Load a specific project by ID
 export async function loadLocalProjectById(
-	id: string
+	id: string,
 ): Promise<ProjectData | null> {
 	try {
 		const projectFiles = await importProjectFiles();

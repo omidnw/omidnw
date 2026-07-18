@@ -1,0 +1,113 @@
+/* ============================================
+   CYBERPUNK THEME SYSTEM
+   ============================================
+   
+   This file defines the base color palette for dark and light themes.
+   Extended cyberpunk palettes are imported from color-palettes.css.
+   
+   Structure:
+   1. Import extended palettes
+   2. Base palette (dark theme)
+   3. Base palette (light theme)
+   4. Theme transitions
+   ============================================ */
+
+/* Import extended cyberpunk color palettes */
+@import "./color-palettes.css";
+
+/* ============================================
+   BASE PALETTE - DARK THEME
+   ============================================ */
+:root.dark {
+	/* Primary colors */
+	--color-primary-cyan: #06b6d4;
+	--color-primary-purple: #a855f7;
+	--color-primary-pink: #ec4899;
+	--color-primary-blue: #3b82f6;
+
+	/* Status colors */
+	--color-status-success: #4ade80;
+	--color-status-error: #ef4444;
+	--color-status-warning: #facc15;
+	--color-status-info: #06b6d4;
+
+	/* Background colors */
+	--color-bg-primary: #030712;
+	--color-bg-secondary: #111827;
+	--color-bg-tertiary: #1f2937;
+	--color-bg-card: rgba(17, 24, 39, 0.9);
+	--color-bg-hover: rgba(31, 41, 55, 0.5);
+
+	/* Text colors */
+	--color-text-primary: #ffffff;
+	--color-text-secondary: #d1d5db;
+	--color-text-tertiary: #9ca3af;
+	--color-text-inverse: #030712;
+
+	/* Border colors */
+	--color-border-primary: rgba(6, 182, 212, 0.3);
+	--color-border-secondary: rgba(168, 85, 247, 0.3);
+	--color-border-accent: rgba(236, 72, 153, 0.3);
+}
+
+/* ============================================
+   BASE PALETTE - LIGHT THEME (Soft Cyberpunk)
+   ============================================ */
+:root.light {
+	/* Primary colors - Enhanced for better visibility */
+	--color-primary-cyan: #0891b2;
+	--color-primary-purple: #7c3aed;
+	--color-primary-pink: #db2777;
+	--color-primary-blue: #2563eb;
+
+	/* Status colors */
+	--color-status-success: #16a34a;
+	--color-status-error: #dc2626;
+	--color-status-warning: #ca8a04;
+	--color-status-info: #0891b2;
+
+	/* Background colors - Lighter soft cyberpunk tones */
+	--color-bg-primary: #ddd9e8;
+	--color-bg-secondary: #d0cade;
+	--color-bg-tertiary: #c0bad0;
+	--color-bg-card: rgba(221, 217, 232, 0.95);
+	--color-bg-hover: rgba(192, 186, 208, 0.8);
+
+	/* Text colors - Enhanced contrast for better readability */
+	--color-text-primary: #1a1625;
+	--color-text-secondary: #2d2838;
+	--color-text-tertiary: #4a4558;
+	--color-text-inverse: #ffffff;
+
+	/* Border colors - Increased opacity for better visibility */
+	--color-border-primary: rgba(8, 145, 178, 0.5);
+	--color-border-secondary: rgba(124, 58, 237, 0.5);
+	--color-border-accent: rgba(219, 39, 119, 0.5);
+}
+
+/* ============================================
+   THEME TRANSITIONS
+   ============================================ */
+
+/* Apply theme colors and smooth transitions to body */
+body {
+	background-color: var(--color-bg-primary);
+	color: var(--color-text-primary);
+	transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
+}
+
+/* Smooth transitions for all elements using theme colors */
+* {
+	transition-property: background-color, color, border-color, box-shadow;
+	transition-duration: 0.4s;
+	transition-timing-function: ease-in-out;
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	body {
+		transition-duration: 0.01ms !important;
+		animation-duration: 0.01ms !important;
+	}
+}

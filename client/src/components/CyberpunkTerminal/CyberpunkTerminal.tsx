@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
 import { useLocation } from "wouter";
 import { Card } from "@/components/ui/card";
-import type { CyberpunkTerminalProps, TerminalState } from "./types";
-import { detectMacOS, getCurrentPath, getCurrentDirectory } from "./utils";
+import type { CyberpunkTerminalProps } from "./types";
+import { detectMacOS, getCurrentDirectory } from "./utils";
 import {
 	executeCommand,
 	handleKeyboardShortcuts,
@@ -11,9 +11,15 @@ import {
 } from "./commands";
 import { isSystemInRescueMode } from "@/lib/terminal-commands/systemctl";
 import { INITIAL_HISTORY, VERSION } from "./constants";
-import { getTabCompletions } from "@/lib/terminal-commands/tab-completion";
+import {
+	useTerminalState,
+	useTerminalHistory,
+	useCommandAliases,
+	useTerminalTheme,
+	useAutoComplete,
+} from "./hooks";
+import { useMusicPlayer } from "@/contexts/MusicPlayerContext";
 
-// Import modal components
 import BlogPostModal from "@/components/BlogPostModal";
 import ProjectModal from "@/components/ProjectModal";
 import { GameModal, GameType } from "@/components/GameModal";
@@ -24,24 +30,35 @@ export default function CyberpunkTerminal({
 }: CyberpunkTerminalProps) {
 	const [location, navigate] = useLocation();
 	const [input, setInput] = useState("");
-	const [history, setHistory] = useState<string[]>([]);
-	const [historyIndex, setHistoryIndex] = useState(-1);
-	const [commandHistory, setCommandHistory] = useState<string[]>([]);
 	const [isMac] = useState(detectMacOS);
 	const [isInitialized, setIsInitialized] = useState(false);
 
-	// LocalStorage keys
-	const TERMINAL_HISTORY_KEY = "cyberpunk-terminal-history";
-	const COMMAND_HISTORY_KEY = "cyberpunk-terminal-command-history";
-	const INITIAL_SHOWN_KEY = "cyberpunk-terminal-initial-shown";
+	const {
+		state: terminalState,
+		updateState: setTerminalState,
+		setFileSystem,
+	} = useTerminalState();
 
-	// Terminal state for file system navigation
-	const [terminalState, setTerminalState] = useState<TerminalState>({
-		currentPath: [],
-		fileSystem: {},
-	});
+	const {
+		history,
+		commandHistory,
+		addToHistory,
+		clearHistory,
+		addToCommandHistory,
+		navigateHistory,
+		getLastCommand,
+		initializeHistory,
+	} = useTerminalHistory(INITIAL_HISTORY);
 
-	// Modal states
+	const { aliases, addAlias, removeAlias, listAliases, resolveAlias } =
+		useCommandAliases();
+
+	const { currentTheme, changeTheme, listThemes } = useTerminalTheme();
+
+	const { handleTabCompletion } = useAutoComplete(terminalState, isMac);
+
+	const musicPlayer = useMusicPlayer();
+
 	const [blogModalOpen, setBlogModalOpen] = useState(false);
 	const [projectModalOpen, setProjectModalOpen] = useState(false);
 	const [selectedBlogId, setSelectedBlogId] = useState("");
@@ -52,43 +69,25 @@ export default function CyberpunkTerminal({
 	const inputRef = useRef<HTMLInputElement>(null);
 	const terminalRef = useRef<HTMLDivElement>(null);
 
-	// Initialize file system when terminal opens
 	useEffect(() => {
 		if (isOpen && !isInitialized) {
 			const initFileSystem = async () => {
 				try {
 					const fileSystem = await initializeFileSystem();
-					setTerminalState((prev) => ({
-						...prev,
-						fileSystem,
-					}));
+					setFileSystem(fileSystem);
 
-					// Load history from localStorage
-					const savedHistory = loadHistoryFromLocalStorage();
-					const savedCommandHistory = loadCommandHistoryFromLocalStorage();
-
-					// Show initial history only if it hasn't been shown before
-					if (!hasShownInitialHistory() && savedHistory.length === 0) {
-						setHistory(INITIAL_HISTORY.slice());
-						saveHistoryToLocalStorage(INITIAL_HISTORY.slice());
-						markInitialHistoryShown();
-					} else {
-						setHistory(savedHistory);
-					}
-
-					setCommandHistory(savedCommandHistory);
+					initializeHistory();
 					setIsInitialized(true);
 				} catch (error) {
 					console.error("Failed to initialize file system:", error);
-					setIsInitialized(true); // Continue even if initialization fails
+					setIsInitialized(true);
 				}
 			};
 
 			initFileSystem();
 		}
-	}, [isOpen, isInitialized]);
+	}, [isOpen, isInitialized, setFileSystem, initializeHistory]);
 
-	// Handle modal opening functions
 	const handleOpenBlogPost = useCallback((blogId: string) => {
 		setSelectedBlogId(blogId);
 		setBlogModalOpen(true);
@@ -99,21 +98,18 @@ export default function CyberpunkTerminal({
 		setProjectModalOpen(true);
 	}, []);
 
-	// Focus input when terminal opens
 	useEffect(() => {
 		if (isOpen && inputRef.current) {
 			inputRef.current.focus();
 		}
 	}, [isOpen]);
 
-	// Auto-scroll to bottom when history updates
 	useEffect(() => {
 		if (terminalRef.current) {
 			terminalRef.current.scrollTop = terminalRef.current.scrollHeight;
 		}
 	}, [history]);
 
-	// Handle keyboard shortcuts
 	useEffect(() => {
 		const handleKeyPress = (e: KeyboardEvent) => {
 			const handled = handleKeyboardShortcuts(
@@ -132,201 +128,237 @@ export default function CyberpunkTerminal({
 		return () => document.removeEventListener("keydown", handleKeyPress);
 	}, [isMac, navigate, isOpen, onClose]);
 
-	// LocalStorage helper functions
-	const saveHistoryToLocalStorage = (historyData: string[]) => {
-		try {
-			localStorage.setItem(TERMINAL_HISTORY_KEY, JSON.stringify(historyData));
-		} catch (error) {
-			console.warn("Failed to save history to localStorage:", error);
+	const handleTabComplete = useCallback(() => {
+		const result = handleTabCompletion(input);
+		if (result.newInput !== input) {
+			setInput(result.newInput);
 		}
-	};
-
-	const loadHistoryFromLocalStorage = (): string[] => {
-		try {
-			const saved = localStorage.getItem(TERMINAL_HISTORY_KEY);
-			return saved ? JSON.parse(saved) : [];
-		} catch (error) {
-			console.warn("Failed to load history from localStorage:", error);
-			return [];
+		if (result.message) {
+			const promptPrefix = `user@omidnw:${getCurrentDirectory(
+				terminalState.currentPath || []
+			)}$ `;
+			addToHistory(`${promptPrefix}${input}`);
+			addToHistory(result.message);
 		}
-	};
+	}, [input, handleTabCompletion, addToHistory, terminalState]);
 
-	const saveCommandHistoryToLocalStorage = (cmdHistory: string[]) => {
-		try {
-			localStorage.setItem(COMMAND_HISTORY_KEY, JSON.stringify(cmdHistory));
-		} catch (error) {
-			console.warn("Failed to save command history to localStorage:", error);
-		}
-	};
+	const getMusicPlayerState = useCallback(() => {
+		if (!musicPlayer) return null;
+		return {
+			isPlaying: musicPlayer.isPlaying,
+			currentTime: musicPlayer.currentTime,
+			duration: musicPlayer.duration,
+			volume: musicPlayer.volume,
+			isMuted: musicPlayer.isMuted,
+			loop: musicPlayer.loop,
+			audioSrc: musicPlayer.audioSrc,
+		};
+	}, [musicPlayer]);
 
-	const loadCommandHistoryFromLocalStorage = (): string[] => {
-		try {
-			const saved = localStorage.getItem(COMMAND_HISTORY_KEY);
-			return saved ? JSON.parse(saved) : [];
-		} catch (error) {
-			console.warn("Failed to load command history from localStorage:", error);
-			return [];
-		}
-	};
+	const executeTerminalCommand = useCallback(
+		(cmd: string) => {
+			let trimmedCmd = cmd.trim();
+			if (!trimmedCmd) return;
 
-	const hasShownInitialHistory = (): boolean => {
-		try {
-			return localStorage.getItem(INITIAL_SHOWN_KEY) === "true";
-		} catch (error) {
-			return false;
-		}
-	};
-
-	const markInitialHistoryShown = () => {
-		try {
-			localStorage.setItem(INITIAL_SHOWN_KEY, "true");
-		} catch (error) {
-			console.warn("Failed to mark initial history as shown:", error);
-		}
-	};
-
-	const addToHistory = (content: string) => {
-		setHistory((prev) => {
-			const newHistory = [...prev, content];
-			saveHistoryToLocalStorage(newHistory);
-			return newHistory;
-		});
-	};
-
-	const findCommonPrefix = (strings: string[]): string => {
-		if (strings.length === 0) return "";
-		if (strings.length === 1) return strings[0];
-
-		let prefix = strings[0];
-		for (let i = 1; i < strings.length; i++) {
-			while (strings[i].indexOf(prefix) !== 0) {
-				prefix = prefix.substring(0, prefix.length - 1);
-				if (prefix === "") return "";
+			if (trimmedCmd === "!!") {
+				const lastCmd = getLastCommand();
+				if (!lastCmd) {
+					addToHistory(
+						"Error: No previous command found. Use arrow keys to navigate history."
+					);
+					return;
+				}
+				trimmedCmd = lastCmd;
 			}
-		}
-		return prefix;
-	};
 
-	const handleTabCompletion = () => {
-		const trimmedInput = input.trimStart();
-		console.log("🔥 Tab pressed! Input:", {
-			input,
-			trimmedInput,
+			const promptPrefix = isSystemInRescueMode()
+				? `💀 RESCUE MODE 💀:${getCurrentDirectory(
+						terminalState.currentPath || []
+				  )}# `
+				: `user@omidnw:${getCurrentDirectory(
+						terminalState.currentPath || []
+				  )}$ `;
+			addToHistory(`${promptPrefix}${trimmedCmd}`);
+
+			addToCommandHistory(trimmedCmd);
+
+			try {
+				const output = executeCommand(
+					trimmedCmd,
+					isMac,
+					navigate,
+					terminalState,
+					setTerminalState,
+					handleOpenBlogPost,
+					handleOpenProject,
+					addToHistory,
+					resolveAlias,
+					getMusicPlayerState
+				);
+
+				if (output === "CLEAR_TERMINAL") {
+					clearHistory();
+					return;
+				}
+
+				if (output === "EXIT_TERMINAL") {
+					onClose();
+					return;
+				}
+
+				if (output === "OPEN_TETRIS_MODAL") {
+					setGameType("tetris");
+					setGameModalOpen(true);
+					addToHistory("Opening Cyber Tetris...");
+					return;
+				}
+
+				if (output === "OPEN_SNAKE_MODAL") {
+					setGameType("snake");
+					setGameModalOpen(true);
+					addToHistory("Opening Cyber Snake...");
+					return;
+				}
+
+				if (output.startsWith("ALIAS_ADD:")) {
+					const parts = output.split(":");
+					const result = addAlias(parts[1], parts.slice(2).join(":"));
+					addToHistory(result);
+					return;
+				}
+
+				if (output.startsWith("ALIAS_REMOVE:")) {
+					const name = output.split(":")[1];
+					const result = removeAlias(name);
+					addToHistory(result);
+					return;
+				}
+
+				if (output === "ALIAS_LIST") {
+					addToHistory(listAliases());
+					return;
+				}
+
+				if (output.startsWith("THEME_CHANGE:")) {
+					const themeName = output.split(":")[1];
+					const result = changeTheme(themeName);
+					addToHistory(result);
+					return;
+				}
+
+				if (output === "THEME_LIST") {
+					addToHistory(listThemes());
+					return;
+				}
+
+				if (output === "MUSIC_PLAY") {
+					if (musicPlayer) {
+						if (!musicPlayer.isPlaying) {
+							musicPlayer.togglePlayPause();
+							addToHistory("▶ Music playback resumed");
+						} else {
+							addToHistory("Music is already playing");
+						}
+					} else {
+						addToHistory("Error: Music player not available");
+					}
+					return;
+				}
+
+				if (output === "MUSIC_PAUSE") {
+					if (musicPlayer) {
+						if (musicPlayer.isPlaying) {
+							musicPlayer.togglePlayPause();
+							addToHistory("⏸ Music paused");
+						} else {
+							addToHistory("Music is already paused");
+						}
+					} else {
+						addToHistory("Error: Music player not available");
+					}
+					return;
+				}
+
+				if (output === "MUSIC_STOP") {
+					if (musicPlayer) {
+						if (musicPlayer.isPlaying) {
+							musicPlayer.togglePlayPause();
+						}
+						musicPlayer.seek(0);
+						addToHistory("⏹ Music stopped and reset to beginning");
+					} else {
+						addToHistory("Error: Music player not available");
+					}
+					return;
+				}
+
+				if (output === "MUSIC_MUTE") {
+					if (musicPlayer) {
+						musicPlayer.toggleMute();
+						addToHistory(
+							musicPlayer.isMuted ? "🔇 Audio muted" : "🔊 Audio unmuted"
+						);
+					} else {
+						addToHistory("Error: Music player not available");
+					}
+					return;
+				}
+
+				if (output === "MUSIC_LOOP") {
+					if (musicPlayer) {
+						musicPlayer.toggleLoop();
+						addToHistory(
+							musicPlayer.loop ? "🔁 Loop enabled" : "Loop disabled"
+						);
+					} else {
+						addToHistory("Error: Music player not available");
+					}
+					return;
+				}
+
+				if (output.startsWith("MUSIC_VOLUME:")) {
+					const volume = parseInt(output.split(":")[1]);
+					if (musicPlayer) {
+						musicPlayer.setVolume(volume / 100);
+						addToHistory(`🔊 Volume set to ${volume}%`);
+					} else {
+						addToHistory("Error: Music player not available");
+					}
+					return;
+				}
+
+				if (output) {
+					addToHistory(output);
+				}
+			} catch (error) {
+				console.error("Command execution error:", error);
+				addToHistory(
+					`Error: ${error instanceof Error ? error.message : "Unknown error"}`
+				);
+			}
+		},
+		[
+			getLastCommand,
+			addToHistory,
 			terminalState,
-		});
-		if (!trimmedInput) return;
-
-		// Use the imported getTabCompletions function
-		const completions = getTabCompletions(trimmedInput, terminalState, isMac);
-		console.log("🎯 Tab completions result:", completions);
-
-		if (completions.length === 1) {
-			// Handle different completion types more smartly
-			const completion = completions[0];
-
-			// For ./ and ../ commands, only complete the missing part
-			if (trimmedInput.startsWith("./") || trimmedInput.startsWith("../")) {
-				setInput(completion);
-			}
-			// For command completions (no space in input)
-			else if (!trimmedInput.includes(" ")) {
-				setInput(completion + " ");
-			}
-			// For file/path completions within commands
-			else {
-				setInput(completion);
-			}
-		} else if (completions.length > 1) {
-			// If multiple completions, show them in history
-			addToHistory(
-				`${getCurrentDirectory(
-					terminalState.currentPath || []
-				)}$ ${trimmedInput}`
-			);
-			// Determine if showing commands or file/dir names
-			const isCommandCompletion = !trimmedInput.includes(" ");
-			const label = isCommandCompletion
-				? "Available commands"
-				: "Available options";
-			addToHistory(`${label}: ${completions.join("  ")}`);
-
-			// Optional: Find common prefix and partially complete
-			// This helps when multiple options share a starting sequence.
-			const commonPrefix = findCommonPrefix(completions);
-			// Check if the common prefix is longer than the current input
-			if (commonPrefix && commonPrefix.length > trimmedInput.length) {
-				setInput(commonPrefix);
-			}
-		}
-	};
-
-	const executeTerminalCommand = (cmd: string) => {
-		const trimmedCmd = cmd.trim();
-		if (!trimmedCmd) return;
-
-		// Add command to history
-		const promptPrefix = isSystemInRescueMode()
-			? `💀 RESCUE MODE 💀:${getCurrentDirectory(
-					terminalState.currentPath || []
-			  )}# `
-			: `user@omidnw:${getCurrentDirectory(terminalState.currentPath || [])}$ `;
-		addToHistory(`${promptPrefix}${trimmedCmd}`);
-
-		// Add to command history for up/down arrow navigation
-		setCommandHistory((prev) => {
-			const newCommandHistory = [...prev, trimmedCmd];
-			saveCommandHistoryToLocalStorage(newCommandHistory);
-			return newCommandHistory;
-		});
-		setHistoryIndex(-1);
-
-		try {
-			const output = executeCommand(
-				trimmedCmd,
-				isMac,
-				navigate,
-				terminalState,
-				setTerminalState,
-				handleOpenBlogPost,
-				handleOpenProject,
-				addToHistory
-			);
-
-			if (output === "CLEAR_TERMINAL") {
-				setHistory([]);
-				saveHistoryToLocalStorage([]);
-				return;
-			}
-
-			if (output === "EXIT_TERMINAL") {
-				onClose();
-				return;
-			}
-
-			if (output === "OPEN_TETRIS_MODAL") {
-				setGameType("tetris");
-				setGameModalOpen(true);
-				addToHistory("Opening Cyber Tetris...");
-				return;
-			}
-
-			if (output === "OPEN_SNAKE_MODAL") {
-				setGameType("snake");
-				setGameModalOpen(true);
-				addToHistory("Opening Cyber Snake...");
-				return;
-			}
-
-			if (output) {
-				addToHistory(output);
-			}
-		} catch (error) {
-			console.error("Command execution error:", error);
-			addToHistory(
-				`Error: ${error instanceof Error ? error.message : "Unknown error"}`
-			);
-		}
-	};
+			addToCommandHistory,
+			isMac,
+			navigate,
+			setTerminalState,
+			handleOpenBlogPost,
+			handleOpenProject,
+			resolveAlias,
+			clearHistory,
+			onClose,
+			addAlias,
+			removeAlias,
+			listAliases,
+			changeTheme,
+			listThemes,
+			getMusicPlayerState,
+			musicPlayer,
+		]
+	);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
@@ -334,29 +366,37 @@ export default function CyberpunkTerminal({
 		setInput("");
 	};
 
-	const handleKeyDown = (e: React.KeyboardEvent) => {
-		if (e.key === "ArrowUp") {
-			e.preventDefault();
-			if (commandHistory.length > 0) {
-				const newIndex = Math.min(historyIndex + 1, commandHistory.length - 1);
-				setHistoryIndex(newIndex);
-				setInput(commandHistory[commandHistory.length - 1 - newIndex]);
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent) => {
+			if (e.key === "ArrowUp") {
+				e.preventDefault();
+				const cmd = navigateHistory("up");
+				if (cmd !== "") {
+					setInput(cmd);
+				}
+			} else if (e.key === "ArrowDown") {
+				e.preventDefault();
+				const cmd = navigateHistory("down");
+				setInput(cmd);
+			} else if (e.key === "Tab") {
+				e.preventDefault();
+				handleTabComplete();
+			} else if (e.key === "l" && e.ctrlKey) {
+				e.preventDefault();
+				clearHistory();
 			}
-		} else if (e.key === "ArrowDown") {
-			e.preventDefault();
-			if (historyIndex > 0) {
-				const newIndex = historyIndex - 1;
-				setHistoryIndex(newIndex);
-				setInput(commandHistory[commandHistory.length - 1 - newIndex]);
-			} else if (historyIndex === 0) {
-				setHistoryIndex(-1);
-				setInput("");
-			}
-		} else if (e.key === "Tab") {
-			e.preventDefault();
-			handleTabCompletion();
-		}
-	};
+		},
+		[navigateHistory, handleTabComplete, clearHistory]
+	);
+
+	const themeStyles = useMemo(
+		() => ({
+			"--terminal-primary": currentTheme.primary,
+			"--terminal-secondary": currentTheme.secondary,
+			"--terminal-background": currentTheme.background,
+		}),
+		[currentTheme]
+	);
 
 	if (!isOpen) return null;
 
@@ -365,7 +405,6 @@ export default function CyberpunkTerminal({
 			<AnimatePresence>
 				{isOpen && (
 					<>
-						{/* Backdrop */}
 						<m.div
 							initial={{ opacity: 0 }}
 							animate={{ opacity: 1 }}
@@ -375,43 +414,49 @@ export default function CyberpunkTerminal({
 							onClick={onClose}
 						/>
 
-						{/* Terminal */}
 						<m.div
 							initial={{ opacity: 0, scale: 0.9, y: 20 }}
 							animate={{ opacity: 1, scale: 1, y: 0 }}
 							exit={{ opacity: 0, scale: 0.9, y: 20 }}
 							transition={{ duration: 0.3, ease: "easeOut" }}
 							className="fixed inset-4 md:inset-8 lg:inset-16 z-40"
+							style={themeStyles as React.CSSProperties}
 						>
 							<Card
 								variant="cyberpunk"
-								className="h-full flex flex-col bg-black/90 backdrop-blur-md border-primary/50 relative overflow-hidden"
+								className="h-full flex flex-col backdrop-blur-md border-primary/50 relative overflow-hidden"
+								style={{ background: currentTheme.background }}
 							>
-								{/* Background Effects */}
 								<div className="absolute inset-0 pointer-events-none">
-									{/* Matrix rain effect - reduced in rescue mode */}
 									<div
-										className={`absolute inset-0 ${
-											isSystemInRescueMode() ? "opacity-1" : "opacity-5"
-										}`}
+										className="absolute inset-0"
+										style={{
+											opacity: isSystemInRescueMode()
+												? 0.1
+												: parseFloat(currentTheme.matrixOpacity),
+										}}
 									>
 										<div className="matrix-rain" />
 									</div>
 
-									{/* Scan lines - disabled in rescue mode */}
 									{!isSystemInRescueMode() && (
-										<div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent animate-pulse" />
+										<div
+											className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent animate-pulse"
+											style={{
+												opacity: parseFloat(currentTheme.scanlineOpacity),
+											}}
+										/>
 									)}
 
-									{/* Cyber grid - reduced in rescue mode */}
 									<div
-										className={`absolute inset-0 ${
-											isSystemInRescueMode() ? "opacity-5" : "opacity-10"
-										}`}
+										className="absolute inset-0"
 										style={{
+											opacity: isSystemInRescueMode()
+												? 0.05
+												: parseFloat(currentTheme.gridOpacity),
 											backgroundImage: `
-												linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-												linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px)
+												linear-gradient(${currentTheme.primary}33 1px, transparent 1px),
+												linear-gradient(90deg, ${currentTheme.primary}33 1px, transparent 1px)
 											`,
 											backgroundSize: "20px 20px",
 										}}

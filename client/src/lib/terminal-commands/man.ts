@@ -1,6 +1,6 @@
 import { TerminalState } from "@/components/CyberpunkTerminal/types";
+import { generateMusicManPage } from "./music";
 
-// Manual pages database
 const manPages: Record<
 	string,
 	{ name: string; section: number; description: string; content: string }
@@ -234,15 +234,16 @@ AVAILABLE MANUAL PAGES:
 For more information about a specific command, use: man <command>`;
 };
 
-/**
- * Handle man command
- */
 export const handleManCommand = (args: string[]): string => {
 	if (args.length === 0) {
 		return "What manual page do you want?\nFor example, try 'man ls' or 'man --help'";
 	}
 
 	const firstArg = args[0];
+
+	if (firstArg === "music") {
+		return generateMusicManPage();
+	}
 
 	// Handle options
 	if (firstArg === "-h" || firstArg === "--help") {

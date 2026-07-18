@@ -18,7 +18,6 @@ import {
 	Plus,
 	Check,
 	ExternalLink,
-	Github,
 	Play,
 	Star,
 	Zap,
@@ -31,6 +30,7 @@ import {
 	Database,
 	CheckCircle,
 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 
 // GitHub API integration
 import {
@@ -85,7 +85,7 @@ export default function Projects() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [dataSource, setDataSource] = useState<"github" | "local" | "none">(
-		"none"
+		"none",
 	);
 	const [refreshing, setRefreshing] = useState(false);
 	const tagInputRef = useRef<HTMLInputElement>(null);
@@ -110,11 +110,11 @@ export default function Projects() {
 						loadedProjects = projectsArray;
 						setDataSource("github");
 						console.log(
-							`✅ Loaded ${projectsArray.length} projects from GitHub`
+							`✅ Loaded ${projectsArray.length} projects from GitHub`,
 						);
 					} else {
 						console.log(
-							"⚠️ No projects found in GitHub, checking fallback options..."
+							"⚠️ No projects found in GitHub, checking fallback options...",
 						);
 						// Check if local fallback is enabled
 						if (GITHUB_CONFIG.enableLocalFallback) {
@@ -213,7 +213,7 @@ export default function Projects() {
 	const filteredTagSuggestions = useMemo(() => {
 		if (!tagSearch.trim()) return allTags;
 		return allTags.filter((tag) =>
-			tag.toLowerCase().includes(tagSearch.toLowerCase())
+			tag.toLowerCase().includes(tagSearch.toLowerCase()),
 		);
 	}, [tagSearch, allTags]);
 
@@ -228,10 +228,10 @@ export default function Projects() {
 				project.content.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				project.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
 				project.technologies.some((tech) =>
-					tech.toLowerCase().includes(searchTerm.toLowerCase())
+					tech.toLowerCase().includes(searchTerm.toLowerCase()),
 				) ||
 				project.tags.some((tag) =>
-					tag.toLowerCase().includes(searchTerm.toLowerCase())
+					tag.toLowerCase().includes(searchTerm.toLowerCase()),
 				);
 
 			// Tag filter - projects must contain ALL selected tags (AND logic)
@@ -239,8 +239,8 @@ export default function Projects() {
 				selectedTags.length === 0 ||
 				selectedTags.every((selectedTag) =>
 					[...project.tags, ...project.technologies, project.category].some(
-						(tag) => tag.toLowerCase() === selectedTag.toLowerCase()
-					)
+						(tag) => tag.toLowerCase() === selectedTag.toLowerCase(),
+					),
 				);
 
 			// Status filter
@@ -253,7 +253,7 @@ export default function Projects() {
 	}, [searchTerm, selectedTags, selectedStatus, projects]);
 
 	const featuredProjects = filteredProjects.filter(
-		(project) => project.featured
+		(project) => project.featured,
 	);
 	const regularProjects = useMemo(() => {
 		// If any filter is active, show all filtered projects in the main list
@@ -425,7 +425,7 @@ export default function Projects() {
 									<div className="flex items-center text-xs text-muted-foreground font-mono">
 										{dataSource === "github" ? (
 											<>
-												<Github className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-400" />
+												<SiGithub className="w-3 h-3 sm:w-4 sm:h-4 mr-1 text-green-400" />
 												<span className="text-green-400">GitHub</span>
 											</>
 										) : dataSource === "local" ? (
@@ -578,7 +578,7 @@ export default function Projects() {
 																	{selectedTags.length > 0
 																		? `${selectedTags.length} tag${
 																				selectedTags.length !== 1 ? "s" : ""
-																		  } selected • Click to add more`
+																			} selected • Click to add more`
 																		: "Select multiple tags to filter projects"}
 																</div>
 																<div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50">
@@ -920,7 +920,7 @@ export default function Projects() {
 																					e.preventDefault();
 																					window.open(
 																						project.demoUrl,
-																						"_blank"
+																						"_blank",
 																					);
 																				}}
 																				className="touch-manipulation min-h-[44px] flex-1"
@@ -941,12 +941,12 @@ export default function Projects() {
 																					e.preventDefault();
 																					window.open(
 																						project.githubUrl,
-																						"_blank"
+																						"_blank",
 																					);
 																				}}
 																				className="touch-manipulation min-h-[44px] flex-1"
 																			>
-																				<Github className="w-4 h-4 mr-2" />
+																				<SiGithub className="w-4 h-4 mr-2" />
 																				<span className="hidden sm:inline">
 																					GitHub
 																				</span>
@@ -1136,12 +1136,12 @@ export default function Projects() {
 																				e.preventDefault();
 																				window.open(
 																					project.githubUrl,
-																					"_blank"
+																					"_blank",
 																				);
 																			}}
 																			className="touch-manipulation min-h-[44px] flex-1"
 																		>
-																			<Github className="w-4 h-4 mr-2" />
+																			<SiGithub className="w-4 h-4 mr-2" />
 																			<span className="hidden sm:inline">
 																				GitHub
 																			</span>

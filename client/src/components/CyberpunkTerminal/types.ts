@@ -43,6 +43,14 @@ export interface TerminalCommands {
 	man: string;
 	tetris: string;
 	snake: string;
+	alias: string;
+	unalias: string;
+	theme: string;
+	echo: string;
+	date: string;
+	time: string;
+	uptime: string;
+	music: string;
 }
 
 export interface TimeInfo {

@@ -16,11 +16,11 @@ import {
 	Check,
 	RefreshCw,
 	AlertCircle,
-	Github,
 	Code,
 	Wifi,
 	WifiOff,
 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Link } from "wouter";
 
 // GitHub API integration & data types
@@ -49,7 +49,7 @@ export default function BlogPost() {
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [dataSource, setDataSource] = useState<"github" | "local" | "none">(
-		"none"
+		"none",
 	);
 	const [refreshing, setRefreshing] = useState(false);
 
@@ -70,7 +70,7 @@ export default function BlogPost() {
 						console.log(`✅ Loaded blog post ${slug} from GitHub`);
 					} else {
 						console.log(
-							`⚠️ Blog post ${slug} not found in GitHub, checking fallback...`
+							`⚠️ Blog post ${slug} not found in GitHub, checking fallback...`,
 						);
 						if (GITHUB_CONFIG.enableLocalFallback) {
 							console.log("🔄 Falling back to local blog file...");
@@ -112,7 +112,7 @@ export default function BlogPost() {
 				} catch (markdownError) {
 					console.warn(
 						"Failed to process markdown for blog post, using raw content:",
-						markdownError
+						markdownError,
 					);
 					setProcessedContent(loadedPost.content);
 				}
@@ -430,7 +430,7 @@ export default function BlogPost() {
 						<div className="flex items-center text-xs text-muted-foreground font-mono">
 							{dataSource === "github" ? (
 								<>
-									<Github className="w-3 h-3 mr-1 text-green-400" />
+									<SiGithub className="w-3 h-3 mr-1 text-green-400" />
 									<span className="text-green-400">GitHub</span>
 								</>
 							) : dataSource === "local" ? (

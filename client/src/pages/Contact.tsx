@@ -9,9 +9,7 @@ import { Label } from "@/components/ui/label";
 import {
 	Mail,
 	MapPin,
-	Github,
-	Linkedin,
-	Twitter,
+	X as TwitterXX,
 	Send,
 	Terminal,
 	Zap,
@@ -21,13 +19,14 @@ import {
 	CheckCircle,
 	AlertCircle,
 	Loader2,
-	Gitlab,
 	Code,
 	ExternalLink,
 	Building,
 	Phone,
 	Clock,
 } from "lucide-react";
+import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
+import { FaLinkedinIn } from "react-icons/fa";
 import CyberpunkDubaiMap from "@/components/CyberpunkDubaiMap";
 import { useSEO } from "@/lib/seo";
 
@@ -74,7 +73,7 @@ export default function Contact() {
 	const getUAETime = () => {
 		const now = new Date();
 		const uaeTime = new Date(
-			now.getTime() + 4 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000
+			now.getTime() + 4 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000,
 		);
 		return uaeTime;
 	};
@@ -161,7 +160,7 @@ export default function Contact() {
 
 	// Handle input changes
 	const handleChange = (
-		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+		e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 	) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
@@ -187,7 +186,7 @@ export default function Contact() {
 			href: "https://maps.google.com/?q=Dubai, UAE",
 		},
 		{
-			icon: Linkedin,
+			icon: FaLinkedinIn,
 			label: "LinkedIn Profile",
 			value: "linkedin.com/in/omid-reza-keshtkar",
 			href: "https://www.linkedin.com/in/omid-reza-keshtkar",
@@ -197,7 +196,7 @@ export default function Contact() {
 	// Social links
 	const socialLinks = [
 		{
-			icon: Github,
+			icon: SiGithub,
 			label: "GitHub",
 			value: "Work: @omidrezakeshtkar | Personal: @omidnw",
 			href: "https://github.com/omidrezakeshtkar",
@@ -205,7 +204,7 @@ export default function Contact() {
 			color: "text-white",
 		},
 		{
-			icon: Gitlab,
+			icon: SiGitlab,
 			label: "GitLab",
 			value: "Work: @omidrezakeshtkar | Personal: @omidnw",
 			href: "https://gitlab.com/omidrezakeshtkar",
@@ -213,7 +212,7 @@ export default function Contact() {
 			color: "text-orange-400",
 		},
 		{
-			icon: Linkedin,
+			icon: FaLinkedinIn,
 			label: "LinkedIn",
 			value: "Omid Reza Keshtkar",
 			href: "https://www.linkedin.com/in/omid-reza-keshtkar",
@@ -296,10 +295,10 @@ export default function Contact() {
 										<span className="text-xs sm:text-sm font-mono text-primary">
 											{Math.round(
 												(Object.values(formData).filter(
-													(value) => value.trim().length > 0
+													(value) => value.trim().length > 0,
 												).length /
 													4) *
-													100
+													100,
 											)}
 											%
 										</span>
@@ -311,7 +310,7 @@ export default function Contact() {
 											animate={{
 												width: `${
 													(Object.values(formData).filter(
-														(value) => value.trim().length > 0
+														(value) => value.trim().length > 0,
 													).length /
 														4) *
 													100
@@ -638,10 +637,10 @@ export default function Contact() {
 													{social.label === "GitHub"
 														? "Open source contributions"
 														: social.label === "GitLab"
-														? "Project repositories"
-														: social.label === "LinkedIn"
-														? "Professional network"
-														: "Discord communication"}
+															? "Project repositories"
+															: social.label === "LinkedIn"
+																? "Professional network"
+																: "Discord communication"}
 												</p>
 											</div>
 										</div>

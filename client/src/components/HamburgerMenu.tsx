@@ -10,13 +10,13 @@ import {
 	Briefcase,
 	BookOpen,
 	Mail,
-	Github,
-	Linkedin,
-	Twitter,
+	X as TwitterX,
 	Menu,
 	X,
 	Terminal,
 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
+import { FaLinkedinIn } from "react-icons/fa";
 
 const navigationItems = [
 	{ name: "Home", path: "/", icon: Home },
@@ -31,19 +31,19 @@ const socialLinks = [
 	{
 		name: "GitHub",
 		url: "https://github.com/omidnw",
-		icon: Github,
+		icon: SiGithub,
 		ariaLabel: "Visit GitHub profile",
 	},
 	{
 		name: "LinkedIn",
 		url: "https://www.linkedin.com/in/omid-reza-keshtkar",
-		icon: Linkedin,
+		icon: FaLinkedinIn,
 		ariaLabel: "Visit LinkedIn profile",
 	},
 	{
 		name: "X",
 		url: "https://x.com/omidrezakeshtka",
-		icon: Twitter,
+		icon: TwitterX,
 		ariaLabel: "Visit X profile",
 	},
 ];
@@ -538,7 +538,7 @@ export default function HamburgerMenu({
 						</LazyMotion>
 					)}
 				</AnimatePresence>,
-				document.body
+				document.body,
 			)}
 		</>
 	);

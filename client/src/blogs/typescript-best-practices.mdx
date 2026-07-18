@@ -1,0 +1,310 @@
+---
+title: "TypeScript Best Practices for Modern Development"
+excerpt: "Discover essential TypeScript patterns and practices that will make your code more maintainable, type-safe, and production-ready."
+author: "Omid Reza Keshtkar"
+date: "2024-11-15"
+readTime: "18 min"
+tags: ["TypeScript", "JavaScript", "Best Practices", "Programming"]
+featured: true
+---
+
+# TypeScript Best Practices for Modern Development
+
+TypeScript has become the de facto standard for building large-scale JavaScript applications. In this article, we'll explore best practices that will help you write better, more maintainable TypeScript code.
+
+## Why TypeScript?
+
+TypeScript adds static typing to JavaScript, which provides several benefits:
+
+- **Early Error Detection**: Catch bugs at compile time instead of runtime
+- **Better IDE Support**: Enhanced autocomplete and refactoring capabilities
+- **Improved Documentation**: Types serve as inline documentation
+- **Safer Refactoring**: Confidently make changes knowing the compiler has your back
+
+## Type System Fundamentals
+
+### Use Strict Mode
+
+Always enable strict mode in your `tsconfig.json`:
+
+```json
+{
+	"compilerOptions": {
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictFunctionTypes": true
+	}
+}
+```
+
+### Prefer Interfaces Over Type Aliases for Objects
+
+```typescript
+// Good
+interface User {
+	id: number;
+	name: string;
+	email: string;
+}
+
+// Also acceptable, but interfaces are more extensible
+type User = {
+	id: number;
+	name: string;
+	email: string;
+};
+```
+
+### Use Union Types for Flexibility
+
+```typescript
+type Status = "pending" | "approved" | "rejected";
+
+interface Task {
+	id: string;
+	status: Status;
+	priority: "low" | "medium" | "high";
+}
+```
+
+## Advanced Patterns
+
+### Discriminated Unions
+
+Create type-safe state machines using discriminated unions:
+
+```typescript
+type LoadingState =
+	| { status: "idle" }
+	| { status: "loading" }
+	| { status: "success"; data: any }
+	| { status: "error"; error: Error };
+
+function handleState(state: LoadingState) {
+	switch (state.status) {
+		case "idle":
+			return "Not started";
+		case "loading":
+			return "Loading...";
+		case "success":
+			return state.data; // TypeScript knows data exists here
+		case "error":
+			return state.error.message; // TypeScript knows error exists here
+	}
+}
+```
+
+### Generic Constraints
+
+Use generic constraints to create flexible, reusable functions:
+
+```typescript
+interface HasId {
+	id: number;
+}
+
+function findById<T extends HasId>(items: T[], id: number): T | undefined {
+	return items.find((item) => item.id === id);
+}
+
+// Works with any type that has an id property
+const users = [
+	{ id: 1, name: "Alice" },
+	{ id: 2, name: "Bob" },
+];
+const user = findById(users, 1);
+```
+
+### Utility Types
+
+Leverage TypeScript's built-in utility types:
+
+```typescript
+interface User {
+	id: number;
+	name: string;
+	email: string;
+	password: string;
+}
+
+// Pick only certain properties
+type PublicUser = Pick<User, "id" | "name" | "email">;
+
+// Omit sensitive properties
+type SafeUser = Omit<User, "password">;
+
+// Make all properties optional
+type PartialUser = Partial<User>;
+
+// Make all properties required
+type RequiredUser = Required<User>;
+
+// Make all properties readonly
+type ImmutableUser = Readonly<User>;
+```
+
+## React with TypeScript
+
+### Typing Props
+
+```typescript
+interface ButtonProps {
+	label: string;
+	onClick: () => void;
+	variant?: "primary" | "secondary";
+	disabled?: boolean;
+}
+
+function Button({
+	label,
+	onClick,
+	variant = "primary",
+	disabled = false,
+}: ButtonProps) {
+	return (
+		<button onClick={onClick} disabled={disabled} className={`btn-${variant}`}>
+			{label}
+		</button>
+	);
+}
+```
+
+### Typing Hooks
+
+```typescript
+import { useState, useEffect } from "react";
+
+interface User {
+	id: number;
+	name: string;
+}
+
+function useUser(userId: number) {
+	const [user, setUser] = useState<User | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<Error | null>(null);
+
+	useEffect(() => {
+		fetch(`/api/users/${userId}`)
+			.then((res) => res.json())
+			.then((data) => {
+				setUser(data);
+				setLoading(false);
+			})
+			.catch((err) => {
+				setError(err);
+				setLoading(false);
+			});
+	}, [userId]);
+
+	return { user, loading, error };
+}
+```
+
+## Common Pitfalls to Avoid
+
+### 1. Using `any` Type
+
+```typescript
+// Bad
+function processData(data: any) {
+	return data.value;
+}
+
+// Good
+function processData<T extends { value: unknown }>(data: T) {
+	return data.value;
+}
+```
+
+### 2. Not Using Null Checks
+
+```typescript
+// Bad
+function getUserName(user: User | null) {
+	return user.name; // Error if user is null
+}
+
+// Good
+function getUserName(user: User | null) {
+	return user?.name ?? "Anonymous";
+}
+```
+
+### 3. Ignoring Type Errors with `@ts-ignore`
+
+```typescript
+// Bad
+// @ts-ignore
+const result = dangerousOperation();
+
+// Good - Fix the underlying issue or use proper type assertion
+const result = dangerousOperation() as ExpectedType;
+```
+
+## Testing with TypeScript
+
+```typescript
+import { describe, it, expect } from "vitest";
+
+interface Calculator {
+	add(a: number, b: number): number;
+	subtract(a: number, b: number): number;
+}
+
+describe("Calculator", () => {
+	const calculator: Calculator = {
+		add: (a, b) => a + b,
+		subtract: (a, b) => a - b,
+	};
+
+	it("should add two numbers", () => {
+		expect(calculator.add(2, 3)).toBe(5);
+	});
+
+	it("should subtract two numbers", () => {
+		expect(calculator.subtract(5, 3)).toBe(2);
+	});
+});
+```
+
+## Performance Considerations
+
+### Use `const` Assertions
+
+```typescript
+// Without const assertion
+const colors = ["red", "green", "blue"]; // Type: string[]
+
+// With const assertion
+const colors = ["red", "green", "blue"] as const; // Type: readonly ["red", "green", "blue"]
+```
+
+### Avoid Excessive Type Calculations
+
+```typescript
+// Bad - Complex type that's calculated on every use
+type ComplexType<T> = T extends Array<infer U>
+	? U extends object
+		? { [K in keyof U]: ComplexType<U[K]> }
+		: U
+	: T;
+
+// Good - Pre-calculate and cache types
+type SimpleType = string | number | boolean;
+```
+
+## Conclusion
+
+TypeScript is a powerful tool that can significantly improve your development experience and code quality. By following these best practices, you'll write more maintainable, type-safe code that scales with your application.
+
+Remember:
+
+- Enable strict mode
+- Use appropriate types (avoid `any`)
+- Leverage utility types
+- Write type-safe tests
+- Keep learning and stay updated with TypeScript releases
+
+Happy typing!

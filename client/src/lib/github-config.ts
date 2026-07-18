@@ -10,16 +10,17 @@ export interface GitHubConfig {
 
 // Configure your GitHub repository here
 export const GITHUB_CONFIG: GitHubConfig = {
-	owner: "omidnw", // Replace with your GitHub username
-	repo: "omidnw", // Replace with your projects repository name
-	projectsPath: "client/src/projects", // Path to projects folder in your repo (e.g., "projects" or "src/projects")
-	blogsPath: "client/src/blogs", // Path to blogs folder in your repo
-	branch: "master", // Branch to read from (default: main)
-	enableLocalFallback: true, // Set to false to disable local fallback completely
+	owner: "omidnw", // Your GitHub username
+	repo: "omidnw", // Your repository name (public repo)
+	projectsPath: "client/src/projects", // Path to projects folder
+	blogsPath: "client/src/blogs", // Path to blogs folder
+	branch: "master", // Branch to read from
+	enableLocalFallback: true, // Fallback to local files if GitHub fails
 };
 
-// For now, let's disable GitHub to avoid rate limiting and use local files
-export const USE_GITHUB_INTEGRATION = false; // Set to true when you want to enable GitHub integration
+// File-based reading is the primary method - no database storage
+export const USE_FILES_ONLY = true; // Always read from files, never store in database
+export const USE_GITHUB_INTEGRATION = true; // Read from public GitHub repository (no token needed for public repos)
 
 // GitHub API configuration
 export const GITHUB_API_BASE = "https://api.github.com";

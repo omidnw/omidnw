@@ -15,7 +15,6 @@ import {
 	Link2,
 	Check,
 	ExternalLink,
-	Github,
 	Play,
 	Star,
 	Zap,
@@ -28,6 +27,7 @@ import {
 	WifiOff,
 	Laptop,
 } from "lucide-react";
+import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Link } from "wouter";
 
 // GitHub API integration
@@ -59,7 +59,7 @@ export default function ProjectPost() {
 	const [linkCopied, setLinkCopied] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [dataSource, setDataSource] = useState<"github" | "local" | "none">(
-		"none"
+		"none",
 	);
 	const [refreshing, setRefreshing] = useState(false);
 
@@ -87,7 +87,7 @@ export default function ProjectPost() {
 						console.log(`✅ Loaded project ${slug} from GitHub`);
 					} else {
 						console.log(
-							`⚠️ Project ${slug} not found in GitHub, checking fallback options...`
+							`⚠️ Project ${slug} not found in GitHub, checking fallback options...`,
 						);
 						// Check if local fallback is enabled
 						if (GITHUB_CONFIG.enableLocalFallback) {
@@ -115,7 +115,7 @@ export default function ProjectPost() {
 				// Check if local fallback is enabled when GitHub is not configured
 				if (GITHUB_CONFIG.enableLocalFallback) {
 					console.log(
-						`ℹ️ GitHub not configured, using local files for ${slug}`
+						`ℹ️ GitHub not configured, using local files for ${slug}`,
 					);
 					loadedProject = await loadLocalProjectById(slug);
 					setDataSource("local");
@@ -135,7 +135,7 @@ export default function ProjectPost() {
 				} catch (markdownError) {
 					console.warn(
 						"Failed to process markdown, using raw content:",
-						markdownError
+						markdownError,
 					);
 					setProcessedContent(loadedProject.content);
 				}
@@ -159,7 +159,7 @@ export default function ProjectPost() {
 						} catch (markdownError) {
 							console.warn(
 								"Failed to process fallback markdown:",
-								markdownError
+								markdownError,
 							);
 							setProcessedContent(fallbackProject.content);
 						}
@@ -207,7 +207,7 @@ export default function ProjectPost() {
 			const mouseEvent = event as MouseEvent;
 			const target = mouseEvent.target as HTMLElement;
 			const trigger = target.closest(
-				".image-modal-trigger"
+				".image-modal-trigger",
 			) as HTMLElement | null;
 
 			if (trigger) {
@@ -472,7 +472,7 @@ export default function ProjectPost() {
 						<div className="flex items-center text-xs text-muted-foreground font-mono">
 							{dataSource === "github" ? (
 								<>
-									<Github className="w-3 h-3 mr-1 text-green-400" />
+									<SiGithub className="w-3 h-3 mr-1 text-green-400" />
 									<span className="text-green-400">GitHub</span>
 								</>
 							) : dataSource === "local" ? (
@@ -529,7 +529,7 @@ export default function ProjectPost() {
 										? new Date(project.endDate).toLocaleDateString("en-US", {
 												year: "numeric",
 												month: "long",
-										  })
+											})
 										: "Present"}
 								</span>
 								<span className="sm:hidden">
@@ -595,7 +595,7 @@ export default function ProjectPost() {
 										onClick={() => window.open(project.githubUrl, "_blank")}
 										className="font-mono touch-manipulation min-h-[48px]"
 									>
-										<Github className="w-4 h-4 mr-2" />
+										<SiGithub className="w-4 h-4 mr-2" />
 										Source Code
 									</Button>
 								)}

@@ -77,7 +77,8 @@ async function importBlogFiles(): Promise<Record<string, string>> {
 	try {
 		// Path relative to this file (lib/local-blogs.ts) -> ../blogs/*.mdx
 		const modules = import.meta.glob("../blogs/*.mdx", {
-			as: "raw",
+			import: "default",
+			query: "?raw",
 			eager: true,
 		});
 
