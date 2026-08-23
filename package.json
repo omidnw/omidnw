@@ -75,8 +75,8 @@
 		"zod": "^4.4.3"
 	},
 	"devDependencies": {
-		"@tailwindcss/vite": "^4.3.3",
 		"@tailwindcss/typography": "^0.5.20",
+		"@tailwindcss/vite": "^4.3.3",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.2",
 		"@types/node": "26.1.1",
@@ -89,6 +89,7 @@
 		"tailwindcss": "^4.3.3",
 		"typescript": "7.0.2",
 		"vite": "^8.1.5",
+		"vite-plugin-sitemap": "^0.8.2",
 		"vitest": "^4.1.10"
 	},
 	"optionalDependencies": {
