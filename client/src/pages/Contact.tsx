@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -9,7 +8,6 @@ import { Label } from "@/components/ui/label";
 import {
 	Mail,
 	MapPin,
-	X as TwitterXX,
 	Send,
 	Terminal,
 	Zap,
@@ -136,26 +134,22 @@ export default function Contact() {
 		return Object.keys(newErrors).length === 0;
 	};
 
-	// Handle form submission
-	const handleSubmit = async (e: React.FormEvent) => {
+	// Handle form submission via mailto
+	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 
 		if (!validateForm()) return;
 
-		setIsSubmitting(true);
+		const subject = encodeURIComponent(formData.subject);
+		const body = encodeURIComponent(
+			`Name: ${formData.name}\nEmail: ${formData.email}\n\n${formData.message}`,
+		);
+		window.location.href = `mailto:omidrezakeshtkar@icloud.com?subject=${subject}&body=${body}`;
 
-		// Simulate API call
-		setTimeout(() => {
-			setIsSubmitting(false);
-			setIsSubmitted(true);
-			setFormData({ name: "", email: "", subject: "", message: "" });
-			setErrors({});
-
-			// Reset success message after 5 seconds
-			setTimeout(() => {
-				setIsSubmitted(false);
-			}, 5000);
-		}, 2000);
+		setFormData({ name: "", email: "", subject: "", message: "" });
+		setErrors({});
+		setIsSubmitted(true);
+		setTimeout(() => setIsSubmitted(false), 5000);
 	};
 
 	// Handle input changes
@@ -218,13 +212,13 @@ export default function Contact() {
 			href: "https://www.linkedin.com/in/omid-reza-keshtkar",
 			color: "text-blue-400",
 		},
-		{
-			icon: MessageSquare,
-			label: "Discord",
-			value: "omidnw",
-			href: "#",
-			color: "text-indigo-400",
-		},
+			{
+				icon: MessageSquare,
+				label: "Discord",
+				value: "omidnw",
+				href: "https://discord.gg/omidnw",
+				color: "text-indigo-400",
+			},
 	];
 
 	return (
@@ -255,7 +249,7 @@ export default function Contact() {
 						initial={{ opacity: 0, x: -30 }}
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ duration: 0.6, delay: 0.2 }}
-						className="order-2 xl:order-1 xl:col-span-4 relative space-y-4 sm:space-y-6"
+						className="order-1 xl:order-1 xl:col-span-4 relative space-y-4 sm:space-y-6"
 					>
 						{/* Background decorative elements */}
 						<div className="absolute inset-0 opacity-5 pointer-events-none">
@@ -266,7 +260,11 @@ export default function Contact() {
 						</div>
 
 						{/* Contact Form Card */}
-						<Card variant="cyberpunk" className="relative z-10">
+						<Card
+							variant="cyberpunk"
+							className="relative z-10"
+							id="contact-form"
+						>
 							<CardHeader className="pb-4 sm:pb-6">
 								<CardTitle className="text-primary font-heading flex items-center text-lg sm:text-xl md:text-2xl">
 									<Terminal className="w-5 h-5 sm:w-6 sm:h-6 mr-2 neon-glow" />
@@ -303,7 +301,22 @@ export default function Contact() {
 											%
 										</span>
 									</div>
-									<div className="w-full bg-muted/30 rounded-full h-2 overflow-hidden">
+									<div
+									className="w-full bg-muted/30 rounded-full h-2 overflow-hidden"
+									role="progressbar"
+									aria-label="Form completion progress"
+									aria-valuenow={
+										Math.round(
+											(Object.values(formData).filter(
+												(value) => value.trim().length > 0,
+											).length /
+												4) *
+												100,
+										)
+									}
+									aria-valuemin={0}
+									aria-valuemax={100}
+								>
 										<m.div
 											className="h-full bg-gradient-to-r from-primary to-secondary"
 											initial={{ width: 0 }}
@@ -460,9 +473,10 @@ export default function Contact() {
 											name="message"
 											value={formData.message}
 											onChange={handleChange}
-											placeholder="Transmit your message through the neural network..."
-											rows={5}
-											className={`font-mono bg-background/50 resize-none text-sm sm:text-base transition-all duration-200 touch-manipulation ${
+												placeholder="Transmit your message through the neural network..."
+												rows={5}
+												maxLength={1000}
+												className={`font-mono bg-background/50 resize-none text-sm sm:text-base transition-all duration-200 touch-manipulation ${
 												errors.message
 													? "border-red-500 focus:border-red-500 shadow-red-500/25"
 													: "border-primary/30 focus:border-primary hover:border-primary/50"
@@ -547,7 +561,7 @@ export default function Contact() {
 						initial={{ opacity: 0, x: 30 }}
 						animate={{ opacity: 1, x: 0 }}
 						transition={{ duration: 0.6, delay: 0.4 }}
-						className="space-y-4 sm:space-y-6 order-1 xl:order-2 xl:col-span-3"
+						className="space-y-4 sm:space-y-6 order-2 xl:order-2 xl:col-span-3"
 					>
 						{/* Contact Information */}
 						<Card variant="hologram">

@@ -185,7 +185,7 @@ const ProfileCard = React.memo(() => {
 			animate={{ opacity: 1 }}
 			transition={{ duration: 0.6, delay: 0.4 }}
 		>
-			<Card variant="cyberpunk" className="h-full">
+				<Card variant="cyberpunk" className="h-full">
 				<CardHeader className="text-center pb-3 sm:pb-4">
 					<div className="mx-auto mb-3 sm:mb-4 relative">
 						<div className="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 rounded-full bg-gradient-to-r from-primary to-secondary p-1">
@@ -202,7 +202,7 @@ const ProfileCard = React.memo(() => {
 							role="status"
 						/>
 					</div>
-					<CardTitle className="text-xl sm:text-2xl md:text-3xl mb-2 font-heading text-primary neon-glow">
+					<CardTitle className="text-xl sm:text-2xl md:text-3xl mb-2 font-heading text-primary">
 						Omid Reza Keshtkar
 					</CardTitle>
 					<p className="text-accent font-mono text-sm sm:text-base md:text-lg">
@@ -237,7 +237,7 @@ const ProfileCard = React.memo(() => {
 					</div>
 
 					<div className="pt-2 sm:pt-3 border-t border-border">
-						<p className="text-xs sm:text-sm text-muted-foreground font-mono leading-relaxed">
+						<p className="text-xs sm:text-sm text-muted-foreground font-mono leading-relaxed text-left">
 							Passionate about creating digital experiences that bridge the gap
 							between humans and technology. I specialize in building scalable
 							web applications with a focus on performance and user experience.
@@ -459,7 +459,7 @@ export default function About() {
 		<LazyMotion features={domMax}>
 			<div className="min-h-screen">
 				{/* Hero Section */}
-				<header className="text-center py-8 sm:py-12 mb-6 sm:mb-8">
+				<header className="text-center py-5 sm:py-8 md:py-10 mb-5 sm:mb-6">
 					<m.h1
 						initial={{ opacity: 0, y: 20 }}
 						animate={{ opacity: 1, y: 0 }}
@@ -474,7 +474,7 @@ export default function About() {
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
 						transition={{ duration: 0.6, delay: 0.2 }}
-						className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4"
+						className="text-sm sm:text-base md:text-lg text-muted-foreground font-mono max-w-xl mx-auto px-4 leading-relaxed"
 					>
 						Diving deep into the neural pathways of Omid Reza Keshtkar, a
 						cybernetic developer from Dubai specializing in Software QA and Full

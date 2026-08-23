@@ -199,6 +199,7 @@ export default function Blog() {
 	}, [searchTerm, selectedTags, posts]);
 
 	const featuredPost = useMemo(() => posts.find((p) => p.featured), [posts]);
+	const hasActiveFilters = Boolean(searchTerm || selectedTags.length > 0);
 	const regularPosts = useMemo(
 		() =>
 			filteredPosts.filter(
@@ -310,7 +311,7 @@ export default function Blog() {
 					initial={{ opacity: 0, y: 30 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 0.8 }}
-					className="text-center py-8 sm:py-12 mb-6 sm:mb-8"
+					className="text-center py-5 sm:py-8 md:py-10 mb-4 sm:mb-6"
 				>
 					<h1 className="text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-heading font-black mb-3 sm:mb-4 neon-glow text-primary">
 						{/* SEO-optimized title */}
@@ -319,13 +320,16 @@ export default function Blog() {
 						</span>
 						NEURAL_BLOG.sh
 					</h1>
-					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-4">
+					<p className="text-sm sm:text-base md:text-lg text-muted-foreground font-mono max-w-2xl mx-auto px-4 leading-relaxed">
 						Transmissions from the digital frontier - Omid Reza Keshtkar's
 						insights, tutorials, and thoughts on cyberpunk development, AI,
 						full-stack technologies, and neural network innovations
 					</p>
+					<p className="mt-2 text-xs sm:text-sm font-mono text-primary/80 px-4">
+						Browse the latest post first, or narrow results with search and tags.
+					</p>
 					{/* Data source indicator */}
-					<div className="mt-3 sm:mt-4 flex items-center justify-center gap-2 text-xs font-mono">
+					<div className="mt-3 flex items-center justify-center gap-2 text-xs font-mono">
 						{dataSource === "github" && (
 							<Badge
 								variant="outline"
@@ -359,116 +363,213 @@ export default function Blog() {
 					</div>
 				</m.header>
 
+				{/* Featured Post */}
+				{featuredPost && !hasActiveFilters && (
+					<m.section
+						initial={{ opacity: 0, y: 30 }}
+						animate={{ opacity: 1, y: 0 }}
+						transition={{ duration: 0.6, delay: 0.2 }}
+						className="mb-6 sm:mb-8"
+					>
+						<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-5 flex items-center">
+							<BookOpen className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+							FEATURED_POST.highlight()
+						</h2>
+
+						<Link href={`/blog/${featuredPost.id}`}>
+							<Card
+								variant="hologram"
+								className="overflow-hidden group cursor-pointer touch-manipulation"
+							>
+								<div className="md:flex">
+									<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-5 sm:p-8 flex items-center justify-center">
+										<div className="text-center">
+											<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 sm:mb-4 neon-glow" />
+											<Badge variant="outline" className="neon-border">
+												FEATURED
+											</Badge>
+										</div>
+									</div>
+									<div className="md:w-2/3 p-5 sm:p-8">
+										<div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm text-muted-foreground font-mono">
+											<div className="flex items-center gap-1">
+												<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+												{new Date(featuredPost.date).toLocaleDateString("en-US", {
+													year: "numeric",
+													month: "short",
+													day: "numeric",
+												})}
+											</div>
+											<div className="flex items-center gap-1">
+												<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+												{featuredPost.readTime}
+											</div>
+										</div>
+
+										<h3 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all">
+											{featuredPost.title}
+										</h3>
+
+										<p className="text-muted-foreground font-mono mb-4 leading-relaxed line-clamp-3 text-sm sm:text-base">
+											{featuredPost.excerpt}
+										</p>
+
+										<div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
+											{featuredPost.tags.slice(0, 4).map((tag) => (
+												<Badge
+													key={tag}
+													variant="secondary"
+													className="text-xs font-mono cursor-pointer hover:bg-secondary/20 touch-manipulation"
+													onClick={(e) => {
+														e.preventDefault();
+														handleTagSelect(tag);
+													}}
+												>
+													<Hash className="w-3 h-3 mr-1" />
+													{tag}
+												</Badge>
+											))}
+											{featuredPost.tags.length > 4 && (
+												<Badge variant="outline" className="text-xs font-mono">
+													+{featuredPost.tags.length - 4}
+												</Badge>
+											)}
+										</div>
+
+										<Button
+											variant="neon"
+											className="group-hover:scale-105 transition-transform h-10 sm:h-12 touch-manipulation min-h-[44px]"
+										>
+											Read Full Post
+											<ArrowRight className="w-4 h-4 ml-2" />
+										</Button>
+									</div>
+								</div>
+							</Card>
+						</Link>
+					</m.section>
+				)}
+
 				{/* Enhanced Search and Filter Section */}
 				<m.section
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.6, delay: 0.2 }}
-					className="mb-8 sm:mb-12 relative z-30" // Ensure filter section is above content
+					transition={{ duration: 0.6, delay: hasActiveFilters ? 0.2 : 0.35 }}
+					className="mb-8 sm:mb-12 relative z-30"
 				>
 					<Card variant="cyberpunk" className="p-4 sm:p-6">
 						<div className="space-y-3 sm:space-y-4">
-							{/* Main Search Input */}
-							<div className="relative">
-								<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-								<Input
-									type="text"
-									placeholder="Search neural pathways... (title, content, author, tags)"
-									value={searchTerm}
-									onChange={(e) => setSearchTerm(e.target.value)}
-									className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono h-10 sm:h-12 text-sm sm:text-base"
-								/>
+							<div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
+								<div>
+									<p className="mb-2 text-xs font-mono text-primary/80">
+										Search across title, excerpt, content, author, and tags
+									</p>
+									<div className="relative">
+										<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+										<Input
+											type="text"
+											placeholder="Search posts..."
+											value={searchTerm}
+											onChange={(e) => setSearchTerm(e.target.value)}
+											className="pl-10 bg-background/50 border-primary/30 focus:border-primary font-mono h-10 sm:h-12 text-sm sm:text-base"
+										/>
+									</div>
+								</div>
+
+								<div>
+									<p className="mb-2 text-xs font-mono text-secondary/80">
+										Add tags to narrow results with AND logic
+									</p>
+									<div className="relative flex-1" ref={tagInputRef}>
+										<Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+										<Input
+											type="text"
+											placeholder="Filter by tags..."
+											value={tagSearch}
+											onChange={(e) => {
+												setTagSearch(e.target.value);
+												setShowTagSuggestions(true);
+											}}
+											onFocus={() => setShowTagSuggestions(true)}
+											onKeyDown={handleKeyDown}
+											className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono h-10 sm:h-12 text-sm sm:text-base"
+										/>
+
+										{/* Tag Suggestions Dropdown */}
+										<AnimatePresence>
+											{showTagSuggestions &&
+												filteredTagSuggestions.length > 0 && (
+													<m.div
+														initial={{ opacity: 0, y: -10 }}
+														animate={{ opacity: 1, y: 0 }}
+														exit={{ opacity: 0, y: -10 }}
+														transition={{ duration: 0.2 }}
+														className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-sm border border-primary/50 rounded-lg shadow-2xl max-h-60 overflow-hidden z-50"
+														style={{
+															boxShadow:
+																"0 0 20px rgba(255, 0, 128, 0.3), 0 0 40px rgba(0, 255, 255, 0.2)",
+														}}
+													>
+														<div className="p-2">
+															<div className="text-xs font-mono text-muted-foreground px-3 py-2 border-b border-primary/20">
+																{selectedTags.length > 0
+																	? `${selectedTags.length} tag${
+																			selectedTags.length !== 1 ? "s" : ""
+																	  } selected`
+																	: "Select tags to filter"}
+															</div>
+															<div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50">
+																{filteredTagSuggestions.map((tag) => {
+																	const isSelected = selectedTags.includes(tag);
+																	return (
+																		<button
+																			key={tag}
+																			onClick={() => handleTagSelect(tag)}
+																			disabled={isSelected}
+																			className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] ${
+																				isSelected
+																					? "bg-primary/20 text-primary cursor-default border-l-2 border-primary"
+																					: "hover:bg-primary/10 text-foreground hover:border-l-2 hover:border-secondary"
+																			}`}
+																		>
+																			<div className="flex items-center">
+																				<Hash className="w-3 h-3 mr-2" />
+																				{tag}
+																			</div>
+																			{isSelected ? (
+																				<div className="flex items-center text-xs">
+																					<Check className="w-3 h-3 mr-1" />
+																					Selected
+																				</div>
+																			) : (
+																				<Plus className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+																			)}
+																		</button>
+																	);
+																})}
+															</div>
+														</div>
+													</m.div>
+												)}
+										</AnimatePresence>
+									</div>
+								</div>
 							</div>
 
-							{/* Tag Search and Filter */}
-							<div className="flex flex-col md:flex-row gap-3 sm:gap-4 relative z-20">
-								{/* Tag Search Input */}
-								<div className="relative flex-1" ref={tagInputRef}>
-									<Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-									<Input
-										type="text"
-										placeholder="Search and filter by tags..."
-										value={tagSearch}
-										onChange={(e) => {
-											setTagSearch(e.target.value);
-											setShowTagSuggestions(true);
-										}}
-										onFocus={() => setShowTagSuggestions(true)}
-										onKeyDown={handleKeyDown}
-										className="pl-10 bg-background/50 border-secondary/30 focus:border-secondary font-mono h-10 sm:h-12 text-sm sm:text-base"
-									/>
-
-									{/* Tag Suggestions Dropdown */}
-									<AnimatePresence>
-										{showTagSuggestions &&
-											filteredTagSuggestions.length > 0 && (
-												<m.div
-													initial={{ opacity: 0, y: -10 }}
-													animate={{ opacity: 1, y: 0 }}
-													exit={{ opacity: 0, y: -10 }}
-													transition={{ duration: 0.2 }}
-													className="absolute top-full left-0 right-0 mt-1 bg-background/95 backdrop-blur-sm border border-primary/50 rounded-lg shadow-2xl max-h-60 overflow-hidden z-50"
-													style={{
-														boxShadow:
-															"0 0 20px rgba(255, 0, 128, 0.3), 0 0 40px rgba(0, 255, 255, 0.2)",
-													}}
-												>
-													<div className="p-2">
-														<div className="text-xs font-mono text-muted-foreground px-3 py-2 border-b border-primary/20">
-															{selectedTags.length > 0
-																? `${selectedTags.length} tag${
-																		selectedTags.length !== 1 ? "s" : ""
-																  } selected`
-																: "Select tags to filter"}
-														</div>
-														<div className="max-h-48 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-primary/30 hover:scrollbar-thumb-primary/50">
-															{filteredTagSuggestions.map((tag) => {
-																const isSelected = selectedTags.includes(tag);
-																return (
-																	<button
-																		key={tag}
-																		onClick={() => handleTagSelect(tag)}
-																		disabled={isSelected}
-																		className={`w-full text-left px-3 py-2 font-mono text-sm transition-all duration-200 rounded flex items-center justify-between group touch-manipulation min-h-[44px] ${
-																			isSelected
-																				? "bg-primary/20 text-primary cursor-default border-l-2 border-primary"
-																				: "hover:bg-primary/10 text-foreground hover:border-l-2 hover:border-secondary"
-																		}`}
-																	>
-																		<div className="flex items-center">
-																			<Hash className="w-3 h-3 mr-2" />
-																			{tag}
-																		</div>
-																		{isSelected ? (
-																			<div className="flex items-center text-xs">
-																				<Check className="w-3 h-3 mr-1" />
-																				Selected
-																			</div>
-																		) : (
-																			<Plus className="w-3 h-3 opacity-0 group-hover:opacity-100 transition-opacity" />
-																		)}
-																	</button>
-																);
-															})}
-														</div>
-													</div>
-												</m.div>
-											)}
-									</AnimatePresence>
-								</div>
-								{/* Clear Filters Button */}
-								{(searchTerm || selectedTags.length > 0) && (
+							{/* Clear Filters Button */}
+							{hasActiveFilters && (
+								<div className="flex justify-end">
 									<Button
 										variant="outline"
 										size="sm"
 										onClick={handleClearFilters}
-										className="font-mono whitespace-nowrap md:mt-0 mt-2 h-10 sm:h-12 touch-manipulation min-h-[44px]"
+										className="font-mono whitespace-nowrap h-10 sm:h-12 touch-manipulation min-h-[44px]"
 									>
 										<X className="w-4 h-4 mr-2" />
 										Clear All
 									</Button>
-								)}
-							</div>
+								</div>
+							)}
 
 							{/* Selected Tags Display */}
 							{selectedTags.length > 0 && (
@@ -533,104 +634,13 @@ export default function Blog() {
 					</Card>
 				</m.section>
 
-				{/* Featured Post */}
-				{featuredPost && !selectedTags.length && !searchTerm && (
-					<m.section
-						initial={{ opacity: 0, y: 30 }}
-						animate={{ opacity: 1, y: 0 }}
-						transition={{ duration: 0.6, delay: 0.4 }}
-						className="mb-8 sm:mb-12"
-					>
-						<h2 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-4 sm:mb-6 flex items-center">
-							<BookOpen className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-							FEATURED_POST.highlight()
-						</h2>
-
-						<Link href={`/blog/${featuredPost.id}`}>
-							<Card
-								variant="hologram"
-								className="overflow-hidden group cursor-pointer touch-manipulation"
-							>
-								<div className="md:flex">
-									<div className="md:w-1/3 bg-gradient-to-br from-primary/20 to-secondary/20 p-6 sm:p-8 flex items-center justify-center">
-										<div className="text-center">
-											<BookOpen className="w-12 h-12 sm:w-16 sm:h-16 text-primary mx-auto mb-3 sm:mb-4 neon-glow" />
-											<Badge variant="outline" className="neon-border">
-												FEATURED
-											</Badge>
-										</div>
-									</div>
-									<div className="md:w-2/3 p-6 sm:p-8">
-										<div className="flex items-center gap-2 sm:gap-4 mb-3 sm:mb-4 text-xs sm:text-sm text-muted-foreground font-mono">
-											<div className="flex items-center gap-1">
-												<Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
-												{new Date(featuredPost.date).toLocaleDateString(
-													"en-US",
-													{
-														year: "numeric",
-														month: "short",
-														day: "numeric",
-													}
-												)}
-											</div>
-											<div className="flex items-center gap-1">
-												<Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-												{featuredPost.readTime}
-											</div>
-										</div>
-
-										<h3 className="text-xl sm:text-2xl font-heading font-bold text-primary mb-3 group-hover:neon-glow transition-all">
-											{featuredPost.title}
-										</h3>
-
-										<p className="text-muted-foreground font-mono mb-4 leading-relaxed line-clamp-3 text-sm sm:text-base">
-											{featuredPost.excerpt}
-										</p>
-
-										<div className="flex flex-wrap gap-1.5 sm:gap-2 mb-4">
-											{featuredPost.tags.slice(0, 4).map((tag) => (
-												<Badge
-													key={tag}
-													variant="secondary"
-													className="text-xs font-mono cursor-pointer hover:bg-secondary/20 touch-manipulation"
-													onClick={(e) => {
-														e.preventDefault();
-														handleTagSelect(tag);
-													}}
-												>
-													<Hash className="w-3 h-3 mr-1" />
-													{tag}
-												</Badge>
-											))}
-											{featuredPost.tags.length > 4 && (
-												<Badge variant="outline" className="text-xs font-mono">
-													+{featuredPost.tags.length - 4}
-												</Badge>
-											)}
-										</div>
-
-										<Button
-											variant="neon"
-											className="group-hover:scale-105 transition-transform h-10 sm:h-12 touch-manipulation min-h-[44px]"
-										>
-											Read Full Post
-											<ArrowRight className="w-4 h-4 ml-2" />
-										</Button>
-									</div>
-								</div>
-							</Card>
-						</Link>
-					</m.section>
-				)}
-
 				{/* Blog Posts Grid */}
 				<m.section
 					initial={{ opacity: 0 }}
 					animate={{ opacity: 1 }}
 					transition={{
 						duration: 0.6,
-						delay:
-							featuredPost && !selectedTags.length && !searchTerm ? 0.6 : 0.4,
+						delay: hasActiveFilters ? 0.5 : 0.45,
 					}}
 				>
 					<div className="flex items-center justify-between mb-4 sm:mb-6">

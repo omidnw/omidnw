@@ -3,7 +3,6 @@ import { createPortal } from "react-dom";
 import { Link, useLocation } from "wouter";
 import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
 	Home,
 	User,
@@ -60,10 +59,21 @@ export default function HamburgerMenu({
 	const [isOpen, setIsOpen] = useState(false);
 	const [location] = useLocation();
 	const [isMac, setIsMac] = useState(false);
+	const [isShortViewport, setIsShortViewport] = useState(false);
 
 	// Detect macOS
 	useEffect(() => {
 		setIsMac(navigator.platform.toUpperCase().indexOf("MAC") >= 0);
+	}, []);
+
+	useEffect(() => {
+		const updateViewportState = () => {
+			setIsShortViewport(window.innerHeight <= 560);
+		};
+
+		updateViewportState();
+		window.addEventListener("resize", updateViewportState);
+		return () => window.removeEventListener("resize", updateViewportState);
 	}, []);
 
 	// Close menu when route changes
@@ -112,7 +122,7 @@ export default function HamburgerMenu({
 				variant="ghost"
 				size="icon"
 				onClick={toggleMenu}
-				className={`relative z-[60] w-8 h-8 sm:w-10 sm:h-10 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 touch-manipulation ${className}`}
+				className={`relative z-[60] w-11 h-11 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 touch-manipulation ${className}`}
 				aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
 				aria-expanded={isOpen}
 			>
@@ -313,14 +323,14 @@ export default function HamburgerMenu({
 										type: "spring",
 										stiffness: 100,
 									}}
-									className="relative z-[10000] h-full flex items-center justify-center p-4 sm:p-8"
+									className="relative z-[10000] h-full flex items-start sm:items-center justify-center p-2.5 sm:p-6"
 									onClick={(e) => e.stopPropagation()}
 								>
-									<div className="relative w-full max-w-sm sm:max-w-lg mx-auto">
+									<div className="relative w-full max-w-sm sm:max-w-lg mx-auto max-h-[calc(100dvh-1rem)] sm:max-h-[calc(100dvh-3rem)]">
 										{/* Terminal-style container */}
-										<div className="relative bg-background/90 border border-primary/50 rounded-lg backdrop-blur-md overflow-hidden">
+										<div className="relative bg-background/90 border border-primary/50 rounded-lg backdrop-blur-md overflow-hidden max-h-[inherit] flex flex-col">
 											{/* Terminal header */}
-											<div className="bg-gradient-to-r from-primary/20 to-secondary/20 border-b border-primary/30 px-4 sm:px-6 py-2 sm:py-3">
+											<div className="sticky top-0 z-10 bg-gradient-to-r from-primary/20 to-secondary/20 border-b border-primary/30 px-4 sm:px-6 py-2 sm:py-3">
 												<div className="flex items-center justify-between">
 													<div className="flex items-center space-x-2">
 														<div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse" />
@@ -342,33 +352,37 @@ export default function HamburgerMenu({
 												</div>
 											</div>
 
-											<div className="p-4 sm:p-8">
+											<div
+												className={`overflow-y-auto ${isShortViewport ? "p-3" : "p-3.5 sm:p-6"}`}
+											>
 												{/* Navigation Section */}
 												<m.div
 													initial={{ opacity: 0, y: 20 }}
 													animate={{ opacity: 1, y: 0 }}
 													transition={{ duration: 0.3, delay: 0.3 }}
-													className="mb-6 sm:mb-8"
+													className={isShortViewport ? "mb-3" : "mb-4 sm:mb-6"}
 												>
-													<div className="text-center mb-4 sm:mb-6">
-														<m.h2
-															className="text-lg sm:text-2xl font-heading font-bold text-primary neon-glow mb-2"
-															animate={{
-																textShadow: [
-																	"0 0 10px #ff0080",
-																	"0 0 20px #ff0080, 0 0 30px #ff0080",
-																	"0 0 10px #ff0080",
-																],
-															}}
-															transition={{ duration: 2, repeat: Infinity }}
-														>
-															&gt; NAVIGATION.exe
-														</m.h2>
-														<div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
-													</div>
+													{!isShortViewport && (
+														<div className="text-center mb-3 sm:mb-5">
+															<m.h2
+																className="text-base sm:text-2xl font-heading font-bold text-primary neon-glow mb-1.5"
+																animate={{
+																	textShadow: [
+																		"0 0 10px #ff0080",
+																		"0 0 20px #ff0080, 0 0 30px #ff0080",
+																		"0 0 10px #ff0080",
+																	],
+																}}
+																transition={{ duration: 2, repeat: Infinity }}
+															>
+																&gt; NAVIGATION.exe
+															</m.h2>
+															<div className="h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+														</div>
+													)}
 
 													<nav
-														className="space-y-2"
+														className="space-y-1.5 sm:space-y-2"
 														role="navigation"
 														aria-label="Main navigation"
 													>
@@ -397,7 +411,7 @@ export default function HamburgerMenu({
 																				setIsOpen(false);
 																				onTerminalOpen?.();
 																			}}
-																			className="w-full flex items-center justify-start px-3 sm:px-4 py-3 sm:py-4 rounded-md font-mono text-left transition-all duration-300 group min-h-[48px] touch-manipulation bg-secondary/20 border border-secondary/50 hover:border-secondary/40 hover:bg-secondary/40 text-secondary hover:text-secondary/80"
+																			className="w-full flex items-center justify-start px-3 sm:px-4 py-2.5 sm:py-3 rounded-md font-mono text-left transition-all duration-300 group min-h-[44px] touch-manipulation bg-secondary/20 border border-secondary/50 hover:border-secondary/40 hover:bg-secondary/40 text-secondary hover:text-secondary/80"
 																		>
 																			<span className="mr-2 sm:mr-3 text-sm sm:text-lg text-secondary">
 																				&gt;
@@ -409,46 +423,49 @@ export default function HamburgerMenu({
 																			<span className="flex-1 text-sm sm:text-base">
 																				{item.name.toUpperCase()}
 																			</span>
-																			<span className="text-xs opacity-60 hidden sm:inline">
+																			<span
+																				className={`text-xs opacity-60 hidden sm:inline ${isShortViewport ? "hidden" : ""}`}
+																			>
 																				[{isMac ? "Ctrl+Cmd+K" : "Ctrl+Alt+K"}]
 																			</span>
-																			<span className="text-xs opacity-60 sm:hidden">
+																			<span
+																				className={`text-xs opacity-60 sm:hidden ${isShortViewport ? "hidden" : ""}`}
+																			>
 																				{isMac ? "Cmd+K" : "Alt+K"}
 																			</span>
 																		</button>
 																	) : (
-																		<Link href={item.path}>
-																			<button
-																				className={`w-full flex items-center justify-start px-3 sm:px-4 py-3 sm:py-4 rounded-md font-mono text-left transition-all duration-300 group min-h-[48px] touch-manipulation ${
-																					isActive
-																						? "bg-primary/20 border border-primary text-primary shadow-lg shadow-primary/25"
-																						: "bg-background/50 border border-border hover:border-primary/50 hover:bg-primary/10 text-foreground hover:text-primary"
-																				}`}
-																				aria-current={
-																					isActive ? "page" : undefined
-																				}
-																			>
-																				<span className="mr-2 sm:mr-3 text-sm sm:text-lg">
-																					&gt;
+																		<Link
+																			href={item.path}
+																			className={`w-full flex items-center justify-start px-3 sm:px-4 py-2.5 sm:py-3 rounded-md font-mono text-left transition-all duration-300 group min-h-[44px] touch-manipulation ${
+																				isActive
+																					? "bg-primary/20 border border-primary text-primary shadow-lg shadow-primary/25"
+																					: "bg-background/50 border border-border hover:border-primary/50 hover:bg-primary/10 text-foreground hover:text-primary"
+																			}`}
+																			aria-current={
+																				isActive ? "page" : undefined
+																			}
+																		>
+																			<span className="mr-2 sm:mr-3 text-sm sm:text-lg">
+																				&gt;
+																			</span>
+																			<Icon
+																				className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0"
+																				aria-hidden="true"
+																			/>
+																			<span className="flex-1 text-sm sm:text-base">
+																				{item.name.toUpperCase()}
+																			</span>
+																			{isActive && (
+																				<span className="text-xs opacity-60 hidden sm:inline">
+																					ACTIVE
 																				</span>
-																				<Icon
-																					className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-3 group-hover:scale-110 transition-transform flex-shrink-0"
-																					aria-hidden="true"
-																				/>
-																				<span className="flex-1 text-sm sm:text-base">
-																					{item.name.toUpperCase()}
+																			)}
+																			{isActive && (
+																				<span className="text-xs opacity-60 sm:hidden">
+																					•
 																				</span>
-																				{isActive && (
-																					<span className="text-xs opacity-60 hidden sm:inline">
-																						ACTIVE
-																					</span>
-																				)}
-																				{isActive && (
-																					<span className="text-xs opacity-60 sm:hidden">
-																						•
-																					</span>
-																				)}
-																			</button>
+																			)}
 																		</Link>
 																	)}
 																</m.div>
@@ -462,17 +479,19 @@ export default function HamburgerMenu({
 													initial={{ opacity: 0, y: 20 }}
 													animate={{ opacity: 1, y: 0 }}
 													transition={{ duration: 0.3, delay: 0.9 }}
-													className="pt-4 sm:pt-6 border-t border-primary/30"
+													className={`${isShortViewport ? "pt-2.5" : "pt-3 sm:pt-5"} border-t border-primary/30`}
 												>
-													<div className="text-center mb-3 sm:mb-4">
-														<h3 className="text-base sm:text-lg font-heading font-bold text-secondary mb-2">
-															&gt; CONNECT.social()
-														</h3>
-														<div className="h-px bg-gradient-to-r from-transparent via-secondary to-transparent" />
-													</div>
+													{!isShortViewport && (
+														<div className="text-center mb-2.5 sm:mb-4">
+															<h3 className="text-sm sm:text-lg font-heading font-bold text-secondary mb-1.5 sm:mb-2">
+																&gt; CONNECT.social()
+															</h3>
+															<div className="h-px bg-gradient-to-r from-transparent via-secondary to-transparent" />
+														</div>
+													)}
 
 													<div
-														className="flex justify-center space-x-3 sm:space-x-4"
+														className={`flex justify-center ${isShortViewport ? "space-x-2" : "space-x-2.5 sm:space-x-4"}`}
 														role="group"
 														aria-label="Social media links"
 													>
@@ -504,9 +523,11 @@ export default function HamburgerMenu({
 																		className="group relative block touch-manipulation"
 																	>
 																		<div className="absolute inset-0 bg-secondary/20 rounded-lg blur group-hover:bg-secondary/40 transition-all duration-300" />
-																		<div className="relative bg-background/80 border border-secondary rounded-lg p-2 sm:p-3 group-hover:border-secondary/80 group-hover:bg-secondary/10 transition-all duration-300 min-w-[44px] min-h-[44px] flex items-center justify-center">
+																		<div
+																			className={`relative bg-background/80 border border-secondary rounded-lg group-hover:border-secondary/80 group-hover:bg-secondary/10 transition-all duration-300 flex items-center justify-center ${isShortViewport ? "p-1.5 min-w-[36px] min-h-[36px]" : "p-2 sm:p-3 min-w-[40px] min-h-[40px] sm:min-w-[44px] sm:min-h-[44px]"}`}
+																		>
 																			<Icon
-																				className="w-4 h-4 sm:w-5 sm:h-5 text-secondary group-hover:text-secondary/80"
+																				className={`${isShortViewport ? "w-3.5 h-3.5" : "w-4 h-4 sm:w-5 sm:h-5"} text-secondary group-hover:text-secondary/80`}
 																				aria-hidden="true"
 																			/>
 																		</div>
@@ -520,18 +541,20 @@ export default function HamburgerMenu({
 										</div>
 
 										{/* Terminal prompt */}
-										<m.div
-											initial={{ opacity: 0 }}
-											animate={{ opacity: 1 }}
-											transition={{ duration: 0.3, delay: 1.2 }}
-											className="mt-3 sm:mt-4 text-center px-2"
-										>
-											<span className="font-mono text-xs text-muted-foreground">
-												Press{" "}
-												<span className="text-red-500 font-bold">ESC</span> or
-												tap outside to exit
-											</span>
-										</m.div>
+										{!isShortViewport && (
+											<m.div
+												initial={{ opacity: 0 }}
+												animate={{ opacity: 1 }}
+												transition={{ duration: 0.3, delay: 1.2 }}
+												className="mt-2.5 sm:mt-4 text-center px-2"
+											>
+												<span className="font-mono text-xs text-muted-foreground">
+													Press{" "}
+													<span className="text-red-500 font-bold">ESC</span> or
+													tap outside to exit
+												</span>
+											</m.div>
+										)}
 									</div>
 								</m.div>
 							</m.div>

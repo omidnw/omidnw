@@ -9,7 +9,6 @@ import {
 	Search,
 	Calendar,
 	Clock,
-	Tag,
 	ArrowRight,
 	Filter,
 	Code,
@@ -25,7 +24,6 @@ import {
 	RefreshCw,
 	AlertCircle,
 	Wifi,
-	WifiOff,
 	GitBranch,
 	Database,
 	CheckCircle,
@@ -264,6 +262,13 @@ export default function Projects() {
 			return filteredProjects.filter((project) => !project.featured);
 		}
 	}, [filteredProjects, searchTerm, selectedTags, selectedStatus]);
+	const hasActiveFilters = Boolean(
+		searchTerm || selectedTags.length > 0 || selectedStatus,
+	);
+	const shouldShowProjectsGrid =
+		hasActiveFilters ||
+		regularProjects.length > 0 ||
+		filteredProjects.length === 0;
 
 	// Handle tag selection (supports multiple tags)
 	const handleTagSelect = (tag: string) => {
@@ -966,199 +971,204 @@ export default function Projects() {
 							)}
 
 						{/* Projects Grid */}
-						<m.section
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ duration: 0.6, delay: 0.6 }}
-						>
-							<div className="flex items-center justify-between mb-4 sm:mb-6">
-								<h2 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary flex items-center">
-									<Code className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
-									{selectedTags.length > 0 || searchTerm || selectedStatus
-										? "FILTERED_PROJECTS.scan()"
-										: "ALL_PROJECTS.scan()"}
-								</h2>
-							</div>
+						{shouldShowProjectsGrid && (
+							<m.section
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ duration: 0.6, delay: 0.6 }}
+							>
+								<div className="flex items-center justify-between mb-4 sm:mb-6">
+									<h2 className="text-lg sm:text-xl md:text-2xl font-heading font-bold text-primary flex items-center">
+										<Code className="w-5 h-5 sm:w-6 sm:h-6 mr-2" />
+										{hasActiveFilters
+											? "FILTERED_PROJECTS.scan()"
+											: "ALL_PROJECTS.scan()"}
+									</h2>
+								</div>
 
-							{regularProjects.length === 0 ? (
-								<Card
-									variant="cyberpunk"
-									className="p-6 sm:p-8 md:p-12 text-center"
-								>
-									<div className="text-muted-foreground">
-										<Search className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto mb-4 opacity-50" />
-										<h3 className="text-lg sm:text-xl font-heading mb-2">
-											No projects found
-										</h3>
-										<p className="font-mono mb-4 text-sm sm:text-base">
-											No projects match your current search criteria
-											{selectedTags.length > 1 && (
-												<span className="block text-sm mt-2 text-primary">
-													Projects must contain ALL selected tags
-												</span>
-											)}
-										</p>
-										<Button
-											variant="outline"
-											onClick={handleClearFilters}
-											className="touch-manipulation min-h-[44px]"
-										>
-											<X className="w-4 h-4 mr-2" />
-											Clear Filters
-										</Button>
-									</div>
-								</Card>
-							) : (
-								<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-									{regularProjects.map((project, index) => (
-										<m.div
-											key={project.id}
-											initial={{ opacity: 0, y: 30 }}
-											animate={{ opacity: 1, y: 0 }}
-											transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
-											className="h-[420px] sm:h-[440px] md:h-[460px]"
-										>
-											<Link
-												href={`/projects/${project.id}`}
-												className="block h-full"
+								{filteredProjects.length === 0 ? (
+									<Card
+										variant="cyberpunk"
+										className="p-6 sm:p-8 md:p-12 text-center"
+									>
+										<div className="text-muted-foreground">
+											<Search className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 mx-auto mb-4 opacity-50" />
+											<h3 className="text-lg sm:text-xl font-heading mb-2">
+												No projects found
+											</h3>
+											<p className="font-mono mb-4 text-sm sm:text-base">
+												No projects match your current search criteria
+												{selectedTags.length > 1 && (
+													<span className="block text-sm mt-2 text-primary">
+														Projects must contain ALL selected tags
+													</span>
+												)}
+											</p>
+											<Button
+												variant="outline"
+												onClick={handleClearFilters}
+												className="touch-manipulation min-h-[44px]"
 											>
-												<Card
-													variant="cyberpunk"
-													className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform touch-manipulation"
+												<X className="w-4 h-4 mr-2" />
+												Clear Filters
+											</Button>
+										</div>
+									</Card>
+								) : (
+									<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+										{regularProjects.map((project, index) => (
+											<m.div
+												key={project.id}
+												initial={{ opacity: 0, y: 30 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{ duration: 0.5, delay: 0.7 + index * 0.1 }}
+												className="h-[420px] sm:h-[440px] md:h-[460px]"
+											>
+												<Link
+													href={`/projects/${project.id}`}
+													className="block h-full"
 												>
-													<CardHeader className="pb-3 flex-shrink-0 p-4 sm:p-6">
-														<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 text-xs text-muted-foreground font-mono">
-															<Badge
-																variant={getStatusVariant(project.status)}
-																className="font-mono w-fit"
-															>
-																{getStatusIcon(project.status)}
-																{project.status.replace("-", " ")}
-															</Badge>
-															<div className="flex items-center gap-1">
-																<Calendar className="w-3 h-3" />
-																{new Date(project.startDate).getFullYear()}
+													<Card
+														variant="cyberpunk"
+														className="h-full flex flex-col group cursor-pointer hover:scale-105 transition-transform touch-manipulation"
+													>
+														<CardHeader className="pb-3 flex-shrink-0 p-4 sm:p-6">
+															<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 text-xs text-muted-foreground font-mono">
+																<Badge
+																	variant={getStatusVariant(project.status)}
+																	className="font-mono w-fit"
+																>
+																	{getStatusIcon(project.status)}
+																	{project.status.replace("-", " ")}
+																</Badge>
+																<div className="flex items-center gap-1">
+																	<Calendar className="w-3 h-3" />
+																	{new Date(project.startDate).getFullYear()}
+																</div>
 															</div>
-														</div>
 
-														<CardTitle className="text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 text-base sm:text-lg leading-tight">
-															{project.title}
-														</CardTitle>
-													</CardHeader>
+															<CardTitle className="text-primary font-heading group-hover:neon-glow transition-all line-clamp-2 text-base sm:text-lg leading-tight">
+																{project.title}
+															</CardTitle>
+														</CardHeader>
 
-													<CardContent className="flex-1 flex flex-col pt-0 pb-4 px-4 sm:px-6">
-														<div className="flex-1 flex flex-col min-h-0">
-															<p className="text-muted-foreground font-mono text-sm leading-relaxed line-clamp-4 mb-4 flex-shrink-0">
-																{project.description}
-															</p>
+														<CardContent className="flex-1 flex flex-col pt-0 pb-4 px-4 sm:px-6">
+															<div className="flex-1 flex flex-col min-h-0">
+																<p className="text-muted-foreground font-mono text-sm leading-relaxed line-clamp-4 mb-4 flex-shrink-0">
+																	{project.description}
+																</p>
 
-															<div className="flex flex-wrap gap-1 mb-4 flex-shrink-0">
-																{[
-																	...project.technologies.slice(0, 2),
-																	project.category,
-																].map((tech) => {
-																	const isSelected =
-																		selectedTags.includes(tech);
-																	return (
-																		<Badge
-																			key={tech}
-																			variant={
-																				isSelected ? "default" : "outline"
-																			}
-																			className={`text-xs font-mono cursor-pointer transition-all touch-manipulation ${
-																				isSelected
-																					? "bg-primary/20 text-primary border-primary"
-																					: "hover:bg-primary/10"
-																			}`}
-																			onClick={(e) => {
-																				e.preventDefault();
-																				if (!isSelected) {
-																					handleTagSelect(tech);
+																<div className="flex flex-wrap gap-1 mb-4 flex-shrink-0">
+																	{[
+																		...project.technologies.slice(0, 2),
+																		project.category,
+																	].map((tech) => {
+																		const isSelected =
+																			selectedTags.includes(tech);
+																		return (
+																			<Badge
+																				key={tech}
+																				variant={
+																					isSelected ? "default" : "outline"
 																				}
-																			}}
-																		>
-																			<Hash className="w-3 h-3 mr-1" />
-																			{tech}
-																			{isSelected && (
-																				<Check className="w-3 h-3 ml-1" />
-																			)}
-																		</Badge>
-																	);
-																})}
-																{project.technologies.length > 2 && (
-																	<Badge
-																		variant="outline"
-																		className="text-xs font-mono"
-																	>
-																		+{project.technologies.length - 2}
-																	</Badge>
-																)}
-															</div>
-														</div>
-
-														{/* Buttons section - always at bottom */}
-														<div className="flex-shrink-0 space-y-3 mt-auto">
-															<Button
-																variant="ghost"
-																size="sm"
-																className="w-full justify-center group-hover:bg-primary/10 touch-manipulation min-h-[48px]"
-															>
-																<Code className="w-4 h-4 mr-2" />
-																View Project
-																<ArrowRight className="w-4 h-4 ml-2" />
-															</Button>
-
-															{(project.demoUrl || project.githubUrl) && (
-																<div className="flex gap-2">
-																	{project.demoUrl && (
-																		<Button
+																				className={`text-xs font-mono cursor-pointer transition-all touch-manipulation ${
+																					isSelected
+																						? "bg-primary/20 text-primary border-primary"
+																						: "hover:bg-primary/10"
+																				}`}
+																				onClick={(e) => {
+																					e.preventDefault();
+																					if (!isSelected) {
+																						handleTagSelect(tech);
+																					}
+																				}}
+																			>
+																				<Hash className="w-3 h-3 mr-1" />
+																				{tech}
+																				{isSelected && (
+																					<Check className="w-3 h-3 ml-1" />
+																				)}
+																			</Badge>
+																		);
+																	})}
+																	{project.technologies.length > 2 && (
+																		<Badge
 																			variant="outline"
-																			size="sm"
-																			onClick={(e) => {
-																				e.preventDefault();
-																				window.open(project.demoUrl, "_blank");
-																			}}
-																			className="touch-manipulation min-h-[44px] flex-1"
+																			className="text-xs font-mono"
 																		>
-																			<ExternalLink className="w-4 h-4 mr-2" />
-																			<span className="hidden sm:inline">
-																				Live Demo
-																			</span>
-																			<span className="sm:hidden">Demo</span>
-																		</Button>
-																	)}
-
-																	{project.githubUrl && (
-																		<Button
-																			variant="ghost"
-																			size="sm"
-																			onClick={(e) => {
-																				e.preventDefault();
-																				window.open(
-																					project.githubUrl,
-																					"_blank",
-																				);
-																			}}
-																			className="touch-manipulation min-h-[44px] flex-1"
-																		>
-																			<SiGithub className="w-4 h-4 mr-2" />
-																			<span className="hidden sm:inline">
-																				GitHub
-																			</span>
-																			<span className="sm:hidden">Code</span>
-																		</Button>
+																			+{project.technologies.length - 2}
+																		</Badge>
 																	)}
 																</div>
-															)}
-														</div>
-													</CardContent>
-												</Card>
-											</Link>
-										</m.div>
-									))}
-								</div>
-							)}
-						</m.section>
+															</div>
+
+															{/* Buttons section - always at bottom */}
+															<div className="flex-shrink-0 space-y-3 mt-auto">
+																<Button
+																	variant="ghost"
+																	size="sm"
+																	className="w-full justify-center group-hover:bg-primary/10 touch-manipulation min-h-[48px]"
+																>
+																	<Code className="w-4 h-4 mr-2" />
+																	View Project
+																	<ArrowRight className="w-4 h-4 ml-2" />
+																</Button>
+
+																{(project.demoUrl || project.githubUrl) && (
+																	<div className="flex gap-2">
+																		{project.demoUrl && (
+																			<Button
+																				variant="outline"
+																				size="sm"
+																				onClick={(e) => {
+																					e.preventDefault();
+																					window.open(
+																						project.demoUrl,
+																						"_blank",
+																					);
+																				}}
+																				className="touch-manipulation min-h-[44px] flex-1"
+																			>
+																				<ExternalLink className="w-4 h-4 mr-2" />
+																				<span className="hidden sm:inline">
+																					Live Demo
+																				</span>
+																				<span className="sm:hidden">Demo</span>
+																			</Button>
+																		)}
+
+																		{project.githubUrl && (
+																			<Button
+																				variant="ghost"
+																				size="sm"
+																				onClick={(e) => {
+																					e.preventDefault();
+																					window.open(
+																						project.githubUrl,
+																						"_blank",
+																					);
+																				}}
+																				className="touch-manipulation min-h-[44px] flex-1"
+																			>
+																				<SiGithub className="w-4 h-4 mr-2" />
+																				<span className="hidden sm:inline">
+																					GitHub
+																				</span>
+																				<span className="sm:hidden">Code</span>
+																			</Button>
+																		)}
+																	</div>
+																)}
+															</div>
+														</CardContent>
+													</Card>
+												</Link>
+											</m.div>
+										))}
+									</div>
+								)}
+							</m.section>
+						)}
 					</div>
 				)}
 			</div>

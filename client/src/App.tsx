@@ -13,8 +13,6 @@ import Contact from "@/pages/Contact";
 import Terminal from "@/pages/Terminal";
 import BlogPost from "@/pages/BlogPost";
 import ProjectPost from "@/pages/ProjectPost";
-import Login from "@/pages/Login";
-import Admin from "@/pages/Admin";
 import NotFound from "@/pages/not-found";
 import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
 import { RescueModeProvider } from "@/contexts/RescueModeContext";
@@ -22,17 +20,6 @@ import RescueModeOverlay from "@/components/RescueModeOverlay";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
 function Router() {
-	const [location] = useLocation();
-
-	// Check for dynamic admin routes - only allow randomly generated URLs
-	if (location.startsWith("/admin-")) {
-		return <Login />;
-	}
-
-	if (location.startsWith("/dashboard-")) {
-		return <Admin />;
-	}
-
 	return (
 		<Switch>
 			<Route path="/" component={Home} />
@@ -43,8 +30,6 @@ function Router() {
 			<Route path="/projects/:slug" component={ProjectPost} />
 			<Route path="/contact" component={Contact} />
 			<Route path="/terminal" component={Terminal} />
-			{/* No hardcoded admin routes - only dynamic URLs work */}
-
 			{/* Fallback to 404 */}
 			<Route component={NotFound} />
 		</Switch>
@@ -54,9 +39,8 @@ function Router() {
 function App() {
 	const [location] = useLocation();
 
-	// Admin routes should not use the main Layout
-	const isAdminRoute =
-		location.startsWith("/admin") || location.startsWith("/dashboard");
+	// The terminal is a dedicated full-screen shell without the main layout
+	const usesStandaloneShell = location === "/terminal";
 
 	return (
 		<ErrorBoundary>
@@ -65,7 +49,7 @@ function App() {
 					<MusicPlayerProvider>
 						<QueryClientProvider client={queryClient}>
 							<TooltipProvider>
-								{isAdminRoute ? (
+								{usesStandaloneShell ? (
 									<>
 										<Toaster />
 										<Router />

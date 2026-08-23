@@ -1,15 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { LazyMotion, m, domMax } from "framer-motion";
+import { Link, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
-	Download,
 	Code,
 	Zap,
-	Cpu,
-	Database,
-	Globe,
 	Terminal,
 	ChevronDown,
 	FileCode,
@@ -23,6 +19,7 @@ import {
 	GitMerge,
 	Rocket,
 	Palette,
+	Mail,
 } from "lucide-react";
 import { useSEO } from "@/lib/seo";
 
@@ -122,7 +119,6 @@ const glitchText = [
 const stats = [
 	{ label: "PROJECTS", value: 5, suffix: "+" },
 	{ label: "EXPERIENCE", value: 5, suffix: "+ Years" },
-	{ label: "BLOGS", value: 0, suffix: "" },
 ] as const;
 
 function GlitchText() {
@@ -142,7 +138,7 @@ function GlitchText() {
 			initial={{ opacity: 0 }}
 			animate={{ opacity: 1 }}
 			className="text-primary font-bold"
-			aria-live="polite"
+			aria-live="off"
 			aria-label={`Current role: ${glitchText[currentText]}`}
 		>
 			{glitchText[currentText]}
@@ -160,10 +156,10 @@ const MatrixRain = React.memo(() => {
 				duration: Math.random() * 10 + 5,
 				delay: Math.random() * 5,
 				characters: Array.from({ length: 20 }, () =>
-					String.fromCharCode(0x30a0 + Math.random() * 96)
+					String.fromCharCode(0x30a0 + Math.random() * 96),
 				),
 			})),
-		[]
+		[],
 	);
 
 	return (
@@ -195,19 +191,15 @@ const MatrixRain = React.memo(() => {
 MatrixRain.displayName = "MatrixRain";
 
 function Hero() {
-	const handleDownloadResume = useCallback(() => {
-		// Add actual resume download logic here
-		console.log("Download resume clicked");
-	}, []);
+	const [, navigate] = useLocation();
 
 	const handleViewProjects = useCallback(() => {
-		// Navigate to projects section
-		window.location.href = "/projects";
-	}, []);
+		navigate("/projects");
+	}, [navigate]);
 
 	return (
 		<section
-			className="min-h-screen flex items-center justify-center relative px-4"
+			className="min-h-[calc(100vh-5rem)] sm:min-h-screen flex items-center justify-center relative px-4"
 			aria-label="Hero section"
 		>
 			<MatrixRain />
@@ -264,18 +256,15 @@ function Hero() {
 					className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center px-4"
 				>
 					<Button
+						asChild
 						variant="cyberpunk"
 						size="lg"
 						className="w-full sm:w-auto min-h-[48px] touch-manipulation"
-						onClick={handleDownloadResume}
-						aria-label="Download my resume (coming soon)"
-						disabled={true}
 					>
-						<Download
-							className="w-4 h-4 sm:w-5 sm:h-5 mr-2"
-							aria-hidden="true"
-						/>
-						Download Resume
+						<Link href="/contact" aria-label="Contact me">
+							<Mail className="w-4 h-4 sm:w-5 sm:h-5 mr-2" aria-hidden="true" />
+							Contact Me
+						</Link>
 					</Button>
 					<Button
 						variant="neon"
@@ -410,6 +399,7 @@ const StatusBar = React.memo(() => {
 	const [animatedStats, setAnimatedStats] = useState(stats.map(() => 0));
 
 	const animateStats = useCallback(() => {
+		const timers: ReturnType<typeof setInterval>[] = [];
 		stats.forEach((stat, index) => {
 			let current = 0;
 			const increment = stat.value / 100;
@@ -425,18 +415,22 @@ const StatusBar = React.memo(() => {
 					return newStats;
 				});
 			}, 20);
+			timers.push(timer);
 		});
+		return () => timers.forEach(clearInterval);
 	}, []);
 
 	useEffect(() => {
+		let cleanupTimers: (() => void) | undefined;
+
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (entries[0].isIntersecting) {
-					animateStats();
+					cleanupTimers = animateStats();
 					observer.disconnect();
 				}
 			},
-			{ threshold: 0.5 }
+			{ threshold: 0.5 },
 		);
 
 		const element = document.getElementById("status-bar");
@@ -444,7 +438,10 @@ const StatusBar = React.memo(() => {
 			observer.observe(element);
 		}
 
-		return () => observer.disconnect();
+		return () => {
+			observer.disconnect();
+			cleanupTimers?.();
+		};
 	}, [animateStats]);
 
 	return (
@@ -507,7 +504,7 @@ export default function Home() {
 		<LazyMotion features={domMax}>
 			<div className="text-foreground selection:bg-accent selection:text-background">
 				{/* Main content with semantic HTML for better SEO */}
-				<main role="main">
+				<main>
 					<Hero />
 					<SkillsGrid />
 					<StatusBar />

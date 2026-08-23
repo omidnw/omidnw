@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useLocation } from "wouter";
 import CyberpunkTerminal from "@/components/CyberpunkTerminal";
 import { useSEO } from "@/lib/seo";
@@ -15,29 +15,9 @@ export default function Terminal() {
 	};
 
 	return (
-		<div className="min-h-screen flex items-center justify-center">
+		<div className="min-h-screen bg-background" aria-label="Terminal page">
 			<CyberpunkTerminal isOpen={true} onClose={handleClose} />
-
-			{/* Background content when terminal is open */}
-			<div className="text-center space-y-4 opacity-50">
-				<h1 className="text-4xl font-heading font-bold text-primary neon-glow">
-					Terminal Interface
-				</h1>
-				<p className="text-lg text-muted-foreground font-mono">
-					Accessing cyberpunk terminal...
-				</p>
-				<div className="flex justify-center space-x-2">
-					<div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-					<div
-						className="w-2 h-2 bg-primary rounded-full animate-pulse"
-						style={{ animationDelay: "0.2s" }}
-					/>
-					<div
-						className="w-2 h-2 bg-primary rounded-full animate-pulse"
-						style={{ animationDelay: "0.4s" }}
-					/>
-				</div>
-			</div>
+			<h1 className="sr-only">Cyberpunk Terminal</h1>
 		</div>
 	);
 }

@@ -3,11 +3,13 @@ import { Button } from "@/components/ui/button";
 import { AlertCircle, Home, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
 import { LazyMotion, m, domMax } from "framer-motion";
+import { useSEO } from "@/lib/seo";
 
 export default function NotFound() {
+	useSEO("notFound");
 	return (
 		<LazyMotion features={domMax}>
-			<div className="min-h-screen w-full flex items-center justify-center bg-background p-4">
+			<main className="min-h-screen w-full flex items-center justify-center bg-background p-4">
 				<m.div
 					initial={{ opacity: 0, scale: 0.8 }}
 					animate={{ opacity: 1, scale: 1 }}
@@ -115,7 +117,7 @@ export default function NotFound() {
 						</CardContent>
 					</Card>
 				</m.div>
-			</div>
+			</main>
 		</LazyMotion>
 	);
 }
