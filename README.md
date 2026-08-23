@@ -51,24 +51,6 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 </div>
 
-## 🏆 GitHub Trophies
-
-### Personal Account (@omidnw)
-
-<div align="center">
-
-![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidnw&theme=onedark&no-frame=false&no-bg=true&margin-w=4)
-
-</div>
-
-### Work Account (@omidrezakeshtkar)
-
-<div align="center">
-
-![GitHub Trophies](https://github-profile-trophy.vercel.app/?username=omidrezakeshtkar&theme=onedark&no-frame=false&no-bg=true&margin-w=4)
-
-</div>
-
 ## 👨‍💻 Technologies & Tools
 
 <div align="center">
