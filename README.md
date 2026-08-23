@@ -21,9 +21,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=omidnw&show_icons=true&theme=onedark)
-&nbsp;&nbsp;&nbsp;&nbsp;
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=omidnw&layout=compact&theme=onedark)
+![GitHub Streak](https://streak-stats.demolab.com/?user=omidnw&theme=onedark)
 
 </div>
 
@@ -31,9 +29,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Stats](https://github-readme-stats.vercel.app/api?username=omidrezakeshtkar&show_icons=true&theme=onedark)
-&nbsp;&nbsp;&nbsp;&nbsp;
-![Top Languages](https://github-readme-stats.vercel.app/api/top-langs/?username=omidrezakeshtkar&layout=compact&theme=onedark)
+![GitHub Streak](https://streak-stats.demolab.com/?user=omidrezakeshtkar&theme=onedark)
 
 </div>
 
