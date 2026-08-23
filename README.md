@@ -79,11 +79,11 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 ![TypeScript](https://img.shields.io/badge/Code-TypeScript-informational?style=flat&logo=typescript&logoColor=white&color=2bbc8a)
 ![JavaScript](https://img.shields.io/badge/Code-JavaScript-informational?style=flat&logo=javascript&logoColor=white&color=2bbc8a)
-![C#](https://img.shields.io/badge/Code-CSharp-informational?style=flat&logo=csharp&logoColor=white&color=2bbc8a)
+![C#](https://img.shields.io/badge/Code-CSharp-informational?style=flat&logo=dotnet&logoColor=white&color=2bbc8a)
 ![Go](https://img.shields.io/badge/Code-Go-informational?style=flat&logo=go&logoColor=white&color=2bbc8a)
 ![Rust](https://img.shields.io/badge/Code-Rust-informational?style=flat&logo=rust&logoColor=white&color=2bbc8a)
 ![Swift](https://img.shields.io/badge/Code-Swift-informational?style=flat&logo=swift&logoColor=white&color=2bbc8a)
-![Lisp](https://img.shields.io/badge/Code-Lisp-informational?style=flat&logo=lisp&logoColor=white&color=2bbc8a)
+![Lisp](https://img.shields.io/badge/Code-Lisp-informational?style=flat&logo=commonlisp&logoColor=white&color=2bbc8a)
 
 ### Node.js Libraries
 
@@ -98,7 +98,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 ### Testing
 
-![Playwright](https://img.shields.io/badge/Testing-Playwright-informational?style=flat&logo=playwright&logoColor=white&color=2bbc8a)
+![Playwright](https://img.shields.io/badge/Testing-Playwright-informational?style=flat&logoColor=white&color=2bbc8a)
 ![Jest](https://img.shields.io/badge/Testing-Jest-informational?style=flat&logo=jest&logoColor=white&color=2bbc8a)
 ![Mocha Chai](https://img.shields.io/badge/Testing-Mocha_Chai-informational?style=flat&logo=mocha&logoColor=white&color=2bbc8a)
 
