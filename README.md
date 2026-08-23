@@ -21,7 +21,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Streak](https://streak-stats.demolab.com/?user=omidnw&theme=onedark)
+![GitHub Streak](./profile/streak-omidnw.svg)
 
 </div>
 
@@ -29,7 +29,7 @@ I'm an enthusiastic developer with diverse interests. I enjoy:
 
 <div align="center">
 
-![GitHub Streak](https://streak-stats.demolab.com/?user=omidrezakeshtkar&theme=onedark)
+![GitHub Streak](./profile/streak-omidrezakeshtkar.svg)
 
 </div>
 
