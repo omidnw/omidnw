@@ -156,6 +156,8 @@ function mdxToProjectData(id: string, mdxContent: string): ProjectData {
 		description: frontmatter.description || "",
 		content,
 		image: frontmatter.image || "/projects/default.jpg",
+		imageAlt: frontmatter.imageAlt || undefined,
+		cardImage: frontmatter.cardImage || undefined,
 		demoUrl: frontmatter.demoUrl,
 		githubUrl: frontmatter.githubUrl,
 		technologies: frontmatter.technologies || [],

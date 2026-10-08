@@ -39,9 +39,9 @@ export default function ProfessionalFooter() {
 	const year = new Date().getFullYear();
 
 	return (
-		<footer className="border-t border-border bg-card/30">
+		<footer className="pf-site-footer relative z-10 border-t border-border bg-card/30">
 			<div className="pf-shell pb-8 pt-12 sm:pt-14">
-				<div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.85fr_0.85fr] lg:gap-12">
+				<div className="pf-footer-columns grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.3fr_0.85fr_0.85fr] lg:gap-12">
 					{/* Brand */}
 					<div>
 						<div className="flex items-center gap-3">
@@ -63,6 +63,7 @@ export default function ProfessionalFooter() {
 							Building reliable software and the test infrastructure that keeps it
 							reliable.
 						</p>
+						<Link href="/contact" className="pf-focus pf-footer-cta inline-flex min-h-11 items-center gap-2 text-sm font-medium text-primary">Let’s build something reliable <span aria-hidden="true">↗</span></Link>
 					</div>
 
 					{/* Explore */}

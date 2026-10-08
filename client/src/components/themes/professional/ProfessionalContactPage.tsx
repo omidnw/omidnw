@@ -112,7 +112,7 @@ export default function ProfessionalContactPage() {
 	const filled = Object.values(form).filter((v) => v.trim()).length;
 
 	return (
-		<div className="pb-[var(--pf-section-y)]">
+		<div className="pf-inner-page pb-[var(--pf-section-y)]">
 			<ProfessionalPageHeader
 				label="Contact"
 				title="Let's Build Something Meaningful"
@@ -123,7 +123,7 @@ export default function ProfessionalContactPage() {
 			<div className="pf-shell mt-12 grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)] lg:gap-12">
 				{/* Form */}
 				<section
-					className="rounded-2xl border border-border bg-card/60 p-6 sm:p-8"
+					className="pf-panel rounded-2xl border border-border bg-card/60 p-6 sm:p-8"
 					aria-labelledby="contact-form-heading"
 				>
 					<h2

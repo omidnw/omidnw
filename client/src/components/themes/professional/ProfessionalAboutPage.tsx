@@ -41,42 +41,42 @@ const TIMELINE: TimelineEntry[] = [
 	{
 		period: "2025",
 		role: "Software QA",
-		employer: "Troweb Inc., Dubai, UAE",
+		employer: "Troweb Inc.",
 		description: "Ensuring the quality and reliability of software products.",
 		kind: "work",
 	},
 	{
 		period: "2023",
 		role: "BS in Computer Programming",
-		employer: "Shamsipour Technical and Vocational College, Tehran, IR",
+		employer: "Shamsipour Technical and Vocational College",
 		description: "Completed Bachelor of Science in Computer Programming.",
 		kind: "education",
 	},
 	{
 		period: "2022",
 		role: "Started at Troweb Inc.",
-		employer: "Dubai, UAE",
+		employer: "Troweb Inc.",
 		description: "Joined Troweb Inc. as a Software QA.",
 		kind: "work",
 	},
 	{
 		period: "2021",
 		role: "Web Programming (Full Stack Developer — Freelancer)",
-		employer: "Qatar German Pipe Company (QGPC), Doha, QA",
+		employer: "Qatar German Pipe Company (QGPC)",
 		description: "Developed web solutions for QGPC on a freelance basis.",
 		kind: "work",
 	},
 	{
 		period: "2021",
 		role: "AD in Computer Programming",
-		employer: "Shamsipour Technical and Vocational College, Tehran, IR",
+		employer: "Shamsipour Technical and Vocational College",
 		description: "Completed Associate Degree in Computer Programming.",
 		kind: "education",
 	},
 	{
 		period: "2021",
 		role: "Software Engineer",
-		employer: "Veresk Rail Cars, Tehran, IR",
+		employer: "Veresk Rail Cars",
 		description:
 			"Worked as a Software Engineer, focusing on system maintenance. (Mar 2019 – Mar 2021)",
 		kind: "work",
@@ -84,7 +84,7 @@ const TIMELINE: TimelineEntry[] = [
 	{
 		period: "2019",
 		role: "Began Software Engineering Role",
-		employer: "Veresk Rail Cars, Tehran, IR",
+		employer: "Veresk Rail Cars",
 		description: "Started role as Software Engineer.",
 		kind: "milestone",
 	},
@@ -188,7 +188,7 @@ const INTERESTS: Interest[] = [
 
 export default function ProfessionalAboutPage() {
 	return (
-		<div className="pb-[var(--pf-section-y)]">
+		<div className="pf-inner-page pb-[var(--pf-section-y)]">
 			<ProfessionalPageHeader
 				label="About"
 				title="The Engineer Behind the Code"
@@ -201,7 +201,7 @@ export default function ProfessionalAboutPage() {
 				className="pf-shell mt-12 grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16"
 				aria-label="Introduction"
 			>
-				<div className="relative overflow-hidden rounded-2xl border border-border bg-card/50 p-7 sm:p-9">
+				<div className="pf-panel relative overflow-hidden rounded-2xl border border-border bg-card/50 p-7 sm:p-9">
 					<div className="pf-panel-grid pointer-events-none absolute inset-0" aria-hidden="true" />
 					<div className="relative flex flex-col items-center gap-4 text-center">
 						<picture>
@@ -219,9 +219,6 @@ export default function ProfessionalAboutPage() {
 						</p>
 						<p className="font-mono text-[0.6875rem] uppercase leading-relaxed tracking-[0.22em] text-muted-foreground">
 							Software QA &amp; Full Stack Developer
-						</p>
-						<p className="mt-1 font-mono text-[0.6875rem] uppercase tracking-[0.2em] text-primary">
-							Dubai, UAE
 						</p>
 					</div>
 				</div>
@@ -341,12 +338,12 @@ export default function ProfessionalAboutPage() {
 					{TECH_CATEGORIES.map((category) => (
 						<li
 							key={category.name}
-							className="rounded-xl border border-border bg-card p-5"
+							className="pf-panel rounded-xl border border-border bg-card p-5"
 						>
 							<h3 className="font-heading text-sm font-semibold text-foreground">
 								{category.name}
 							</h3>
-							<ul className="pf-tags mt-3">
+							<ul className="pf-tags pf-tag-chips mt-3">
 								{category.skills.map((skill) => (
 									<li key={skill}>{skill}</li>
 								))}
@@ -372,7 +369,7 @@ export default function ProfessionalAboutPage() {
 						return (
 							<li
 								key={interest.name}
-								className="flex flex-col rounded-xl border border-border bg-card p-5"
+								className="flex flex-col pf-panel rounded-xl border border-border bg-card p-5"
 							>
 								<span
 									className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-primary/25 bg-primary/10 text-primary"

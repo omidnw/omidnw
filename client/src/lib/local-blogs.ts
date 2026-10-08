@@ -76,7 +76,7 @@ function parseFrontmatter(content: string): {
 async function importBlogFiles(): Promise<Record<string, string>> {
 	try {
 		// Path relative to this file (lib/local-blogs.ts) -> ../blogs/*.mdx
-		const modules = import.meta.glob("../blogs/*.mdx", {
+		const modules = import.meta.glob("../blogs/*.{md,mdx}", {
 			import: "default",
 			query: "?raw",
 			eager: true,
@@ -89,7 +89,7 @@ async function importBlogFiles(): Promise<Record<string, string>> {
 				.split("/")
 				.pop()
 				?.replace(/\.mdx?$/, "");
-			if (filename && typeof content === "string") {
+			if (filename && filename.toLowerCase() !== "readme" && typeof content === "string") {
 				blogFiles[filename] = content;
 			}
 		}
@@ -100,8 +100,9 @@ async function importBlogFiles(): Promise<Record<string, string>> {
 	}
 }
 
-function mdxToBlogPostData(id: string, mdxContent: string): BlogPostData {
+function mdxToBlogPostData(id: string, mdxContent: string): BlogPostData | null {
 	const { frontmatter, content } = parseFrontmatter(mdxContent);
+	if (frontmatter.draft === true || frontmatter.published === false) return null;
 
 	return {
 		id,
@@ -128,7 +129,7 @@ export async function loadLocalBlogPosts(): Promise<BlogPostData[]> {
 		for (const [id, content] of Object.entries(blogFiles)) {
 			try {
 				const post = mdxToBlogPostData(id, content);
-				posts.push(post);
+				if (post) posts.push(post);
 			} catch (error) {
 				console.warn(`⚠️ Failed to parse blog post ${id}:`, error);
 			}
@@ -155,7 +156,7 @@ export async function loadLocalBlogPostById(
 		}
 
 		const post = mdxToBlogPostData(id, content);
-		console.log(`✅ Loaded local blog post: ${post.title}`);
+		if (post) console.log(`✅ Loaded local blog post: ${post.title}`);
 		return post;
 	} catch (error) {
 		console.error(`Failed to load blog post ${id}:`, error);

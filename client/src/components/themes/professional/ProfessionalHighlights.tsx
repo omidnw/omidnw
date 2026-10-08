@@ -7,6 +7,11 @@ import { Layers, Code2, Activity, Sparkles } from "lucide-react";
  * hairline rules on wide screens, stacked as a 2×2 grid below them. Every icon
  * sits in the same tile so the row reads as one set.
  *
+ * Below `lg` each cell is centred — in a narrow two-column grid, left-aligned
+ * text reads as ragged against both the gutter and the neighbouring cell. From
+ * `lg` the band becomes a single row of four, where left alignment is what makes
+ * the headings scannable.
+ *
  * Copy follows the landing-page spec. The only figure here is the 5+ years
  * figure, which matches the earliest dated role in About.tsx (2019) — the
  * design's own "10+ Projects" variant was not adopted because the repository
@@ -48,13 +53,13 @@ export default function ProfessionalHighlights() {
 			className="relative w-[100vw] left-1/2 -translate-x-1/2 border-y border-border bg-card/50"
 			aria-label="Professional highlights"
 		>
-			<ul className="pf-shell grid grid-cols-2 gap-x-5 gap-y-7 py-9 lg:grid-cols-4 lg:gap-x-8 lg:py-10">
+			<ul className="pf-shell grid grid-cols-2 gap-x-5 gap-y-7 py-6 lg:grid-cols-4 lg:gap-x-8 lg:py-7">
 				{HIGHLIGHTS.map((item, index) => {
 					const Icon = item.icon;
 					return (
 						<li
 							key={item.heading}
-							className="relative flex flex-col items-start gap-2.5 lg:flex-row lg:items-center lg:gap-4"
+							className="relative flex flex-col items-center gap-2.5 text-center lg:flex-row lg:items-center lg:gap-4 lg:text-left"
 						>
 							{/* Hairline between columns on wide screens only, where the row
 							    reads as a single band. Below that the grid gap is enough. */}

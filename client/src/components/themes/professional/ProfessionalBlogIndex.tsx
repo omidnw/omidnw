@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { ArrowUpRight, Clock } from "lucide-react";
 import ProfessionalPageHeader from "@/components/themes/professional/ProfessionalPageHeader";
 import { formatDate } from "@/lib/dates";
-import { loadLocalBlogPosts } from "@/lib/local-blogs";
+import { loadBlogPosts } from "@/lib/blogs";
 import type { BlogPostData } from "@/lib/github-api";
 
 /**
@@ -13,7 +13,7 @@ import type { BlogPostData } from "@/lib/github-api";
  * filter chrome — the archive is small, and adding controls that filter three
  * entries would be decoration rather than function.
  *
- * Reads the same local MDX as the CyberPunk blog page.
+ * Reads published MDX from GitHub, with the configured local fallback.
  */
 
 const byNewestFirst = (a: BlogPostData, b: BlogPostData) =>
@@ -21,20 +21,27 @@ const byNewestFirst = (a: BlogPostData, b: BlogPostData) =>
 
 export default function ProfessionalBlogIndex() {
 	const [posts, setPosts] = useState<BlogPostData[] | null>(null);
+	const [failed, setFailed] = useState(false);
+	const [attempt, setAttempt] = useState(0);
 
 	useEffect(() => {
 		let active = true;
-		loadLocalBlogPosts()
+		setPosts(null);
+		setFailed(false);
+		loadBlogPosts()
 			.then((all) => {
 				if (active) setPosts([...all].sort(byNewestFirst));
 			})
 			.catch(() => {
-				if (active) setPosts([]);
+				if (active) {
+					setFailed(true);
+					setPosts([]);
+				}
 			});
 		return () => {
 			active = false;
 		};
-	}, []);
+	}, [attempt]);
 
 	const all = posts ?? [];
 	const totalReadTime = useMemo(
@@ -44,7 +51,7 @@ export default function ProfessionalBlogIndex() {
 	);
 
 	return (
-		<div className="pb-[var(--pf-section-y)]">
+		<div className="pf-inner-page pb-[var(--pf-section-y)]">
 			<ProfessionalPageHeader
 				label="Writing"
 				title="Notes & Insights"
@@ -52,8 +59,21 @@ export default function ProfessionalBlogIndex() {
 				regionLabel="Blog"
 			/>
 
-			{posts === null ? (
-				<ul className="pf-shell mt-10 space-y-4">
+			{failed ? (
+				<div className="pf-shell mt-10" role="alert">
+					<p className="text-sm text-muted-foreground">
+						Articles could not be loaded. Please try again.
+					</p>
+					<button
+						type="button"
+						onClick={() => setAttempt((value) => value + 1)}
+						className="pf-focus mt-3 inline-flex min-h-11 items-center text-sm text-primary"
+					>
+						Try again
+					</button>
+				</div>
+			) : posts === null ? (
+				<ul className="pf-shell pf-blog-grid mt-10">
 					{[0, 1, 2].map((i) => (
 						<li
 							key={i}
@@ -67,13 +87,13 @@ export default function ProfessionalBlogIndex() {
 				</p>
 			) : (
 				<>
-					<ul className="pf-shell mt-10 space-y-4">
+					<ul className="pf-shell pf-blog-grid mt-10">
 						{all.map((post) => (
 							<li key={post.id}>
 								<article>
 									<Link
 										href={`/blog/${post.id}`}
-										className="pf-focus group block rounded-xl border border-border bg-card p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-(--pf-shadow-card-hover) focus-visible:border-primary/50 sm:p-7"
+										className="pf-blog-card pf-focus group block rounded-xl border border-border bg-card p-6 transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-(--pf-shadow-card-hover) focus-visible:border-primary/50 sm:p-7"
 									>
 										<div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-mono text-[0.6875rem] text-muted-foreground">
 											<time dateTime={post.date}>{formatDate(post.date)}</time>
@@ -85,7 +105,7 @@ export default function ProfessionalBlogIndex() {
 											{post.tags?.length ? (
 												<>
 													<span aria-hidden="true">·</span>
-													<span>{post.tags.join(", ")}</span>
+													<ul className="pf-tags pf-tag-chips">{post.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul>
 												</>
 											) : null}
 										</div>

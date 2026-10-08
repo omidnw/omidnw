@@ -6,7 +6,6 @@ import ProfessionalTech from "@/components/themes/professional/ProfessionalTech"
 import ProfessionalJourney from "@/components/themes/professional/ProfessionalJourney";
 import ProfessionalAbout from "@/components/themes/professional/ProfessionalAbout";
 import ProfessionalContact from "@/components/themes/professional/ProfessionalContact";
-import ProfessionalFooter from "@/components/themes/professional/ProfessionalFooter";
 import { useSEO } from "@/lib/seo";
 
 /**
@@ -28,7 +27,7 @@ export default function ProfessionalHome() {
 			   operating system's reduced-motion preference. Scoped here so the
 			   CyberPunk theme's own animations are unaffected. */}
 			<MotionConfig reducedMotion="user">
-				<div className="text-foreground selection:bg-accent selection:text-background">
+				<div className="pf-shell pf-landing text-foreground selection:bg-accent selection:text-background">
 					<ProfessionalHero />
 					<ProfessionalHighlights />
 					<ProfessionalProjects />
@@ -36,7 +35,6 @@ export default function ProfessionalHome() {
 					<ProfessionalJourney />
 					<ProfessionalAbout />
 					<ProfessionalContact />
-					<ProfessionalFooter />
 				</div>
 			</MotionConfig>
 		</LazyMotion>

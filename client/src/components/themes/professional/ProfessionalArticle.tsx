@@ -5,7 +5,7 @@ import ProfessionalPageHeader from "@/components/themes/professional/Professiona
 import { pictureSource } from "@/lib/images";
 import { processProfessionalMarkdown } from "@/lib/professional-markdown";
 import { loadLocalProjectById } from "@/lib/local-projects";
-import { loadLocalBlogPostById } from "@/lib/local-blogs";
+import { loadBlogPostById } from "@/lib/blogs";
 
 /**
  * Shared article shell for the Professional theme.
@@ -36,6 +36,8 @@ export const categoryLabel = (category: string) =>
 interface LoadedRecord {
 	title: string;
 	image: string | null;
+	/** Overrides the generated alt when the image is not a UI screenshot. */
+	imageAlt?: string;
 }
 
 interface ProfessionalArticleProps {
@@ -54,9 +56,11 @@ export default function ProfessionalArticle({
 }: ProfessionalArticleProps) {
 	const { slug = "" } = useParams<{ slug: string }>();
 
+	const [attempt, setAttempt] = useState(0);
 	const [record, setRecord] = useState<LoadedRecord | null>(null);
 	const [body, setBody] = useState("");
-	const [status, setStatus] = useState<"loading" | "ready" | "missing">(
+	const [contents, setContents] = useState<{ id: string; title: string }[]>([]);
+	const [status, setStatus] = useState<"loading" | "ready" | "missing" | "error">(
 		"loading",
 	);
 
@@ -67,12 +71,13 @@ export default function ProfessionalArticle({
 		setStatus("loading");
 		setRecord(null);
 		setBody("");
+		setContents([]);
 
 		(async () => {
 			const loaded =
 				source === "project"
 					? await loadLocalProjectById(slug)
-					: await loadLocalBlogPostById(slug);
+					: await loadBlogPostById(slug);
 
 			if (!active) return;
 			if (!loaded) {
@@ -86,15 +91,28 @@ export default function ProfessionalArticle({
 			setRecord({
 				title: loaded.title,
 				image: "image" in loaded ? (loaded.image ?? null) : null,
+				imageAlt:
+					"imageAlt" in loaded && typeof loaded.imageAlt === "string"
+						? loaded.imageAlt
+						: undefined,
 			});
-			setBody(html);
+			const document = new DOMParser().parseFromString(html, "text/html");
+			const sections = Array.from(document.querySelectorAll("h2")).map((heading, index) => {
+				const id = `article-section-${index + 1}`;
+				heading.id = id;
+				return { id, title: heading.textContent ?? "" };
+			});
+			setContents(sections);
+			setBody(document.body.innerHTML);
 			setStatus("ready");
-		})();
+		})().catch(() => {
+			if (active) setStatus("error");
+		});
 
 		return () => {
 			active = false;
 		};
-	}, [slug, source]);
+	}, [slug, source, attempt]);
 
 	const backTo = source === "project" ? "/projects" : "/blog";
 	const backLabel = source === "project" ? "All Projects" : "All Articles";
@@ -103,7 +121,7 @@ export default function ProfessionalArticle({
 	const picture = record?.image ? pictureSource(record.image) : null;
 
 	return (
-		<div className="pb-[var(--pf-section-y)]">
+		<div className="pf-inner-page pb-[var(--pf-section-y)]">
 			{status === "loading" ? (
 				<div
 					className="pf-shell pt-[calc(var(--pf-section-y)*0.62)]"
@@ -113,6 +131,11 @@ export default function ProfessionalArticle({
 					<div className="h-3 w-32 animate-pulse rounded bg-card" />
 					<div className="mt-5 h-10 w-3/4 animate-pulse rounded bg-card" />
 					<div className="mt-4 h-4 w-1/2 animate-pulse rounded bg-card" />
+				</div>
+			) : status === "error" ? (
+				<div className="pf-shell pt-[calc(var(--pf-section-y)*0.62)]" role="alert">
+					<p className="text-sm text-muted-foreground">This {notFoundLabel.toLowerCase()} could not be loaded. Please try again.</p>
+					<button type="button" onClick={() => setAttempt((value) => value + 1)} className="pf-focus mt-3 inline-flex min-h-11 items-center text-sm text-primary">Try again</button>
 				</div>
 			) : status === "missing" || !record ? (
 				<div className="pf-shell pt-[calc(var(--pf-section-y)*0.62)]">
@@ -141,7 +164,7 @@ export default function ProfessionalArticle({
 					/>
 
 					{meta && meta.length > 0 ? (
-						<dl className="pf-shell mt-8 flex flex-wrap gap-x-10 gap-y-4">
+						<dl className="pf-shell pf-article-meta mt-8 flex flex-wrap gap-x-10 gap-y-4">
 							{meta.map((item) => (
 								<div key={item.label}>
 									<dt className="pf-label text-[0.625rem]">{item.label}</dt>
@@ -155,7 +178,7 @@ export default function ProfessionalArticle({
 
 					{picture ? (
 						<div className="pf-shell mt-8">
-							<div className="overflow-hidden rounded-xl border border-border bg-muted">
+							<div className="pf-article-cover overflow-hidden rounded-xl border border-border bg-muted">
 								<picture>
 									<source
 										type="image/webp"
@@ -165,7 +188,7 @@ export default function ProfessionalArticle({
 									<img
 										{...picture}
 										sizes="(min-width: 640px) 62rem, 92vw"
-										alt={`${record.title} interface`}
+										alt={record.imageAlt ?? `${record.title} interface`}
 										decoding="async"
 										className="aspect-[16/9] w-full object-cover object-top"
 									/>
@@ -174,13 +197,23 @@ export default function ProfessionalArticle({
 						</div>
 					) : null}
 
-					<div className="pf-shell mt-12">
+					<div className="pf-shell pf-article-layout mt-12">
 						{/* Body is this repository's own MDX — the same source the
 						    CyberPunk detail pages already render. */}
 						<div
-							className="pf-prose"
+							className="pf-prose pf-article-body"
 							dangerouslySetInnerHTML={{ __html: body }}
 						/>
+						{contents.length > 1 ? (
+							<aside className="pf-article-contents">
+								<nav aria-labelledby="article-contents-heading">
+									<h2 id="article-contents-heading" className="pf-label">On this page</h2>
+									<ol>{contents.map((section) => (
+										<li key={section.id}><a href={`#${section.id}`} className="pf-focus">{section.title}</a></li>
+									))}</ol>
+								</nav>
+							</aside>
+						) : null}
 					</div>
 
 					<footer className="pf-shell mt-14 border-t border-border pt-8">

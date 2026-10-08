@@ -4,7 +4,7 @@ import ProfessionalArticle, {
 	type MetaItem,
 } from "@/components/themes/professional/ProfessionalArticle";
 import { formatDate } from "@/lib/dates";
-import { loadLocalBlogPostById } from "@/lib/local-blogs";
+import { loadBlogPostById } from "@/lib/blogs";
 import type { BlogPostData } from "@/lib/github-api";
 
 /**
@@ -22,9 +22,9 @@ export default function ProfessionalBlogDetail() {
 	useEffect(() => {
 		let active = true;
 		setPost(null);
-		loadLocalBlogPostById(slug).then((found) => {
+		loadBlogPostById(slug).then((found) => {
 			if (active) setPost(found);
-		});
+		}).catch(() => { if (active) setPost(null); });
 		return () => {
 			active = false;
 		};

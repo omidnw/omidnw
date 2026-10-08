@@ -31,7 +31,7 @@ const siteThemeOptions: Array<{
 	},
 	{
 		value: "professional",
-		label: "PROFESSIONAL",
+		label: "NORMAL",
 		description: "Restrained, modern",
 	},
 ];

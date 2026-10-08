@@ -1,11 +1,12 @@
 import React, { useMemo, useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 // import { Canvas } from "@react-three/fiber";
 // import { Stars, Float } from "@react-three/drei";
 import CircuitBackground from "@/components/CircuitBackground";
 import CyberpunkTerminal from "@/components/CyberpunkTerminal";
 import CyberpunkHeader from "@/components/themes/cyberpunk/CyberpunkHeader";
+import ProfessionalFooter from "@/components/themes/professional/ProfessionalFooter";
 import ProfessionalHeader from "@/components/themes/professional/ProfessionalHeader";
 import { useTheme } from "@/contexts/ThemeContext";
 
@@ -130,14 +131,16 @@ function SkipLink() {
 const PageTransition = React.memo(
 	({ children }: { children: React.ReactNode }) => {
 		const [location] = useLocation();
+		const { isProfessional } = useTheme();
+		const reduceMotion = useReducedMotion() && isProfessional;
 
 		return (
 			<motion.div
 				key={location}
-				initial={{ opacity: 0, y: 20 }}
+				initial={reduceMotion ? false : { opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				exit={{ opacity: 0, y: -20 }}
-				transition={{ duration: 0.3 }}
+				transition={{ duration: reduceMotion ? 0 : 0.3 }}
 				className="w-full"
 			>
 				{children}
@@ -172,10 +175,19 @@ export default function Layout({ children }: LayoutProps) {
 		}
 	}, [isTerminalOpen]);
 
-	// Scroll to top on route change
+	// Keep Professional section links usable when arriving from another page.
 	useEffect(() => {
+		if (isProfessional && window.location.hash) {
+			const sectionId = window.location.hash.slice(1);
+			const frame = window.requestAnimationFrame(() => {
+				const section = document.getElementById(sectionId);
+				if (section) section.scrollIntoView({ block: "start" });
+				else window.scrollTo(0, 0);
+			});
+			return () => window.cancelAnimationFrame(frame);
+		}
 		window.scrollTo(0, 0);
-	}, [location]);
+	}, [location, isProfessional]);
 
 	// Detect macOS
 	useEffect(() => {
@@ -201,7 +213,7 @@ export default function Layout({ children }: LayoutProps) {
 	}, [isMac]);
 
 	return (
-		<div className="min-h-screen bg-background text-foreground relative overflow-x-hidden">
+		<div className={`min-h-screen bg-background text-foreground relative ${isProfessional ? "overflow-x-clip" : "overflow-x-hidden"}`}>
 			<SkipLink />
 			<CircuitBackground />
 			{isProfessional ? null : <CyberBackground />}
@@ -224,13 +236,14 @@ export default function Layout({ children }: LayoutProps) {
 					isProfessional ? "pt-(--pf-bar-height)" : "pt-18 sm:pt-22 pb-4 sm:pb-8"
 				}`}
 			>
-				{/* Professional shares one gutter and one max-width with its header
-				    (`.pf-shell`), so the multi-page routes line up with the landing
-				    page. CyberPunk keeps the original Tailwind `container` untouched. */}
-				<div className={isProfessional ? "pf-shell" : "container mx-auto px-2 sm:px-4"}>
+				{/* Professional sections own their shell so gutters are applied once.
+				    CyberPunk keeps its original container. */}
+				<div className={isProfessional ? "pf-layout-content" : "container mx-auto px-2 sm:px-4"}>
 					<PageTransition>{children}</PageTransition>
 				</div>
 			</main>
+
+			{isProfessional ? <ProfessionalFooter /> : null}
 
 			{/* Cyberpunk Terminal */}
 			<CyberpunkTerminal

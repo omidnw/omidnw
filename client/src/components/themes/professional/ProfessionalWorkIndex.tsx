@@ -95,7 +95,7 @@ export default function ProfessionalWorkIndex() {
 	};
 
 	return (
-		<div className="pb-[var(--pf-section-y)]">
+		<div className="pf-inner-page pb-[var(--pf-section-y)]">
 			<ProfessionalPageHeader
 				label="Work"
 				title="Selected Work"
@@ -104,7 +104,7 @@ export default function ProfessionalWorkIndex() {
 			/>
 
 			{/* Filters */}
-			<div className="pf-shell mt-10 flex flex-col gap-4">
+			<div className="pf-shell pf-work-filters mt-10 flex flex-col gap-4">
 				<div className="flex flex-wrap items-center gap-2">
 					<label
 						htmlFor="work-search"
@@ -124,14 +124,14 @@ export default function ProfessionalWorkIndex() {
 							value={query}
 							onChange={(e) => setQuery(e.target.value)}
 							placeholder="Title, description or technology"
-							className="h-11 w-full rounded-lg border border-border bg-card pl-9 pr-9 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+							className="h-11 w-full rounded-lg border border-border bg-card pl-9 pr-11 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
 						/>
 						{query ? (
 							<button
 								type="button"
 								onClick={() => setQuery("")}
 								aria-label="Clear search"
-								className="pf-focus absolute right-1.5 inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+								className="pf-focus absolute right-0 inline-flex h-11 w-11 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
 							>
 								<X className="h-4 w-4" aria-hidden="true" />
 							</button>
@@ -185,11 +185,11 @@ export default function ProfessionalWorkIndex() {
 			{/* Grid */}
 			<section className="pf-shell mt-8" aria-label="Projects">
 				{projects === null ? (
-					<ul className="grid gap-6 sm:grid-cols-2">
+					<ul className="pf-project-grid">
 						{[0, 1].map((i) => (
 							<li
 								key={i}
-								className="h-[26rem] animate-pulse rounded-xl border border-border bg-card/40"
+								className="h-[15rem] animate-pulse rounded-xl border border-border bg-card/40"
 							/>
 						))}
 					</ul>
@@ -207,10 +207,10 @@ export default function ProfessionalWorkIndex() {
 						</button>
 					</div>
 				) : (
-					<ul className="grid gap-6 sm:grid-cols-2 sm:gap-7">
+					<ul className="pf-project-grid">
 						{filtered.map((project) => (
 							<li key={project.id}>
-								<ProfessionalProjectCard project={project} headingLevel="h2" />
+								<ProfessionalProjectCard project={project} headingLevel="h2" compact />
 							</li>
 						))}
 					</ul>
@@ -227,7 +227,7 @@ export default function ProfessionalWorkIndex() {
 				>
 					<div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-3">
 						<div>
-							<p className="pf-label">Technologies Used</p>
+							<h2 id="work-tech-heading" className="pf-label">Technologies Used</h2>
 							<p className="mt-2 text-sm text-muted-foreground">
 								Select a technology to filter the list.
 							</p>

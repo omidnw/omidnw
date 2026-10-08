@@ -30,7 +30,7 @@ export default function ProfessionalAbout() {
 			<div className="grid items-start gap-10 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-16">
 				{/* Visual side — monogram composition, no fabricated portrait. */}
 				<div className="order-2 lg:order-1">
-					<div className="relative overflow-hidden rounded-2xl border border-border bg-background px-7 py-9 sm:px-9 sm:py-11">
+					<div className="pf-panel relative overflow-hidden rounded-2xl border border-border bg-background px-7 py-9 sm:px-9 sm:py-11">
 						<div className="pf-panel-grid pointer-events-none absolute inset-0" aria-hidden="true" />
 
 						<div className="relative flex flex-col items-center gap-4 text-center">

@@ -38,7 +38,7 @@ export default function ProfessionalPageHeader({
 	regionLabel,
 }: ProfessionalPageHeaderProps) {
 	return (
-		<div className="pf-shell pb-2 pt-[calc(var(--pf-section-y)*0.62)]">
+		<div className="pf-shell pf-page-header pb-2 pt-[calc(var(--pf-section-y)*0.62)]">
 			{backTo ? (
 				<Link
 					href={backTo}

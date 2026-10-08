@@ -42,3 +42,7 @@ build/
 examples/
 docs/
 .harness/
+
+# Version the unpublished blog writing guide.
+!client/src/blogs/examples/
+!client/src/blogs/examples/example.mdx

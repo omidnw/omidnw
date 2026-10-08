@@ -43,7 +43,7 @@ const MOTTO = "Engineering · Reliability · Through Better Software";
 export default function ProfessionalHero() {
 	return (
 		<section
-			className="pf-section relative isolate w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden pb-[clamp(1.5rem,4vw,2.5rem)] lg:pb-[var(--pf-section-y)]"
+			className="pf-section pf-landing-hero relative isolate w-[100vw] left-1/2 -translate-x-1/2 overflow-hidden pb-[clamp(1.5rem,4vw,2.5rem)] lg:pb-[var(--pf-section-y)]"
 			aria-label="Introduction"
 		>
 			{/* Backdrop. The grid is masked towards the globe side and the copy
@@ -111,7 +111,7 @@ export default function ProfessionalHero() {
 					</div>
 
 					{/* Technology indicators. Supporting detail, not a focal point. */}
-					<ul className="pf-tags mt-7">
+					<ul className="pf-tags pf-tags-boxed mt-7">
 						{TECH.map((item) => (
 							<li key={item}>{item}</li>
 						))}
@@ -127,27 +127,30 @@ export default function ProfessionalHero() {
 				    continents on it would read as a location claim, so it is hidden
 				    from assistive technology rather than described. */}
 				<div className="pf-globe relative -mx-6 flex flex-col items-center justify-center sm:-mx-2 lg:mx-0">
-					<m.picture
-						className="block w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-[40rem]"
-						initial={{ opacity: 0, scale: 0.985 }}
-						animate={{ opacity: 1, scale: 1 }}
-						transition={{ duration: 0.8, ease: "easeOut" }}
-					>
-						{/* `<source>` must precede `<img>` inside `<picture>`. */}
-						<source
-							type="image/webp"
-							srcSet={GLOBE.srcSet}
-							sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem"
-						/>
-						<img
-							{...GLOBE}
-							sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem"
-							alt=""
-							aria-hidden="true"
-							draggable={false}
-							className="pf-globe-img block w-full select-none"
-						/>
-					</m.picture>
+					<div className="pf-globe-art relative isolate w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-[40rem]">
+						<div className="pf-globe-atmosphere" aria-hidden="true" />
+						<m.picture
+							className="relative z-10 block w-full"
+							initial={{ opacity: 0, scale: 0.985 }}
+							animate={{ opacity: 1, scale: 1 }}
+							transition={{ duration: 0.8, ease: "easeOut" }}
+						>
+							{/* `<source>` must precede `<img>` inside `<picture>`. */}
+							<source
+								type="image/webp"
+								srcSet={GLOBE.srcSet}
+								sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem"
+							/>
+							<img
+								{...GLOBE}
+								sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem"
+								alt=""
+								aria-hidden="true"
+								draggable={false}
+								className="pf-globe-img block w-full select-none"
+							/>
+						</m.picture>
+					</div>
 
 					{/* Motto. One mono line beneath the globe rather than a stack beside it, so it
 				    reads as a signature and never overlaps the artwork. */}

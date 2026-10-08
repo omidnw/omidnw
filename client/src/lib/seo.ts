@@ -1,4 +1,4 @@
-// SEO Configuration and Utilities for OmidReza Keshtkar's Cyberpunk Portfolio
+// SEO configuration for Omid Reza Keshtkar's portfolio, shared by both themes.
 export interface SEOData {
 	title: string;
 	description: string;
@@ -12,37 +12,37 @@ export interface SEOData {
 
 // Base SEO configuration
 export const BASE_SEO = {
-	siteName: "Omid Reza Keshtkar - Cyberpunk Developer Portfolio",
+	siteName: "Omid Reza Keshtkar — Software Engineering Portfolio",
 	siteUrl: "https://omidrezakeshtkar.dev", // Update with your actual domain
 	author: "Omid Reza Keshtkar",
-	defaultImage: "/images/og-image.jpg", // You'll need to add this image
-	twitterHandle: "@omidnw",
+	defaultImage: "/images/og-image.jpg",
+	twitterHandle: "@omidrezakeshtka",
 	locale: "en_US",
 };
 
 // Page-specific SEO configurations
 export const SEO_CONFIGS: Record<string, SEOData> = {
 	home: {
-		title: "Omid Reza Keshtkar | Cyberpunk Software QA & Full Stack Developer",
+		title: "Omid Reza Keshtkar | Senior Software QA Engineer & Full-Stack Developer",
 		description:
-			"Cyberpunk-inspired portfolio of OmidReza Keshtkar, Software QA Engineer and Full Stack Developer from Dubai. Explore cutting-edge web experiences, AI projects, and neural network innovations.",
+			"Portfolio of Omid Reza Keshtkar, Senior Software QA Engineer and Full-Stack Developer. Reliable software, test automation, and AI-assisted engineering workflows.",
 		keywords: [
 			"OmidReza Keshtkar",
 			"Omid Reza Keshtkar",
-			"cyberpunk developer",
+			"quality automation engineer",
 			"software QA engineer",
 			"full stack developer",
-			"Dubai developer",
+			"software developer",
 			"TypeScript developer",
 			"React developer",
-			"cyberpunk portfolio",
+			"software engineering portfolio",
 			"neural network",
 			"AI developer",
 			"web developer",
 			"software engineer",
-			"cyberpunk 2077 style",
-			"neon portfolio",
-			"futuristic portfolio",
+			"test automation",
+			"quality engineering",
+			"developer portfolio",
 		],
 		type: "profile",
 		structuredData: {
@@ -54,16 +54,6 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 			worksFor: {
 				"@type": "Organization",
 				name: "Troweb Inc.",
-				address: {
-					"@type": "PostalAddress",
-					addressLocality: "Dubai",
-					addressCountry: "UAE",
-				},
-			},
-			address: {
-				"@type": "PostalAddress",
-				addressLocality: "Dubai",
-				addressCountry: "UAE",
 			},
 			url: BASE_SEO.siteUrl,
 			sameAs: [
@@ -80,21 +70,21 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 				"React",
 				"Node.js",
 				"Playwright Testing",
-				"Cyberpunk Design",
+				"Test Automation",
 				"AI Development",
 			],
 		},
 	},
 	about: {
-		title: "About OmidReza Keshtkar | Cyberpunk Developer from Dubai",
+		title: "About | Omid Reza Keshtkar",
 		description:
-			"Learn about OmidReza Keshtkar's journey from Tehran to Dubai as a Software QA Engineer and Full Stack Developer. Discover his cyberpunk-inspired approach to technology and innovation.",
+			"Explore Omid Reza Keshtkar’s experience in software engineering, quality automation, full-stack development, and AI-assisted workflows.",
 		keywords: [
 			"OmidReza Keshtkar biography",
 			"Omid Reza Keshtkar about",
-			"Dubai software developer",
-			"Iranian developer Dubai",
-			"cyberpunk developer story",
+			"software developer",
+			"quality automation engineer",
+			"software engineering experience",
 			"Troweb Inc developer",
 			"software QA engineer background",
 			"full stack developer experience",
@@ -104,18 +94,18 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 		type: "profile",
 	},
 	projects: {
-		title: "Cyberpunk Projects by OmidReza Keshtkar | Developer Portfolio",
+		title: "Selected Work | Omid Reza Keshtkar",
 		description:
-			"Explore cutting-edge cyberpunk projects and digital innovations by OmidReza Keshtkar. From AI applications to web development, discover futuristic coding experiences.",
+			"Explore software projects by Omid Reza Keshtkar across web platforms, desktop applications, automation, and AI.",
 		keywords: [
 			"OmidReza Keshtkar projects",
-			"cyberpunk web projects",
+			"web development projects",
 			"developer portfolio projects",
 			"AI projects",
 			"full stack projects",
 			"TypeScript projects",
 			"React applications",
-			"cyberpunk design projects",
+			"automation projects",
 			"neural network projects",
 			"innovative web development",
 		],
@@ -125,7 +115,7 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 			"@type": "CollectionPage",
 			name: "OmidReza Keshtkar's Projects",
 			description:
-				"A collection of cyberpunk-inspired software projects and innovations",
+				"A collection of software projects across web platforms, desktop applications, automation, and AI",
 			author: {
 				"@type": "Person",
 				name: "OmidReza Keshtkar",
@@ -133,16 +123,16 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 		},
 	},
 	blog: {
-		title: "Cyberpunk Developer Blog | OmidReza Keshtkar's Tech Insights",
+		title: "Blog | Omid Reza Keshtkar",
 		description:
-			"Neural transmissions from the digital frontier. Read OmidReza Keshtkar's insights on cyberpunk development, AI, full stack technologies, and the future of coding.",
+			"Notes on quality engineering, test automation, full-stack development, and AI-assisted workflows by Omid Reza Keshtkar.",
 		keywords: [
 			"OmidReza Keshtkar blog",
-			"cyberpunk developer blog",
-			"tech blog Dubai",
+			"quality engineering blog",
+			"software engineering blog",
 			"AI development blog",
 			"full stack development insights",
-			"cyberpunk programming",
+			"test automation",
 			"developer thoughts",
 			"technology trends",
 			"coding tutorials",
@@ -152,9 +142,9 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 		structuredData: {
 			"@context": "https://schema.org",
 			"@type": "Blog",
-			name: "OmidReza Keshtkar's Cyberpunk Developer Blog",
+			name: "Omid Reza Keshtkar’s Engineering Blog",
 			description:
-				"Insights and tutorials on cyberpunk development, AI, and modern web technologies",
+				"Insights on quality engineering, automation, AI, and modern web technologies",
 			author: {
 				"@type": "Person",
 				name: "OmidReza Keshtkar",
@@ -166,18 +156,18 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 		},
 	},
 	contact: {
-		title: "Contact OmidReza Keshtkar | Cyberpunk Developer Dubai",
+		title: "Contact | Omid Reza Keshtkar",
 		description:
-			"Get in touch with OmidReza Keshtkar, Software QA Engineer and Full Stack Developer based in Dubai. Available for cyberpunk projects, collaborations, and innovative opportunities.",
+			"Get in touch with Omid Reza Keshtkar about software engineering, test automation, and full-stack development opportunities.",
 		keywords: [
 			"contact OmidReza Keshtkar",
-			"hire Dubai developer",
-			"cyberpunk developer contact",
-			"software QA engineer Dubai",
+			"hire software developer",
+			"software engineer contact",
+			"software QA engineer",
 			"full stack developer contact",
-			"freelance developer Dubai",
+			"freelance developer",
 			"omidrezakeshtkar contact",
-			"Dubai tech professional",
+			"software engineering professional",
 			"software engineer contact",
 		],
 		type: "website",
@@ -210,14 +200,14 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 		type: "website",
 	},
 	notFound: {
-		title: "Neural Pathway Not Found | OmidReza Keshtkar Portfolio",
+		title: "Page Not Found | Omid Reza Keshtkar",
 		description:
-			"The requested page could not be located in the cyberpunk digital matrix. Return to OmidReza Keshtkar's main portfolio to continue exploring.",
+			"The requested page could not be found. Explore the portfolio of Omid Reza Keshtkar.",
 		keywords: [
 			"404 error",
 			"page not found",
 			"OmidReza Keshtkar 404",
-			"cyberpunk error page",
+			"portfolio error page",
 		],
 		type: "website",
 	},
@@ -264,8 +254,8 @@ export function generateMetaTags(
 		<meta property="twitter:creator" content="${BASE_SEO.twitterHandle}" />
 
 		<!-- Additional Meta Tags -->
-		<meta name="theme-color" content="#ff00ff" />
-		<meta name="msapplication-TileColor" content="#ff00ff" />
+		<meta name="theme-color" content="#080D0E" />
+		<meta name="msapplication-TileColor" content="#080D0E" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 	`;

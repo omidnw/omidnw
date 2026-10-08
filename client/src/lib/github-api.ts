@@ -17,6 +17,19 @@ export interface ProjectData {
 	description: string;
 	content: string;
 	image: string;
+	/**
+	 * Overrides the generated alt text. The default describes the image as an
+	 * interface screenshot, which is right for most projects but wrong for one
+	 * whose image is a logo or a diagram.
+	 */
+	imageAlt?: string;
+	/**
+	 * Optional alternate crop for the narrow portrait slot on the work index.
+	 * The compact card is roughly 0.45–0.64 aspect while `image` serves wide
+	 * slots, so a wide screenshot has to be re-cropped rather than centre-cut.
+	 * Falls back to `image`.
+	 */
+	cardImage?: string;
 	demoUrl?: string;
 	githubUrl?: string;
 	technologies: string[];
@@ -343,6 +356,13 @@ export function clearProjectsCache(): void {
 
 // --- Blog Post Functions ---
 
+// Retired starter articles must not reappear from an older GitHub snapshot.
+const RETIRED_BLOG_FILES = new Set([
+	"getting-started-with-react.mdx",
+	"typescript-best-practices.mdx",
+	"building-cyberpunk-ui.mdx",
+]);
+
 // Fetch blog files from GitHub
 export async function fetchBlogFiles(): Promise<GitHubFile[]> {
 	const cacheKey = `blogs-${GITHUB_CONFIG.owner}-${GITHUB_CONFIG.repo}`;
@@ -374,6 +394,8 @@ export async function fetchBlogFiles(): Promise<GitHubFile[]> {
 		const mdxFiles = files.filter(
 			(file) =>
 				file.type === "file" &&
+				file.name.toLowerCase() !== "readme.md" &&
+				!RETIRED_BLOG_FILES.has(file.name) &&
 				(file.name.endsWith(".mdx") || file.name.endsWith(".md"))
 		);
 
@@ -389,6 +411,7 @@ export async function fetchBlogFiles(): Promise<GitHubFile[]> {
 export async function fetchBlogContent(
 	file: GitHubFile
 ): Promise<BlogPostData | null> {
+	if (RETIRED_BLOG_FILES.has(file.name)) return null;
 	const cacheKey = `blog-content-${file.sha}`;
 
 	const cached = getFromCache<BlogPostData>(cacheKey);
@@ -404,6 +427,7 @@ export async function fetchBlogContent(
 
 		const rawContent = await response.text();
 		const { frontmatter, content: bodyContent } = parseFrontmatter(rawContent);
+		if (frontmatter.draft === true || frontmatter.published === false) return null;
 
 		const id = file.name.replace(/\.(mdx?|md)$/, "");
 
@@ -425,7 +449,7 @@ export async function fetchBlogContent(
 		return blogPostData;
 	} catch (error) {
 		console.error(`Error fetching blog content for ${file.name}:`, error);
-		return null;
+		throw error;
 	}
 }
 

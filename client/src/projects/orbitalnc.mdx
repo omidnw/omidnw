@@ -1,0 +1,144 @@
+---
+title: "OrbitalNC"
+description: "A trilingual B2B platform for a CNC machining company — public marketing site, verification-gated client portal with a protected technical archive, and a permission-based admin dashboard. Next.js, NestJS, PostgreSQL and Drizzle ORM."
+image: "/images/orbitalnc/orbitalnc-landing.png"
+imageAlt: "OrbitalNC landing page — the hero reads Precision engineering for CNC manufacturing and machine support"
+cardImage: "/images/orbitalnc/orbitalnc-card.png"
+demoUrl: "https://orbitalnc.com"
+status: "completed"
+featured: true
+startDate: "2026-08-31"
+endDate: "2026-10-06"
+category: "Web Application"
+technologies:
+  [
+    "Next.js",
+    "NestJS",
+    "TypeScript",
+    "PostgreSQL",
+    "Drizzle ORM",
+    "Tailwind CSS",
+    "Zod",
+    "React Email",
+  ]
+tags:
+  [
+    "Next.js",
+    "NestJS",
+    "TypeScript",
+    "PostgreSQL",
+    "Drizzle",
+    "Monorepo",
+    "i18n",
+    "RTL",
+    "PWA",
+  ]
+---
+
+OrbitalNC is a complete production web platform for a CNC machining business. It unifies three normally separate products into one codebase.
+
+1. **Public marketing site** — services, product/part catalogue, company info, contact.
+2. **Client portal** — account area, request submission and history, support tickets, and a **protected technical archive** (drawings, CAD files, maintenance documents, PDFs, video) that is invisible and unreachable to anonymous or unverified visitors.
+3. **Admin dashboard** — content, users, permissions, media, mail, analytics and regional policy, all behind a granular permission system.
+
+The archive is the core business logic: a visitor registers, an administrator verifies the account, and only then does restricted material become previewable or requestable — with a per-item access type (directly downloadable vs. request-only, requiring explicit admin approval).
+
+## Who built what
+
+The idea and the business requirements came from the client. Everything else was mine: the design, the colour palette, the interface, the UX, the architecture, the database design and the entire implementation.
+
+## Accounts & access
+
+- Register / login / password reset, Argon2id password hashing
+- Email **or** phone (SMS OTP) authentication
+- Admin approval workflow: `pending → verified / rejected / suspended / disabled`
+- Four-tier role model: guest → pending user → verified user → admin (root admin bypasses all checks)
+- 38 permissions across 18 modules, enforced server-side by a guard + decorators, delivered through 4 ready-made role presets (Content Manager, Request Manager, User Support, Operations Manager)
+- Device/session management: list active sessions, revoke one or revoke all others, session IP tracking
+
+## Regional identity & policy engine
+
+- Account country resolved **server-side** from IP via a local GeoIP database — never trusted from the browser, with trusted-proxy-aware client IP extraction
+- A per-country policy table (phone-gated, verification requirements, registration availability) editable only by the root admin
+- Email is nullable: phone-first countries can register with a verified number and attach an email later
+- Changing country is a **verified, transactional flow** (SMS OTP or email code), not a profile edit
+- Country is snapshotted immutably onto each request so historical orders never silently change jurisdiction
+
+## Catalogue & content
+
+- Products, product types/categories, CNC parts and machines — all admin-managed taxonomies, nothing hardcoded
+- Every content entity uses a base table + `*_translations` table with fallback chain `requested locale → en → first available`
+- Per-product country availability, condition (new/used), request-only flags, view counters
+
+## Protected archive
+
+- Access types: downloadable vs. request-only, with an approve/reject request workflow
+- Hierarchical filter tree + collections/packages
+- In-browser previews per media type: rendered Markdown, images, PDF (custom viewer), video, generic file cards
+- Guarded streaming with HTTP range requests (`206`), correct `Content-Disposition` and access-type enforcement — a request-only file cannot be downloaded by guessing its URL
+
+## Media library
+
+- Pluggable storage driver: **Local filesystem / S3 / MinIO / external URL**, switched by env var alone
+- Folder tree with move, rename, trash and retention-based auto-cleanup
+- Deletion is reference-aware: files still referenced by published content are never orphaned
+- Folder-scoped upload with progress, used directly by the archive uploader
+
+## Requests & communication
+
+- CNC machining requests: part details, quantity, up to 10 file attachments, multi-stage status workflow (submitted → under review → needs info → approved/rejected → completed), internal notes
+- Client-visible request history
+- Two-way support tickets with threaded messages and optional email relay
+- Contact form → admin inbox
+
+## Admin & operations
+
+- Users & verification queue, admin accounts, role/permission editor
+- Appearance settings (typography per locale, accent colour) with an admin-driven font self-host pipeline
+- Editable page content, per-locale copy, notification-recipient matrix
+- Dual SMTP profiles (customer-facing vs. admin alerts), DB-configurable with env bootstrap, plus a live "send test email"
+- React Email templates with per-locale DB overrides and revert-to-default
+- Analytics dashboard that reads **only** the application database: overview tiles, most-viewed product/part leaderboards, and archive-filter usage per account
+
+## Localisation
+
+- Route-based locales `/en`, `/fa`, `/zh` — ~1,270 translated strings per locale, with parity enforced across all three
+- Genuine RTL for Persian: layout mirroring, sidebar, forms, tables-as-cards and directional icon flipping — not just translated strings
+- Localised validation messages, SEO metadata and email templates
+
+## Platform & delivery
+
+- **PWA** (Serwist): installable, offline fallback page, static-asset caching only — API responses, protected media and authenticated pages are explicitly never cached
+- Mobile-first responsive layout throughout
+- 26 additive database migrations that run automatically at boot, plus a deployment preflight script that refuses to ship a broken regional/SMS configuration
+
+## Tech stack
+
+| Layer | Stack |
+|---|---|
+| Frontend | Next.js 15 (App Router), React 19, TypeScript, Tailwind CSS v4, next-intl, TanStack Query, React Hook Form + Zod, Radix UI, Serwist (PWA) |
+| Backend | NestJS 11, TypeScript, Drizzle ORM, PostgreSQL, Zod, Argon2, Nodemailer, React Email, geoip-lite, S3 SDK |
+| Shared | Workspace package: Zod schemas, enums, permission catalogue — single source of truth for API validation *and* web forms |
+| Infra | pnpm monorepo, Docker Compose (Postgres + MinIO), env-driven config validated at boot |
+
+## Engineering highlights
+
+- **Zod-first contract sharing** — the same schemas validate API input and power web forms, so a field cannot drift between client and server.
+- **Strict layering** — controllers hold no data access, UI holds no business logic.
+- **Security built in, not bolted on** — httpOnly-cookie JWTs with rotating hashed refresh tokens, hashed single-use OTP codes with cooldown and per-identifier/per-account hourly ceilings, generic error messages, owned-resource authorisation, bounded pagination and uploads.
+- **Translations as a data model**, not a UI afterthought.
+- **Automated coverage**: 35 API integration suites (~370 tests, real Nest app against a real test DB) plus 10 Playwright end-to-end specs (~72 tests) covering auth, portal, admin, archive, RTL, i18n and analytics.
+
+## Scale
+
+~58,000 lines of TypeScript · 45 database tables · ~170 HTTP endpoints · 3 locales · 367 API tests · 72 E2E tests · 4 role presets · 38 permissions
+
+## Availability
+
+The public marketing site is live at **orbitalnc.com**.
+
+The source code is **closed** — it is private and not published, and the client portal and admin dashboard sit behind account verification. A read-only walkthrough of the gated areas can be arranged on request.
+
+## Acknowledgements
+
+**Alireza Sharifi** — thank you. He was involved on the client side and also tested the platform throughout: walking it end to-end across the public site, the portal and the admin dashboard, reporting what was broken, what was confusing and what was missing, and checking that the fixes actually held. A project of this size is only as solid as the person willing to push on it, and he did that consistently.

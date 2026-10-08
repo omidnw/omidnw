@@ -93,21 +93,10 @@ function BlogArchive() {
 					const githubPostsData = await fetchAllBlogPosts();
 					const postsArray = Object.values(githubPostsData);
 
-					if (postsArray.length > 0) {
-						loadedPosts = postsArray;
-						setDataSource("github");
-						console.log(`✅ Loaded ${postsArray.length} posts from GitHub`);
-					} else {
-						console.log("⚠️ No posts found in GitHub, checking fallback...");
-						if (GITHUB_CONFIG.enableLocalFallback) {
-							console.log("🔄 Falling back to local blog files...");
-							loadedPosts = await loadLocalBlogPosts();
-							setDataSource("local");
-						} else {
-							console.log("❌ Local fallback disabled, no posts to load");
-							setDataSource("none");
-						}
-					}
+					// A successful empty archive must not restore removed local posts.
+					loadedPosts = postsArray;
+					setDataSource("github");
+					console.log(`✅ Loaded ${postsArray.length} posts from GitHub`);
 				} catch (githubError) {
 					console.warn("❌ GitHub blog fetch failed:", githubError);
 					if (GITHUB_CONFIG.enableLocalFallback) {

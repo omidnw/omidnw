@@ -246,7 +246,7 @@ function Hero() {
 					className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-8 sm:mb-12 max-w-2xl mx-auto font-mono leading-relaxed px-4"
 				>
 					Welcome to Omid Reza Keshtkar's cyberpunk digital realm. Software QA
-					Engineer and Full Stack Developer from Dubai, crafting immersive web
+					Engineer and Full Stack Developer, crafting immersive web
 					experiences using cutting-edge AI technologies, TypeScript, React, and
 					neural network innovations.
 				</m.p>

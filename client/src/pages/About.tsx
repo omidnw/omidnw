@@ -5,7 +5,6 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import {
 	User,
-	MapPin,
 	Calendar,
 	Code,
 	Briefcase,
@@ -64,42 +63,42 @@ const timeline = [
 	{
 		year: "2025",
 		title: "Software QA",
-		company: "Troweb Inc., Dubai, UAE",
+		company: "Troweb Inc.",
 		description: "Ensuring the quality and reliability of software products.",
 		type: "work",
 	},
 	{
 		year: "2023",
 		title: "BS in Computer Programming",
-		company: "Shamsipour Technical and Vocational College, Tehran, IR",
+		company: "Shamsipour Technical and Vocational College",
 		description: "Completed Bachelor of Science in Computer Programming.",
 		type: "education",
 	},
 	{
 		year: "2022",
 		title: "Started at Troweb Inc.",
-		company: "Dubai, UAE",
+		company: "Troweb Inc.",
 		description: "Joined Troweb Inc. as a Software QA.",
 		type: "work",
 	},
 	{
 		year: "2021",
 		title: "Web Programming (Full Stack Developer - Freelancer)",
-		company: "Qatar German Pipe Company (QGPC), Doha, QA",
+		company: "Qatar German Pipe Company (QGPC)",
 		description: "Developed web solutions for QGPC on a freelance basis.",
 		type: "work",
 	},
 	{
 		year: "2021",
 		title: "AD in Computer Programming",
-		company: "Shamsipour Technical and Vocational College, Tehran, IR",
+		company: "Shamsipour Technical and Vocational College",
 		description: "Completed Associate Degree in Computer Programming.",
 		type: "education",
 	},
 	{
 		year: "2021",
 		title: "Software Engineer",
-		company: "Veresk Rail Cars, Tehran, IR",
+		company: "Veresk Rail Cars",
 		description:
 			"Worked as a Software Engineer, focusing on system maintenance. (Mar 2019 – Mar 2021)",
 		type: "work",
@@ -107,7 +106,7 @@ const timeline = [
 	{
 		year: "2019",
 		title: "Began Software Engineering Role",
-		company: "Veresk Rail Cars, Tehran, IR",
+		company: "Veresk Rail Cars",
 		description: "Started role as Software Engineer.",
 		type: "milestone",
 	},
@@ -228,13 +227,6 @@ const ProfileCard = React.memo(() => {
 					</p>
 				</CardHeader>
 				<CardContent className="space-y-2 sm:space-y-3">
-					<div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">
-						<MapPin
-							className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0"
-							aria-hidden="true"
-						/>
-						<span className="font-mono text-xs sm:text-sm">Dubai, UAE</span>
-					</div>
 					<div className="flex items-center gap-2 sm:gap-3 text-muted-foreground">
 						<Calendar
 							className="w-3 h-3 sm:w-4 sm:h-4 text-primary flex-shrink-0"
@@ -497,7 +489,7 @@ function AboutMatrix() {
 						className="text-sm sm:text-base md:text-lg text-muted-foreground font-mono max-w-xl mx-auto px-4 leading-relaxed"
 					>
 						Diving deep into the neural pathways of Omid Reza Keshtkar, a
-						cybernetic developer from Dubai specializing in Software QA and Full
+						cybernetic developer specializing in Software QA and Full
 						Stack Development
 					</m.p>
 				</header>

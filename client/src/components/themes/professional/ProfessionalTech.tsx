@@ -55,9 +55,9 @@ const CATEGORIES: TechCategory[] = [
 
 export default function ProfessionalTech() {
 	return (
-		<section className="pf-section" aria-labelledby="tech-heading">
+		<section className="pf-section pf-landing-section pf-landing-tech" aria-labelledby="tech-heading">
 			{/* Heading row */}
-			<div className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 sm:mb-9">
+			<div className="mb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 sm:mb-6">
 				<div>
 					<p className="pf-label">Tech Stack</p>
 					<h2 id="tech-heading" className="pf-heading">
@@ -78,7 +78,7 @@ export default function ProfessionalTech() {
 			</div>
 
 			{/* Cards */}
-			<ul className="grid gap-3.5 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+			<ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6">
 				{CATEGORIES.map((category) => {
 					const Icon = category.icon;
 					return (

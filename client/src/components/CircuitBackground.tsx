@@ -7,7 +7,12 @@
  * Colours resolve through the theme tokens (`--primary`, `--border`), so the
  * same component reads as neon in CyberPunk and as calm teal in Professional
  * without any per-theme branching.
+ *
+ * `className` and `instanceId` let a second copy be rendered inside an overlay
+ * (the Professional mobile menu) without colliding with the page's instance.
  */
+
+import { cn } from "@/lib/utils";
 
 interface Trace {
 	d: string;
@@ -56,11 +61,32 @@ const VIAS: Array<[number, number, number]> = [
 	[200, 980, 5],
 ];
 
-export default function CircuitBackground() {
+interface CircuitBackgroundProps {
+	/**
+	 * Extra classes on the wrapper. Supplying this replaces the default
+	 * `fixed inset-0 z-0` positioning, which is what lets the mobile menu render
+	 * its own copy scoped to the overlay instead of relying on the page's.
+	 */
+	className?: string;
+	/**
+	 * Distinguishes the SVG gradient `id`. Two copies of this component on one
+	 * page would otherwise share an id and the second would resolve to the
+	 * first's definition.
+	 */
+	instanceId?: string;
+}
+
+export default function CircuitBackground({
+	className = "fixed inset-0 z-0",
+	instanceId = "circuit-vignette",
+}: CircuitBackgroundProps) {
 	return (
 		<div
 			aria-hidden="true"
-			className="circuit-board pointer-events-none fixed inset-0 z-0 overflow-hidden"
+			className={cn(
+				"circuit-board pointer-events-none overflow-hidden",
+				className,
+			)}
 		>
 			<svg
 				className="h-full w-full"
@@ -69,7 +95,7 @@ export default function CircuitBackground() {
 				focusable="false"
 			>
 				<defs>
-					<radialGradient id="circuit-vignette" cx="50%" cy="45%" r="70%">
+					<radialGradient id={instanceId} cx="50%" cy="45%" r="70%">
 						<stop offset="0%" stopColor="currentColor" stopOpacity="0.09" />
 						<stop offset="55%" stopColor="currentColor" stopOpacity="0.05" />
 						<stop offset="100%" stopColor="currentColor" stopOpacity="0" />
@@ -77,7 +103,7 @@ export default function CircuitBackground() {
 				</defs>
 
 				{/* Soft wash so the pattern is strongest behind the centre. */}
-				<rect width="1600" height="1000" fill="url(#circuit-vignette)" />
+				<rect width="1600" height="1000" fill={`url(#${instanceId})`} />
 
 				{/* Static copper traces. */}
 				<g className="circuit-traces">

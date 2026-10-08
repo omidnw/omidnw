@@ -18,7 +18,7 @@ interface SiteThemeOption {
 const SITE_THEME_OPTIONS: SiteThemeOption[] = [
 	{
 		value: "professional",
-		label: "Professional",
+		label: "Normal",
 		description: "Restrained, modern, premium",
 	},
 	{

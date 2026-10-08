@@ -43,11 +43,15 @@ export default function ProfessionalProjectDetail() {
 				{ label: "Started", value: formatDate(project.startDate) },
 				{
 					label: "Links",
-					value: project.demoUrl
+					// Every combination is named explicitly. A site with no public
+					// repository must never be described as having one.
+					value: project.demoUrl && project.githubUrl
 						? "Live demo & source"
-						: project.githubUrl
-							? "Source only"
-							: "Not published",
+						: project.demoUrl
+							? "Live site"
+							: project.githubUrl
+								? "Source only"
+								: "Not published",
 				},
 			]
 		: undefined;
@@ -61,7 +65,9 @@ export default function ProfessionalProjectDetail() {
 					rel="noopener noreferrer"
 					className="pf-focus inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
 				>
-					Live Demo
+					{/* A closed-source project with a live site is not a demo — say so
+					    rather than implying a public codebase sits behind it. */}
+					{project.githubUrl ? "Live Demo" : "Visit Site"}
 					<ArrowUpRight className="h-4 w-4" aria-hidden="true" />
 				</a>
 			) : null}

@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
 	Mail,
-	MapPin,
 	Send,
 	Terminal,
 	Zap,
@@ -21,11 +20,9 @@ import {
 	ExternalLink,
 	Building,
 	Phone,
-	Clock,
 } from "lucide-react";
 import { SiGithub, SiGitlab } from "@icons-pack/react-simple-icons";
 import { FaLinkedinIn } from "react-icons/fa";
-import CyberpunkDubaiMap from "@/components/CyberpunkDubaiMap";
 import { useSEO } from "@/lib/seo";
 
 // Professional-theme variant of this route
@@ -62,7 +59,7 @@ interface FormErrors {
 	message?: string;
 }
 
-/** The CyberPunk contact page, unchanged. */
+/** The CyberPunk contact page. */
 function ContactMatrix() {
 	const [formData, setFormData] = useState<ContactForm>({
 		name: "",
@@ -73,56 +70,6 @@ function ContactMatrix() {
 	const [errors, setErrors] = useState<FormErrors>({});
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isSubmitted, setIsSubmitted] = useState(false);
-
-	// Time zone functionality
-	const [currentTime, setCurrentTime] = useState(new Date());
-
-	React.useEffect(() => {
-		const timer = setInterval(() => {
-			setCurrentTime(new Date());
-		}, 1000);
-
-		return () => clearInterval(timer);
-	}, []);
-
-	// Get UAE time (UTC+4)
-	const getUAETime = () => {
-		const now = new Date();
-		const uaeTime = new Date(
-			now.getTime() + 4 * 60 * 60 * 1000 + now.getTimezoneOffset() * 60 * 1000,
-		);
-		return uaeTime;
-	};
-
-	// Get user's timezone
-	const getUserTimezone = () => {
-		return Intl.DateTimeFormat().resolvedOptions().timeZone;
-	};
-
-	// Calculate time difference between user and UAE
-	const getTimeDifference = () => {
-		const userOffset = -currentTime.getTimezoneOffset() / 60; // User's UTC offset in hours
-		const uaeOffset = 4; // UAE is UTC+4
-		const difference = uaeOffset - userOffset;
-
-		if (difference === 0) {
-			return "Same timezone";
-		} else if (difference > 0) {
-			return `UAE +${difference}h ahead`;
-		} else {
-			return `UAE ${Math.abs(difference)}h behind`;
-		}
-	};
-
-	// Format time for display
-	const formatTime = (date: Date) => {
-		return date.toLocaleTimeString("en-US", {
-			hour: "2-digit",
-			minute: "2-digit",
-			second: "2-digit",
-			hour12: false,
-		});
-	};
 
 	// Validate form
 	const validateForm = (): boolean => {
@@ -192,12 +139,6 @@ function ContactMatrix() {
 			href: "mailto:omidrezakeshtkar@icloud.com",
 		},
 		{
-			icon: MapPin,
-			label: "Location",
-			value: "Dubai, UAE",
-			href: "https://maps.google.com/?q=Dubai, UAE",
-		},
-		{
 			icon: FaLinkedinIn,
 			label: "LinkedIn Profile",
 			value: "linkedin.com/in/omid-reza-keshtkar",
@@ -256,7 +197,7 @@ function ContactMatrix() {
 					</h1>
 					<p className="text-base sm:text-lg md:text-xl text-muted-foreground font-mono max-w-2xl mx-auto px-2 sm:px-4">
 						Initiate connection protocol with Omid Reza Keshtkar, Software QA
-						Engineer and Full Stack Developer from Dubai - let's build something
+						Engineer and Full Stack Developer - let's build something
 						extraordinary together
 					</p>
 				</m.header>
@@ -541,37 +482,7 @@ function ContactMatrix() {
 							</CardContent>
 						</Card>
 
-						{/* Interactive Cyberpunk Dubai Map */}
-						<m.div
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.6, delay: 0.6 }}
-							className="relative z-10"
-						>
-							<Card variant="cyberpunk" className="overflow-hidden">
-								<CardHeader className="pb-3 sm:pb-4">
-									<CardTitle className="text-primary font-heading flex items-center text-lg sm:text-xl md:text-2xl">
-										<MapPin className="w-5 h-5 sm:w-6 sm:h-6 mr-2 neon-glow" />
-										LOCATION_MATRIX.dubai()
-									</CardTitle>
-									<p className="text-muted-foreground font-mono text-sm sm:text-base">
-										Neural network nodes across Dubai cybernetic grid
-									</p>
-								</CardHeader>
-								<CardContent className="p-0">
-									<div className="relative">
-										<CyberpunkDubaiMap />
-										{/* Mobile-optimized overlay info */}
-										<div className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-background/80 backdrop-blur-sm rounded-lg p-2 sm:p-3 border border-primary/30">
-											<div className="text-xs sm:text-sm font-mono text-primary flex items-center gap-1 sm:gap-2">
-												<div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-												<span>GRID_STATUS: ONLINE</span>
-											</div>
-										</div>
-									</div>
-								</CardContent>
-							</Card>
-						</m.div>
+
 					</m.div>
 
 					{/* Contact Information & Social Links */}
@@ -704,57 +615,6 @@ function ContactMatrix() {
 										</div>
 										<p className="text-xs sm:text-sm text-muted-foreground">
 											Available for new projects
-										</p>
-									</div>
-
-									{/* Time Zone Matrix */}
-									<div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-										{/* UAE Time (Primary) */}
-										<div className="text-center p-3 sm:p-4 bg-primary/10 border border-primary/30 rounded-lg">
-											<div className="flex items-center justify-center mb-2">
-												<Clock className="w-3 h-3 mr-2 text-primary animate-pulse" />
-												<span className="text-xs sm:text-sm font-mono text-primary">
-													DUBAI_TIME
-												</span>
-											</div>
-											<div className="text-lg sm:text-xl font-mono text-primary font-bold mb-1">
-												{formatTime(getUAETime())}
-											</div>
-											<p className="text-xs text-muted-foreground">
-												UTC+4 | Primary Node
-											</p>
-										</div>
-
-										{/* User Time Zone */}
-										<div className="text-center p-3 sm:p-4 bg-secondary/10 border border-secondary/30 rounded-lg">
-											<div className="flex items-center justify-center mb-2">
-												<Globe className="w-3 h-3 mr-2 text-secondary" />
-												<span className="text-xs sm:text-sm font-mono text-secondary">
-													YOUR_TIME
-												</span>
-											</div>
-											<div className="text-lg sm:text-xl font-mono text-secondary font-bold mb-1">
-												{formatTime(currentTime)}
-											</div>
-											<p className="text-xs text-muted-foreground">
-												{getUserTimezone().split("/").pop()?.replace("_", " ")}
-											</p>
-										</div>
-									</div>
-
-									{/* Time Sync Status */}
-									<div className="text-center p-3 sm:p-4 bg-accent/10 border border-accent/30 rounded-lg">
-										<div className="flex items-center justify-center mb-2">
-											<Zap className="w-3 h-3 mr-2 text-accent" />
-											<span className="text-xs sm:text-sm font-mono text-accent">
-												SYNC_DELTA
-											</span>
-										</div>
-										<div className="text-base sm:text-lg font-mono text-accent font-bold mb-1">
-											{getTimeDifference()}
-										</div>
-										<p className="text-xs text-muted-foreground">
-											Time differential matrix
 										</p>
 									</div>
 

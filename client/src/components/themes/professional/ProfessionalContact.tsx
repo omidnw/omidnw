@@ -29,7 +29,7 @@ const socialIcon = (name: string) =>
 export default function ProfessionalContact() {
 	return (
 		<section className="pf-section" aria-labelledby="contact-heading">
-			<div className="rounded-2xl border border-border bg-card/60 p-7 shadow-(--pf-shadow-card) sm:p-10 lg:p-12">
+			<div className="pf-panel rounded-2xl border border-border bg-card/60 p-7 shadow-(--pf-shadow-card) sm:p-10 lg:p-12">
 				<div className="grid gap-8 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,1fr)] lg:items-end lg:gap-12">
 					<div>
 						<p className="pf-label">Let&rsquo;s Connect</p>

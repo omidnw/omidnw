@@ -58,6 +58,20 @@ const ASSETS: Record<string, Asset> = {
 		stem: "shot-room-organizer",
 		widths: [640, 1180],
 	},
+	"/images/orbitalnc/orbitalnc-landing.png": {
+		src: "/images/orbitalnc/orbitalnc-landing.png",
+		width: 3336,
+		height: 1882,
+		stem: "shot-orbitalnc",
+		widths: [640, 1180],
+	},
+	"/images/orbitalnc/orbitalnc-card.png": {
+		src: "/images/orbitalnc/orbitalnc-card.png",
+		width: 1296,
+		height: 1882,
+		stem: "shot-orbitalnc-card",
+		widths: [320, 640],
+	},
 };
 
 export interface PictureSource {

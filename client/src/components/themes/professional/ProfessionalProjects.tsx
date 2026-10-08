@@ -8,7 +8,7 @@ import type { ProjectData } from "@/lib/github-api";
 /**
  * Professional-theme selected projects.
  *
- * An editorial two-column portfolio grid, newest first. Content is real: the
+ * Compact horizontal previews in a responsive grid, newest first. Content is real: the
  * three most recent entries in client/src/projects, no placeholder names, no
  * invented URLs and no generated screenshots.
  *
@@ -41,9 +41,9 @@ export default function ProfessionalProjects() {
 	const recent = (projects ?? []).slice(0, MAX_PROJECTS);
 
 	return (
-		<section className="pf-section" aria-labelledby="projects-heading">
+		<section className="pf-section pf-landing-section" aria-labelledby="projects-heading">
 			{/* Heading row */}
-			<div className="mb-8 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 sm:mb-10">
+			<div className="mb-5 flex flex-wrap items-end justify-between gap-x-8 gap-y-4 sm:mb-6">
 				<div>
 					<p className="pf-label">Featured Work</p>
 					<h2 id="projects-heading" className="pf-heading">
@@ -65,11 +65,11 @@ export default function ProfessionalProjects() {
 
 			{/* Cards */}
 			{projects === null ? (
-				<ul className="grid gap-6 sm:grid-cols-2">
-					{[0, 1].map((i) => (
+				<ul className="pf-project-grid">
+					{[0, 1, 2].map((i) => (
 						<li
 							key={i}
-							className="h-[26rem] animate-pulse rounded-xl border border-border bg-card/40"
+							className="h-[15rem] animate-pulse rounded-xl border border-border bg-card/40"
 						/>
 					))}
 				</ul>
@@ -78,12 +78,13 @@ export default function ProfessionalProjects() {
 					No projects published yet.
 				</p>
 			) : (
-				<ul className="grid gap-6 sm:grid-cols-2 sm:gap-7">
+				<ul className="pf-project-grid">
 					{recent.map((project, index) => (
 						<li key={project.id}>
 							<ProfessionalProjectCard
 								project={project}
 								priority={index === 0}
+								compact
 							/>
 						</li>
 					))}

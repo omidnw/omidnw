@@ -54,7 +54,9 @@ export default function ProfessionalHeader({
 	}, []);
 
 	return (
-		<header
+		<motion.header
+			layoutRoot
+			layoutScroll
 			className={cn(
 				"fixed inset-x-0 top-0 z-40 border-b transition-colors duration-300",
 				stuck
@@ -116,7 +118,8 @@ export default function ProfessionalHeader({
 								)}
 							>
 								{item.name}
-								{/* One shared element slides between links, so the indicator
+								{/* The fixed layout root keeps scroll-to-top out of this animation.
+								    One shared element slides between links, so the indicator
 								    tracks the active route instead of blinking on mount. */}
 								{active ? (
 									<motion.span
@@ -181,6 +184,6 @@ export default function ProfessionalHeader({
 					/>
 				</div>
 			</div>
-		</header>
+		</motion.header>
 	);
 }
