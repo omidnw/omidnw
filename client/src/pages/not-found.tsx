@@ -5,8 +5,28 @@ import { Link } from "wouter";
 import { LazyMotion, m, domMax } from "framer-motion";
 import { useSEO } from "@/lib/seo";
 
+// Professional-theme variant of this route
+import ProfessionalNotFoundPage from "@/components/themes/professional/ProfessionalNotFoundPage";
+import { useTheme } from "@/contexts/ThemeContext";
+
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
 export default function NotFound() {
 	useSEO("notFound");
+
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalNotFoundPage />;
+	}
+
+	return <NotFoundMatrix />;
+}
+
+/** The CyberPunk 404, unchanged. */
+function NotFoundMatrix() {
 	return (
 		<LazyMotion features={domMax}>
 			<main className="min-h-screen w-full flex items-center justify-center bg-background p-4">

@@ -16,6 +16,25 @@ import {
 } from "lucide-react";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { FaLinkedinIn } from "react-icons/fa";
+import { useSiteTheme, type SiteTheme } from "@/contexts/ThemeContext";
+import { Check } from "lucide-react";
+
+const siteThemeOptions: Array<{
+	value: SiteTheme;
+	label: string;
+	description: string;
+}> = [
+	{
+		value: "cyberpunk",
+		label: "CYBERPUNK",
+		description: "Neon, terminal, glitch",
+	},
+	{
+		value: "professional",
+		label: "PROFESSIONAL",
+		description: "Restrained, modern",
+	},
+];
 
 const navigationItems = [
 	{ name: "Home", path: "/", icon: Home },
@@ -60,6 +79,7 @@ export default function HamburgerMenu({
 	const [location] = useLocation();
 	const [isMac, setIsMac] = useState(false);
 	const [isShortViewport, setIsShortViewport] = useState(false);
+	const { siteTheme, setSiteTheme } = useSiteTheme();
 
 	// Detect macOS
 	useEffect(() => {
@@ -474,11 +494,68 @@ export default function HamburgerMenu({
 													</nav>
 												</m.div>
 
-												{/* Social Links Section */}
+												{/* Site Theme Section */}
+											<m.div
+												initial={{ opacity: 0, y: 20 }}
+												animate={{ opacity: 1, y: 0 }}
+												transition={{ duration: 0.3, delay: 0.75 }}
+												className={`${isShortViewport ? "pt-2.5" : "pt-3 sm:pt-5"} border-t border-primary/30`}
+											>
+												{!isShortViewport && (
+													<div className="text-center mb-2.5 sm:mb-4">
+														<h3 className="text-sm sm:text-lg font-heading font-bold text-secondary mb-1.5 sm:mb-2">
+															&gt; THEME.switch()
+														</h3>
+														<div className="h-px bg-gradient-to-r from-transparent via-secondary to-transparent" />
+													</div>
+												)}
+
+												<div
+													className="grid grid-cols-2 gap-2 sm:gap-2.5"
+													role="group"
+													aria-label="Site theme"
+												>
+													{siteThemeOptions.map((option) => {
+														const selected = option.value === siteTheme;
+														return (
+															<m.button
+																key={option.value}
+																type="button"
+																onClick={() => setSiteTheme(option.value)}
+																aria-pressed={selected}
+																className={`w-full flex items-center justify-start px-2.5 sm:px-3 py-2.5 rounded-md font-mono text-left transition-all duration-300 min-h-[44px] touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+																					selected
+																						? "bg-primary/20 border border-primary text-primary shadow-lg shadow-primary/25"
+																						: "bg-background/50 border border-border hover:border-primary/50 hover:bg-primary/10 text-foreground hover:text-primary"
+																				}`}
+															>
+																<span className="flex-1 min-w-0">
+																	<span className="block text-xs sm:text-sm truncate">
+																		{option.label}
+																	</span>
+																	{!isShortViewport && (
+																		<span className="block text-[0.65rem] opacity-70 truncate">
+																			{option.description}
+																		</span>
+																	)}
+																</span>
+																{selected ? (
+																	<Check
+																		className="w-4 h-4 shrink-0 text-primary"
+																		aria-hidden="true"
+																	/>
+																) : null}
+															</m.button>
+														);
+													})}
+												</div>
+											</m.div>
+
+											{/* Social Links Section */}
 												<m.div
 													initial={{ opacity: 0, y: 20 }}
 													animate={{ opacity: 1, y: 0 }}
-													transition={{ duration: 0.3, delay: 0.9 }}
+													transition={{ duration: 0.3, delay: 0.95 }}
 													className={`${isShortViewport ? "pt-2.5" : "pt-3 sm:pt-5"} border-t border-primary/30`}
 												>
 													{!isShortViewport && (

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@100..900&family=Oswald:wght@200..700&family=Orbitron:wght@400;500;600;700;900&family=Share+Tech+Mono&display=swap");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 @plugin "tailwindcss-animate";
@@ -6,7 +6,9 @@
 
 @theme inline {
 	--font-sans: "Orbitron", monospace;
+	--font-heading: "Orbitron", monospace;
 	--font-mono: "Share Tech Mono", monospace;
+	--font-display: "Orbitron", monospace;
 
 	--radius-sm: calc(var(--radius) - 4px);
 	--radius-md: calc(var(--radius) - 2px);
@@ -502,19 +504,31 @@
 		scroll-padding-top: 6rem; /* Account for fixed navigation */
 	}
 
+	/*
+	 * Runtime font variables.
+	 *
+	 * `@theme inline` inlines each theme value straight into the generated
+	 * `font-*` utility, so those utilities carry a literal family name and no
+	 * runtime override can ever reach them — which is why the Professional
+	 * theme's Geist stack previously had no effect on any `font-heading` or
+	 * `font-mono` class, and every heading silently rendered in Orbitron.
+	 *
+	 * Declaring the same four values on `:root` gives the rules below something
+	 * to resolve, and gives the Professional theme a variable to override. The
+	 * values are identical to the ones `@theme inline` was producing, so
+	 * CyberPunk is unchanged.
+	 */
+	:root {
+		--font-sans: "Orbitron", monospace;
+		--font-heading: "Orbitron", monospace;
+		--font-mono: "Share Tech Mono", monospace;
+		--font-display: "Orbitron", monospace;
+	}
+
 	body {
-		@apply font-sans antialiased bg-background text-foreground;
-		font-family: "Orbitron", monospace;
+		@apply antialiased bg-background text-foreground;
+		font-family: var(--font-sans);
 		overflow-x: hidden; /* Prevent horizontal scroll */
-	}
-
-	.font-mono {
-		font-family: "Share Tech Mono", monospace;
-	}
-
-	.font-heading {
-		font-family: "Orbitron", monospace;
-		font-weight: 700;
 	}
 
 	/* Optimize scroll performance */
@@ -522,6 +536,30 @@
 		transform: translateZ(0);
 		will-change: transform;
 	}
+}
+
+/*
+ * Font utility bridges.
+ *
+ * Deliberately unlayered. Anything inside a `@layer` loses to Tailwind's own
+ * `utilities` layer, no matter how late it appears in this file, so these three
+ * rules have to sit outside it to take effect over the inlined values.
+ */
+.font-sans {
+	font-family: var(--font-sans);
+}
+
+.font-mono {
+	font-family: var(--font-mono);
+}
+
+.font-heading {
+	font-family: var(--font-heading);
+	font-weight: 700;
+}
+
+.font-display {
+	font-family: var(--font-display);
 }
 
 @layer components {

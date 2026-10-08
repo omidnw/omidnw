@@ -23,7 +23,25 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import type { LucideProps } from "lucide-react";
 import { useSEO } from "@/lib/seo";
 
-// Define a type for interest items
+// Professional-theme variant of this route
+import ProfessionalAboutPage from "@/components/themes/professional/ProfessionalAboutPage";
+import { useTheme } from "@/contexts/ThemeContext";
+
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
+export default function About() {
+	useSEO("about");
+
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalAboutPage />;
+	}
+
+	return <AboutMatrix />;
+}
 interface InterestItem {
 	name: string;
 	icon: React.ForwardRefExoticComponent<
@@ -262,7 +280,8 @@ const Timeline = React.memo(() => {
 
 	return (
 		<section
-			className="space-y-4 sm:space-y-6"
+			id="experience"
+			className="space-y-4 sm:space-y-6 scroll-mt-24"
 			aria-label="Professional timeline"
 		>
 			<m.h2
@@ -334,7 +353,8 @@ Timeline.displayName = "Timeline";
 const TechStack = React.memo(() => {
 	return (
 		<section
-			className="space-y-4 sm:space-y-6"
+			id="tech-stack"
+			className="space-y-4 sm:space-y-6 scroll-mt-24"
 			aria-label="Technical skills and expertise"
 		>
 			<m.h2
@@ -451,10 +471,10 @@ const Interests = React.memo(() => {
 });
 Interests.displayName = "Interests";
 
-export default function About() {
+/** The CyberPunk about page, unchanged. */
+function AboutMatrix() {
 	// SEO optimization for about page
 	useSEO("about");
-
 	return (
 		<LazyMotion features={domMax}>
 			<div className="min-h-screen">

@@ -44,9 +44,28 @@ import { loadLocalBlogPosts } from "@/lib/local-blogs";
 // SEO optimization
 import { useSEO } from "@/lib/seo";
 
+// Professional-theme variant of this route
+import ProfessionalBlogIndex from "@/components/themes/professional/ProfessionalBlogIndex";
+import { useTheme } from "@/contexts/ThemeContext";
+
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
 export default function Blog() {
-	// SEO optimization for blog page
 	useSEO("blog");
+
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalBlogIndex />;
+	}
+
+	return <BlogArchive />;
+}
+
+/** The CyberPunk blog archive, unchanged. */
+function BlogArchive() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [tagSearch, setTagSearch] = useState("");
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);

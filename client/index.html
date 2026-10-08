@@ -104,9 +104,11 @@
 			content="https://omidrezakeshtkar.dev/images/og-image.jpg"
 		/>
 
-		<!-- Additional Meta Tags -->
-		<meta name="theme-color" content="#ff00ff" />
-		<meta name="msapplication-TileColor" content="#ff00ff" />
+		<!-- Additional Meta Tags.
+		     The single theme-color is kept in sync with the active theme's
+		     --background by ThemeContext; the tile colour matches the icon set
+		     generated from the ORK wordmark. -->
+		<meta name="msapplication-TileColor" content="#0A1012" />
 		<meta name="apple-mobile-web-app-capable" content="yes" />
 		<meta
 			name="apple-mobile-web-app-status-bar-style"
@@ -116,11 +118,16 @@
 		<meta name="mobile-web-app-capable" content="yes" />
 		<meta name="application-name" content="Omid Reza Portfolio" />
 
-		<!-- Favicon -->
+		<!-- Icons. Every raster size is generated from the approved ORK wordmark by
+		     scripts/generate-icons.sh, so they cannot drift from the header logo.
+		     The SVG is listed first because browsers that support it prefer it. -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" type="image/png" href="/favicon.png" />
-		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+		<link rel="icon" type="image/png" sizes="64x64" href="/favicon.png" />
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 		<link rel="manifest" href="/manifest.json" />
+		<!-- Kept in sync with the active theme's --background by ThemeContext. -->
+		<meta name="theme-color" content="#080D0E" />
 
 		<!-- Structured Data -->
 		<script type="application/ld+json">

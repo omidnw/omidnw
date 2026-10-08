@@ -21,6 +21,8 @@ import {
 	Palette,
 	Mail,
 } from "lucide-react";
+import ProfessionalHome from "@/pages/ProfessionalHome";
+import { useTheme } from "@/contexts/ThemeContext";
 import { useSEO } from "@/lib/seo";
 
 const getProficiencyWord = (level: number): string => {
@@ -499,6 +501,14 @@ StatusBar.displayName = "StatusBar";
 export default function Home() {
 	// SEO optimization for home page
 	useSEO("home");
+
+	const { isProfessional } = useTheme();
+
+	// The Professional theme has its own landing page; this component keeps
+	// serving the CyberPunk home unchanged.
+	if (isProfessional) {
+		return <ProfessionalHome />;
+	}
 
 	return (
 		<LazyMotion features={domMax}>

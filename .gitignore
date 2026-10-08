@@ -37,3 +37,8 @@ Thumbs.db
 # Build artifacts
 dist/
 build/
+
+# Reference material and local dev tooling
+examples/
+docs/
+.harness/

@@ -51,7 +51,26 @@ import {
 // Import the new ImageModal component
 import ImageModal from "@/components/ImageModal";
 
+// Professional-theme variant of this route
+import ProfessionalProjectDetail from "@/components/themes/professional/ProfessionalProjectDetail";
+import { useTheme } from "@/contexts/ThemeContext";
+
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
 export default function ProjectPost() {
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalProjectDetail />;
+	}
+
+	return <ProjectMatrix />;
+}
+
+/** The CyberPunk project detail page, unchanged. */
+function ProjectMatrix() {
 	const [match, params] = useRoute("/projects/:slug");
 	const [project, setProject] = useState<ProjectData | null>(null);
 	const [processedContent, setProcessedContent] = useState<string>("");

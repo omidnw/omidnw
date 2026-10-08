@@ -42,6 +42,10 @@ import { GITHUB_CONFIG } from "@/lib/github-config";
 // Local projects loader
 import { loadLocalProjects } from "@/lib/local-projects";
 
+// Professional-theme variant of this route
+import ProfessionalWorkIndex from "@/components/themes/professional/ProfessionalWorkIndex";
+import { useTheme } from "@/contexts/ThemeContext";
+
 // SEO optimization
 import { useSEO } from "@/lib/seo";
 
@@ -69,10 +73,24 @@ function getStatusVariant(status: string) {
 	return statusVariants[status as keyof typeof statusVariants] || "outline";
 }
 
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
 export default function Projects() {
-	// SEO optimization for projects page
 	useSEO("projects");
 
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalWorkIndex />;
+	}
+
+	return <ProjectsMatrix />;
+}
+
+/** The CyberPunk project matrix, unchanged. */
+function ProjectsMatrix() {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [tagSearch, setTagSearch] = useState("");
 	const [selectedTags, setSelectedTags] = useState<string[]>([]);

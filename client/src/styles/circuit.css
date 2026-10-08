@@ -1,0 +1,87 @@
+/* ============================================
+   CIRCUIT BOARD BACKDROP
+   ============================================
+
+   Motion and colour for the shared circuit background in
+   components/CircuitBackground.tsx.
+
+   Colours resolve from the theme tokens, so the artwork re-tints itself when
+   the Professional theme's tokens are applied. No theme-specific selectors
+   are needed here.
+
+   Everything is drawn very low contrast on purpose: this is texture behind
+   the content, not a feature competing with it.
+   ============================================ */
+
+.circuit-board {
+	/* The wash is painted in --primary so it follows the theme. */
+	color: hsl(var(--primary));
+	opacity: 0.5;
+}
+
+/* ---------- Static traces ---------- */
+.circuit-traces path {
+	fill: none;
+	stroke: hsl(var(--border));
+	stroke-width: 1;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+	opacity: 0.45;
+}
+
+/* ---------- Vias and pads ---------- */
+.circuit-vias circle {
+	fill: none;
+	stroke: hsl(var(--border));
+	stroke-width: 1;
+	opacity: 0.5;
+}
+
+/* ---------- Travelling signals ---------- */
+.circuit-signals path {
+	fill: none;
+	stroke: hsl(var(--primary));
+	stroke-width: 1.5;
+	stroke-linecap: round;
+	/* A short dash followed by a long gap reads as a single pulse in transit. */
+	stroke-dasharray: 26 620;
+	opacity: 0.9;
+	animation: circuit-flow linear infinite;
+}
+
+@keyframes circuit-flow {
+	to {
+		stroke-dashoffset: -646;
+	}
+}
+
+/* ---------- Breathing nodes ---------- */
+.circuit-nodes circle {
+	fill: hsl(var(--primary));
+	opacity: 0.5;
+	animation: circuit-pulse 3.6s ease-in-out infinite;
+}
+
+@keyframes circuit-pulse {
+	0%,
+	100% {
+		opacity: 0.18;
+	}
+	50% {
+		opacity: 0.7;
+	}
+}
+
+/* ---------- Reduced motion ---------- */
+/* The traces and vias are static artwork and stay; only motion is removed. */
+@media (prefers-reduced-motion: reduce) {
+	.circuit-signals path,
+	.circuit-nodes circle {
+		animation: none;
+	}
+
+	.circuit-signals path {
+		stroke-dasharray: none;
+		opacity: 0.25;
+	}
+}

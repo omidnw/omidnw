@@ -1,5 +1,29 @@
 import type { ProjectData } from "./github-api";
 
+/**
+ * Collapse YAML flow sequences that span several lines into a single line.
+ *
+ * Every project's `technologies` and `tags` are written as a block:
+ *
+ *     technologies:
+ *       [
+ *         "Tauri",
+ *         "React",
+ *       ]
+ *
+ * The line-based scanner below cannot read that shape: it reads `technologies:`
+ * as an empty value and never returns to the bracket, so the whole list was
+ * silently discarded and `technologies` came back empty on every project. The
+ * regex is deliberately restricted to brackets that open on one line and close
+ * on another, so bracketed text inside a single-line value is never touched.
+ */
+function collapseFlowArrays(frontmatterText: string): string {
+	return frontmatterText.replace(
+		/\[\s*\n([^\]]*?)\n\s*\]/g,
+		(_, inner: string) => `[${inner.replace(/\s+/g, " ").trim()}]`,
+	);
+}
+
 // Parse MDX frontmatter (reusing logic from github-api.ts)
 function parseFrontmatter(content: string): {
 	frontmatter: any;
@@ -12,7 +36,8 @@ function parseFrontmatter(content: string): {
 		return { frontmatter: {}, content };
 	}
 
-	const [, frontmatterText, bodyContent] = match;
+	const [, rawFrontmatterText, bodyContent] = match;
+	const frontmatterText = collapseFlowArrays(rawFrontmatterText);
 
 	try {
 		// Simple YAML-like parser for frontmatter
@@ -28,6 +53,18 @@ function parseFrontmatter(content: string): {
 
 			const key = line.substring(0, colonIndex).trim();
 			let value = line.substring(colonIndex + 1).trim();
+
+			// The value may also sit on the line below the key — which is how every
+			// project's `technologies` and `tags` are written. Only an unquoted
+			// bracket or a quoted scalar is accepted, so the next `key: value` pair
+			// can never be swallowed.
+			if (value === "") {
+				const next = (lines[i + 1] ?? "").trim();
+				if (/^(\[|"|')/.test(next)) {
+					value = next;
+					i++;
+				}
+			}
 
 			// Handle quoted strings
 			if (

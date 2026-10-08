@@ -1,6 +1,26 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, {
+	createContext,
+	useContext,
+	useState,
+	useEffect,
+	useLayoutEffect,
+} from "react";
 
 type Theme = "dark" | "light";
+
+/**
+ * Site theme identity — the second, independent axis.
+ *
+ * `theme` above is the light/dark *mode*. `SiteTheme` is which look the site
+ * is wearing: the original CyberPunk design, or the Professional design.
+ * Both themes share one set of routes and one set of content.
+ */
+export type SiteTheme = "cyberpunk" | "professional";
+
+export const SITE_THEME_STORAGE_KEY = "siteTheme";
+
+const isSiteTheme = (value: unknown): value is SiteTheme =>
+	value === "cyberpunk" || value === "professional";
 
 interface ThemeColors {
 	// Primary colors
@@ -62,6 +82,10 @@ interface ThemeContextType {
 	toggleTheme: () => void;
 	colors: ThemeColors;
 	isDark: boolean;
+	/** Which site theme is active. Independent of the light/dark mode. */
+	siteTheme: SiteTheme;
+	setSiteTheme: (theme: SiteTheme) => void;
+	isProfessional: boolean;
 }
 
 const darkTheme: ThemeColors = {
@@ -162,6 +186,32 @@ const lightTheme: ThemeColors = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+/**
+ * Resolve the active theme's `--background` to a colour the browser will accept
+ * in `<meta name="theme-color">`.
+ *
+ * The token holds bare HSL components (`196 22% 4%`), so it has to be expanded
+ * before it can be handed to the meta tag. Reading the token rather than
+ * hard-coding a hex means the browser chrome follows whichever site theme and
+ * light/dark mode are active, instead of always showing the CyberPunk values.
+ */
+const syncThemeColor = () => {
+	const channels = getComputedStyle(document.documentElement)
+		.getPropertyValue("--background")
+		.trim();
+	if (!channels) return;
+
+	const probe = document.createElement("div");
+	probe.style.color = `hsl(${channels})`;
+	document.body.appendChild(probe);
+	const resolved = getComputedStyle(probe).color;
+	probe.remove();
+
+	document
+		.querySelectorAll('meta[name="theme-color"]')
+		.forEach((meta) => meta.setAttribute("content", resolved));
+};
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
@@ -180,6 +230,22 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 	const colors = theme === "dark" ? darkTheme : lightTheme;
 	const isDark = theme === "dark";
 
+	const [siteTheme, setSiteTheme] = useState<SiteTheme>(() => {
+		// Absent or unrecognised value means Professional: the site's default
+		// look. Anyone who has previously chosen CyberPunk keeps it, because a
+		// stored value is always honoured.
+		const saved = localStorage.getItem(SITE_THEME_STORAGE_KEY);
+		return isSiteTheme(saved) ? saved : "professional";
+	});
+
+	// Layout effect: the Professional theme swaps the typeface as well as the
+	// palette, so the attribute has to be on <html> before the first paint or
+	// the page renders once in Orbitron.
+	useLayoutEffect(() => {
+		document.documentElement.dataset.theme = siteTheme;
+		localStorage.setItem(SITE_THEME_STORAGE_KEY, siteTheme);
+	}, [siteTheme]);
+
 	useEffect(() => {
 		// Save to localStorage
 		localStorage.setItem("theme", theme);
@@ -193,22 +259,25 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 			document.documentElement.classList.remove("dark");
 		}
 
-		// Update meta theme-color
-		const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-		if (metaThemeColor) {
-			metaThemeColor.setAttribute(
-				"content",
-				theme === "dark" ? "#030712" : "#FFFFFF"
-			);
-		}
-	}, [theme]);
+		syncThemeColor();
+	}, [theme, siteTheme]);
 
 	const toggleTheme = () => {
 		setTheme((prev) => (prev === "dark" ? "light" : "dark"));
 	};
 
 	return (
-		<ThemeContext.Provider value={{ theme, toggleTheme, colors, isDark }}>
+		<ThemeContext.Provider
+			value={{
+				theme,
+				toggleTheme,
+				colors,
+				isDark,
+				siteTheme,
+				setSiteTheme,
+				isProfessional: siteTheme === "professional",
+			}}
+		>
 			{children}
 		</ThemeContext.Provider>
 	);
@@ -232,4 +301,10 @@ export const useThemeColors = () => {
 export const useIsDark = () => {
 	const { isDark } = useTheme();
 	return isDark;
+};
+
+// Helper hook for the site theme identity and its setter
+export const useSiteTheme = () => {
+	const { siteTheme, setSiteTheme, isProfessional } = useTheme();
+	return { siteTheme, setSiteTheme, isProfessional };
 };

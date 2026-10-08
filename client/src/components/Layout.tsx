@@ -3,11 +3,11 @@ import { useLocation } from "wouter";
 import { motion } from "framer-motion";
 // import { Canvas } from "@react-three/fiber";
 // import { Stars, Float } from "@react-three/drei";
-import { Card } from "@/components/ui/card";
-import { Terminal } from "lucide-react";
-import HamburgerMenu from "@/components/HamburgerMenu";
-import GlobalMusicPlayer from "@/components/GlobalMusicPlayer";
+import CircuitBackground from "@/components/CircuitBackground";
 import CyberpunkTerminal from "@/components/CyberpunkTerminal";
+import CyberpunkHeader from "@/components/themes/cyberpunk/CyberpunkHeader";
+import ProfessionalHeader from "@/components/themes/professional/ProfessionalHeader";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -127,62 +127,6 @@ function SkipLink() {
 	);
 }
 
-function Navigation({
-	onTerminalOpen,
-	isMac,
-}: {
-	onTerminalOpen: () => void;
-	isMac: boolean;
-}) {
-	return (
-		<nav
-			className="fixed top-0 left-0 right-0 z-20 p-2 sm:p-3"
-			role="navigation"
-			aria-label="Main navigation"
-		>
-			<Card variant="cyberpunk" className="mx-auto max-w-4xl">
-				<div className="flex items-center justify-between px-2.5 py-2 sm:px-4 sm:py-3">
-					{/* Logo - Opens Terminal instead of navigating */}
-					<motion.div
-						className="flex items-center space-x-1 sm:space-x-2 cursor-pointer group"
-						whileHover={{ scale: 1.05 }}
-						whileTap={{ scale: 0.95 }}
-						onClick={onTerminalOpen}
-						role="button"
-						tabIndex={0}
-						aria-label="Open terminal interface"
-						onKeyDown={(e) => {
-							if (e.key === "Enter" || e.key === " ") {
-								e.preventDefault();
-								onTerminalOpen();
-							}
-						}}
-					>
-						<Terminal
-							className="w-5 h-5 sm:w-7 sm:h-7 text-primary neon-glow group-hover:text-secondary transition-colors"
-							aria-hidden="true"
-						/>
-						<span className="text-base sm:text-xl font-heading font-bold neon-glow text-primary group-hover:text-secondary transition-colors">
-							PortFolio.sh
-						</span>
-						<span className="text-xs font-mono text-primary/60 group-hover:text-secondary/60 transition-colors ml-1 sm:ml-2 hidden sm:inline">
-							[{isMac ? "Ctrl+Cmd+K" : "Ctrl+Alt+K"}]
-						</span>
-					</motion.div>
-
-					{/* Right side controls */}
-					<div className="flex items-center gap-1 sm:gap-2">
-						<div className="relative">
-							<GlobalMusicPlayer />
-						</div>
-						<HamburgerMenu onTerminalOpen={onTerminalOpen} />
-					</div>
-				</div>
-			</Card>
-		</nav>
-	);
-}
-
 const PageTransition = React.memo(
 	({ children }: { children: React.ReactNode }) => {
 		const [location] = useLocation();
@@ -207,6 +151,7 @@ export default function Layout({ children }: LayoutProps) {
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 	const [isMac, setIsMac] = useState(false);
 	const [location] = useLocation();
+	const { isProfessional } = useTheme();
 
 	// Read terminal state from localStorage on mount
 	useEffect(() => {
@@ -258,17 +203,31 @@ export default function Layout({ children }: LayoutProps) {
 	return (
 		<div className="min-h-screen bg-background text-foreground relative overflow-x-hidden">
 			<SkipLink />
-			<CyberBackground />
-			<Navigation
-				onTerminalOpen={() => setIsTerminalOpen(true)}
-				isMac={isMac}
-			/>
+			<CircuitBackground />
+			{isProfessional ? null : <CyberBackground />}
+			{isProfessional ? (
+				<ProfessionalHeader
+					onTerminalOpen={() => setIsTerminalOpen(true)}
+				/>
+			) : (
+				<CyberpunkHeader
+					onTerminalOpen={() => setIsTerminalOpen(true)}
+					isMac={isMac}
+				/>
+			)}
 
 			<main
 				id="main-content"
-				className="relative z-10 pt-18 sm:pt-22 pb-4 sm:pb-8"
+				className={`relative z-10 ${
+					// The Professional bar is a flush 4rem strip; the CyberPunk
+					// header is a floating card that already clears its own space.
+					isProfessional ? "pt-(--pf-bar-height)" : "pt-18 sm:pt-22 pb-4 sm:pb-8"
+				}`}
 			>
-				<div className="container mx-auto px-2 sm:px-4">
+				{/* Professional shares one gutter and one max-width with its header
+				    (`.pf-shell`), so the multi-page routes line up with the landing
+				    page. CyberPunk keeps the original Tailwind `container` untouched. */}
+				<div className={isProfessional ? "pf-shell" : "container mx-auto px-2 sm:px-4"}>
 					<PageTransition>{children}</PageTransition>
 				</div>
 			</main>

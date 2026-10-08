@@ -28,6 +28,26 @@ import { FaLinkedinIn } from "react-icons/fa";
 import CyberpunkDubaiMap from "@/components/CyberpunkDubaiMap";
 import { useSEO } from "@/lib/seo";
 
+// Professional-theme variant of this route
+import ProfessionalContactPage from "@/components/themes/professional/ProfessionalContactPage";
+import { useTheme } from "@/contexts/ThemeContext";
+
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
+export default function Contact() {
+	useSEO("contact");
+
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalContactPage />;
+	}
+
+	return <ContactMatrix />;
+}
+
 interface ContactForm {
 	name: string;
 	email: string;
@@ -42,10 +62,8 @@ interface FormErrors {
 	message?: string;
 }
 
-export default function Contact() {
-	// SEO optimization for contact page
-	useSEO("contact");
-
+/** The CyberPunk contact page, unchanged. */
+function ContactMatrix() {
 	const [formData, setFormData] = useState<ContactForm>({
 		name: "",
 		email: "",

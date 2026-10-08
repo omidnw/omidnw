@@ -1,0 +1,749 @@
+/* ============================================
+   PROFESSIONAL THEME TOKENS
+   ============================================
+
+   The second site theme, alongside the CyberPunk palette that lives in
+   index.css and styles/theme.css. Nothing in the CyberPunk definition is
+   modified or duplicated here.
+
+   Activation: <html data-theme="professional">, applied by ThemeContext.
+
+   Cascade
+   --------
+   These selectors are declared after index.css, so on equal specificity they
+   win by source order:
+
+     :root                                (0,1,0)  cyberpunk, index.css
+     :root.dark                           (0,2,0)  cyberpunk, index.css
+     :root[data-theme="professional"]      (0,2,0)  professional light
+     :root[data-theme="professional"].dark (0,3,0)  professional dark
+
+   Every token mapped by `@theme inline` is defined here on purpose. A token
+   left undefined makes `hsl(var(--token))` invalid at computed-value time,
+   which silently drops the declaration in any component that uses it.
+
+   Isolation from CyberPunk
+   ------------------------
+   Nothing in this file matches an element unless the Professional theme is
+   active, so the CyberPunk palette, motion and layout are unaffected. Where a
+   shared, theme-agnostic component needs Professional-specific treatment — the
+   circuit backdrop, for instance — the override below is scoped back through
+   `:root[data-theme="professional"]` rather than editing the shared rule.
+   ============================================ */
+
+/* ============================================
+   TYPOGRAPHY
+   Geist is the Professional typeface; Geist Mono covers technical metadata,
+   labels, code-like elements and small engineering details. Orbitron and
+   Share Tech Mono stay exclusive to the CyberPunk theme.
+
+   `--font-display` is deliberately Geist Mono rather than a condensed
+   display face: every Professional section label, kicker and metadata line is
+   set in it, and those are the places a technical voice belongs. Headings use
+   `--font-heading` (Geist) so they never read as terminal output.
+   ============================================ */
+:root[data-theme="professional"] {
+	--font-sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-heading: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+	--font-display: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ============================================
+   PROFESSIONAL — LIGHT
+   Neutral, faintly cool paper rather than pure white: `--card` is a shade off
+   the page so panels read as elevated without a hard grey step, and the teal
+   is held dark enough to clear 4.5:1 as text.
+   ============================================ */
+:root[data-theme="professional"] {
+	/* Surfaces */
+	--background: 182 22% 97%;
+	--foreground: 197 26% 11%;
+	--card: 180 24% 99%;
+	--card-foreground: 197 26% 11%;
+	--popover: 180 24% 99%;
+	--popover-foreground: 197 26% 11%;
+	--muted: 186 18% 93%;
+	--muted-foreground: 197 12% 36%;
+
+	/* Lines — dark enough for control outlines to clear 3:1 on the light bar. */
+	--border: 188 16% 47%;
+	--input: 188 16% 43%;
+
+	/* Brand — darkened to clear 4.5:1 as text on the light bar; the mint used
+	   in the dark variant only reaches ~3.6:1 here. */
+	--primary: 171 72% 25%;
+	--primary-foreground: 180 40% 98%;
+	--secondary: 186 20% 91%;
+	--secondary-foreground: 197 26% 16%;
+	--accent: 172 38% 91%;
+	--accent-foreground: 197 26% 13%;
+
+	--destructive: 0 72% 45%;
+	--destructive-foreground: 0 0% 98%;
+	--ring: 171 72% 25%;
+	--radius: 0.625rem;
+
+	/* Sidebar */
+	--sidebar-background: 182 22% 97%;
+	--sidebar-foreground: 197 26% 11%;
+	--sidebar-primary: 171 72% 25%;
+	--sidebar-primary-foreground: 180 40% 98%;
+	--sidebar-accent: 186 20% 91%;
+	--sidebar-accent-foreground: 197 26% 16%;
+	--sidebar-border: 188 16% 47%;
+	--sidebar-ring: 171 72% 25%;
+
+	/* Charts */
+	--chart-1: 171 72% 25%;
+	--chart-2: 190 58% 36%;
+	--chart-3: 200 42% 42%;
+	--chart-4: 160 48% 38%;
+	--chart-5: 180 36% 52%;
+
+	/* The Earth artwork is a night render; on paper it needs to sit back
+	   further so it does not punch a dark hole out of the hero, and the mask has
+	   to close in earlier because its atmospheric halo is visible against a light
+	   surface where it is invisible against a dark one. */
+	--pf-globe-opacity: 0.82;
+}
+
+/* ============================================
+   PROFESSIONAL — DARK
+   The primary visual reference. The background is a deep teal-black rather than
+   neutral grey so the whole surface family stays in one hue.
+   ============================================ */
+:root[data-theme="professional"].dark {
+	--background: 196 22% 4%;
+	--foreground: 172 14% 95%;
+	--card: 194 18% 7%;
+	--card-foreground: 172 14% 95%;
+	--popover: 194 20% 6%;
+	--popover-foreground: 172 14% 95%;
+	--muted: 194 14% 10%;
+	--muted-foreground: 193 9% 64%;
+
+	/* Lighter than the light theme's border so control outlines clear the 3:1
+	   non-text minimum against the near-black bar. */
+	--border: 190 13% 38%;
+	--input: 190 13% 36%;
+
+	--primary: 169 74% 64%;
+	--primary-foreground: 196 26% 5%;
+	--secondary: 191 22% 13%;
+	--secondary-foreground: 172 14% 95%;
+	--accent: 170 46% 15%;
+	--accent-foreground: 172 14% 95%;
+
+	--destructive: 0 72% 51%;
+	--destructive-foreground: 0 0% 98%;
+	--ring: 169 74% 64%;
+	--radius: 0.625rem;
+
+	--sidebar-background: 194 20% 6%;
+	--sidebar-foreground: 172 14% 95%;
+	--sidebar-primary: 169 74% 64%;
+	--sidebar-primary-foreground: 196 26% 5%;
+	--sidebar-accent: 191 22% 13%;
+	--sidebar-accent-foreground: 172 14% 95%;
+	--sidebar-border: 190 20% 16%;
+	--sidebar-ring: 169 74% 64%;
+
+	--chart-1: 169 74% 64%;
+	--chart-2: 176 60% 52%;
+	--chart-3: 189 54% 60%;
+	--chart-4: 160 56% 48%;
+	--chart-5: 168 40% 70%;
+
+	--pf-globe-opacity: 0.95;
+}
+
+/* ============================================
+   PROFESSIONAL LAYOUT & CHROME
+   Scoped to the Professional theme so these cannot leak into CyberPunk.
+
+   `--pf-gutter` is the single source of truth for the page's horizontal
+   padding. The header and every section read it, so the brand lockup, the nav
+   and the content column all start on the same line at every breakpoint.
+   `--pf-section-y` is the one vertical rhythm for section padding.
+   ============================================ */
+:root[data-theme="professional"] {
+	--pf-bar-height: 4rem;
+	--pf-bar-glow: 0 1px 24px -6px hsl(169 74% 64% / 0.18);
+	--pf-nav-underline: 2px;
+	--pf-nav-glow: 0 0 10px 0 hsl(169 74% 64% / 0.35);
+
+	/* Fluid: 16px at 375, ~43px at 1280, ~49px at 1440, capped at 64px. */
+	--pf-gutter: clamp(1rem, 3.4vw, 4rem);
+	--pf-section-y: clamp(3.5rem, 6vw, 6.5rem);
+	--pf-measure: 62ch;
+
+	/* Elevation used by project and contact cards. */
+	--pf-shadow-card: 0 1px 2px -1px hsl(196 30% 3% / 0.4),
+		0 8px 24px -12px hsl(196 30% 3% / 0.45);
+	--pf-shadow-card-hover: 0 2px 4px -2px hsl(196 30% 3% / 0.45),
+		0 16px 40px -18px hsl(169 74% 64% / 0.28);
+}
+
+:root[data-theme="professional"]:not(.dark) {
+	--pf-shadow-card: 0 1px 2px -1px hsl(196 24% 30% / 0.1),
+		0 8px 24px -14px hsl(196 24% 30% / 0.18);
+	--pf-shadow-card-hover: 0 2px 4px -2px hsl(196 24% 30% / 0.12),
+		0 16px 36px -18px hsl(171 72% 25% / 0.24);
+}
+
+/* ============================================
+   SHARED SURFACES, PROFESSIONAL ONLY
+   ============================================ */
+
+/* The circuit backdrop is rendered for both themes from one shared component
+   (see styles/circuit.css). Professional wants it markedly quieter than
+   CyberPunk's neon, so the opacity is overridden here instead of in the shared
+   rule — editing circuit.css would change CyberPunk too. */
+:root[data-theme="professional"] .circuit-board {
+	opacity: 0.3;
+}
+
+/* ============================================
+   SHARED PROFESSIONAL LAYOUT PRIMITIVES
+   Patterns that appear in most sections. Declared once here so the eight
+   section components cannot drift apart, and so the rhythm stays in step with
+   the tokens above.
+   ============================================ */
+
+/* The page shell: one max-width and one horizontal gutter. The header bar, every
+   Professional section and the inner wrappers of the full-bleed sections all
+   use it, so the brand lockup, the nav and every content column start on the
+   same line at every breakpoint. The Layout container is switched to this class
+   for the Professional theme, which is what keeps the multi-page routes
+   (About, Blog, Projects, Contact) on the same gutter as the landing page. */
+.pf-shell {
+	width: 100%;
+	max-width: 100rem;
+	margin-inline: auto;
+	padding-inline: var(--pf-gutter);
+}
+
+/* Section shell: the single vertical rhythm. Horizontal padding comes from
+   `.pf-shell`, never from here, or the two would compound. */
+.pf-section {
+	padding-block: var(--pf-section-y);
+}
+
+/* `// LABEL` kicker above every section heading. */
+.pf-label {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-family: var(--font-mono);
+	font-size: 0.6875rem;
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 0.2em;
+	color: hsl(var(--foreground));
+}
+
+.pf-label::before {
+	content: "//";
+	color: hsl(var(--primary));
+}
+
+/* Section heading. One fluid size for all of them so the page has a level, not
+   a series of near-identical headings at slightly different sizes. */
+.pf-heading {
+	margin-top: 0.75rem;
+	font-family: var(--font-heading);
+	font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.125rem);
+	font-weight: 600;
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+	color: hsl(var(--foreground));
+	text-wrap: balance;
+}
+
+/* Secondary paragraph under a section heading. */
+.pf-lede {
+	margin-top: 0.75rem;
+	max-width: 58ch;
+	font-size: 0.9375rem;
+	line-height: 1.6;
+	color: hsl(var(--muted-foreground));
+	text-wrap: pretty;
+}
+
+/* Row of technology indicators. Wraps at every width — never `flex-nowrap`,
+   which would set the hero grid's minimum content width and push the copy
+   column past the viewport on narrow screens. */
+.pf-tags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.375rem 0.5rem;
+}
+
+.pf-tags > * {
+	font-family: var(--font-mono);
+	font-size: 0.6875rem;
+	line-height: 1.35;
+	letter-spacing: 0.02em;
+	color: hsl(var(--muted-foreground));
+	white-space: nowrap;
+}
+
+/* Dotted separator between adjacent indicators, so they read as one list. */
+.pf-tags > * + *::before {
+	content: "·";
+	margin-right: 0.5rem;
+	color: hsl(var(--primary) / 0.7);
+}
+
+/* Focus ring, used by every interactive element on the Professional theme. */
+.pf-focus:focus-visible {
+	outline: 2px solid hsl(var(--ring));
+	outline-offset: 2px;
+	border-radius: 0.375rem;
+}
+
+/* Same ring for containers that hold focus (search fields), where the ring must
+   follow the field's own radius rather than the default 0.375rem. */
+.pf-focus-within:focus-within {
+	outline: 2px solid hsl(var(--ring));
+	outline-offset: 2px;
+	border-radius: 0.5rem;
+}
+
+/* The same texture, centred and evenly faded, for use inside a bounded panel
+   rather than across a full-bleed band. */
+.pf-panel-grid {
+	background-image:
+		linear-gradient(to right, hsl(var(--border) / 0.5) 1px, transparent 1px),
+		linear-gradient(to bottom, hsl(var(--border) / 0.5) 1px, transparent 1px);
+	background-size: 40px 40px;
+	opacity: 0.45;
+	mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 20%, transparent 72%);
+	-webkit-mask-image: radial-gradient(
+		ellipse 70% 70% at 50% 50%,
+		black 20%,
+		transparent 72%
+	);
+}
+
+/* ============================================
+   HERO BACKDROP AND GLOBE
+   ============================================ */
+
+/* A low-contrast technical grid, weighted towards the globe side of the hero so
+   it never draws a rule through the kicker, the name, the title or the
+   paragraph. The copy side is left almost bare. */
+.pf-hero-grid {
+	background-image:
+		linear-gradient(to right, hsl(var(--border) / 0.55) 1px, transparent 1px),
+		linear-gradient(to bottom, hsl(var(--border) / 0.55) 1px, transparent 1px);
+	background-size: 88px 88px;
+	opacity: 0.5;
+	mask-image: radial-gradient(
+		ellipse 52% 84% at 76% 48%,
+		black 0%,
+		rgb(0 0 0 / 0.5) 46%,
+		transparent 74%
+	);
+	-webkit-mask-image: radial-gradient(
+		ellipse 52% 84% at 76% 48%,
+		black 0%,
+		rgb(0 0 0 / 0.5) 46%,
+		transparent 74%
+	);
+}
+
+/* The artwork's own frame cuts through the top and bottom of the sphere, and
+   its left and right margins are genuinely transparent. A short feather on the
+   top and bottom edges only dissolves that cut into the page, so the globe
+   reads whole; nothing radial is masked, so the sphere and its orbit rings stay
+   at full strength. */
+.pf-globe-img {
+	opacity: var(--pf-globe-opacity, 0.95);
+	mask-image: linear-gradient(
+		to bottom,
+		transparent 0%,
+		black 9%,
+		black 91%,
+		transparent 100%
+	);
+	-webkit-mask-image: linear-gradient(
+		to bottom,
+		transparent 0%,
+		black 9%,
+		black 91%,
+		transparent 100%
+	);
+	animation: pf-globe-breathe 18s ease-in-out infinite;
+	will-change: transform;
+}
+
+@keyframes pf-globe-breathe {
+	0%,
+	100% {
+		transform: scale(1);
+	}
+	50% {
+		transform: scale(1.022);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.pf-globe-img {
+		animation: none;
+		will-change: auto;
+	}
+}
+
+/* ============================================
+   RENDERED MARKDOWN
+   Classes emitted by lib/professional-markdown.ts. Prose is set in Geist with a
+   comfortable measure; mono is reserved for code, metadata and structural
+   markers. Scoped to the Professional theme, and to the article wrapper, so no
+   CyberPunk markdown output can inherit any of it.
+   ============================================ */
+.pf-prose {
+	max-width: var(--pf-measure);
+	color: hsl(var(--foreground) / 0.82);
+	font-size: 1rem;
+	line-height: 1.75;
+}
+
+.pf-prose > * + * {
+	margin-top: 1.25rem;
+}
+
+.pf-md-h1,
+.pf-md-h2,
+.pf-md-h3,
+.pf-md-h4 {
+	font-family: var(--font-heading);
+	font-weight: 600;
+	letter-spacing: -0.015em;
+	color: hsl(var(--foreground));
+	text-wrap: balance;
+}
+
+.pf-md-h1 {
+	margin-top: 2.5rem;
+	font-size: 1.75rem;
+	line-height: 1.2;
+}
+
+.pf-md-h2 {
+	margin-top: 2.5rem;
+	padding-bottom: 0.5rem;
+	border-bottom: 1px solid hsl(var(--border));
+	font-size: 1.375rem;
+	line-height: 1.25;
+}
+
+.pf-md-h3 {
+	margin-top: 2rem;
+	font-size: 1.125rem;
+	line-height: 1.35;
+}
+
+.pf-md-h4 {
+	margin-top: 1.5rem;
+	font-size: 1rem;
+}
+
+.pf-prose > .pf-md-h1:first-child,
+.pf-prose > .pf-md-h2:first-child,
+.pf-prose > .pf-md-h3:first-child {
+	margin-top: 0;
+}
+
+.pf-md-p {
+	text-wrap: pretty;
+}
+
+.pf-md-ul,
+.pf-md-ol {
+	padding-left: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.pf-md-ol {
+	list-style: decimal;
+}
+
+.pf-md-li::marker {
+	color: hsl(var(--primary));
+}
+
+.pf-md-li > ul,
+.pf-md-li > ol {
+	margin-top: 0.5rem;
+}
+
+.pf-md-a {
+	color: hsl(var(--primary));
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 1px;
+	text-decoration-color: hsl(var(--primary) / 0.4);
+	transition: text-decoration-color 0.2s ease;
+}
+
+.pf-md-a:hover {
+	text-decoration-color: hsl(var(--primary));
+}
+
+.pf-md-strong {
+	font-weight: 600;
+	color: hsl(var(--foreground));
+}
+
+.pf-md-em {
+	font-style: italic;
+}
+
+.pf-md-code-inline {
+	font-family: var(--font-mono);
+	font-size: 0.875em;
+	padding: 0.15em 0.4em;
+	border-radius: 0.25rem;
+	background: hsl(var(--muted));
+	color: hsl(var(--foreground));
+}
+
+.pf-md-code {
+	position: relative;
+	overflow-x: auto;
+	border: 1px solid hsl(var(--border));
+	border-radius: 0.625rem;
+	background: hsl(var(--muted) / 0.6);
+	padding: 1rem 1.25rem;
+	font-family: var(--font-mono);
+	font-size: 0.8125rem;
+	line-height: 1.7;
+}
+
+/* index.css gives every `.hljs` a near-black CyberPunk background and a neon
+   green base colour, both `!important` and both inside `@layer components`.
+
+   `!important` reverses the cascade's layer order: a layered important
+   declaration beats an unlayered important one, so these overrides have to
+   live in the same layer to win. Inside it, the higher-specificity selectors
+   below take precedence over index.css's bare `.hljs`. */
+@layer components {
+	:root[data-theme="professional"] .pf-md-code .hljs,
+	:root[data-theme="professional"] .pf-md-code code.hljs {
+		background: transparent !important;
+		color: hsl(var(--foreground)) !important;
+		padding: 0 !important;
+		border: 0 !important;
+		border-radius: 0 !important;
+		box-shadow: none !important;
+	}
+
+	/* Each highlight.js token is wrapped in a span; without this they inherit
+	   the global black `.hljs` background individually and the code block reads
+	   as a stack of dark bars. */
+	:root[data-theme="professional"] .pf-md-code .hljs span {
+		background: transparent !important;
+	}
+
+	.pf-md-code code {
+		font-family: inherit;
+		background: none;
+		padding: 0;
+	}
+}
+
+.pf-md-code[data-lang] {
+	padding-top: 1.75rem;
+}
+
+.pf-md-code[data-lang]::before {
+	content: attr(data-lang);
+	position: absolute;
+	top: 0.5rem;
+	right: 0.75rem;
+	font-family: var(--font-mono);
+	font-size: 0.625rem;
+	text-transform: uppercase;
+	letter-spacing: 0.14em;
+	color: hsl(var(--muted-foreground));
+}
+
+/* highlight.js token colours. The CyberPunk palette in index.css is neon and
+   would be illegible here, so the Professional theme re-tints the token classes
+   to the teal/amber family that matches its own syntax surfaces. These are not
+   `!important` in index.css, so normal specificity decides and these win. */
+:root[data-theme="professional"] {
+	--pf-code-keyword: hsl(169 60% 52%);
+	--pf-code-string: hsl(84 42% 62%);
+	--pf-code-comment: hsl(196 12% 52%);
+	--pf-code-number: hsl(36 78% 66%);
+	--pf-code-title: hsl(200 70% 68%);
+	--pf-code-type: hsl(172 44% 60%);
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-keyword,
+:root[data-theme="professional"] .pf-md-code .hljs-selector-tag,
+:root[data-theme="professional"] .pf-md-code .hljs-literal,
+:root[data-theme="professional"] .pf-md-code .hljs-doctag,
+:root[data-theme="professional"] .pf-md-code .hljs-name {
+	color: var(--pf-code-keyword);
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-string,
+:root[data-theme="professional"] .pf-md-code .hljs-regexp,
+:root[data-theme="professional"] .pf-md-code .hljs-addition,
+:root[data-theme="professional"] .pf-md-code .hljs-attribute {
+	color: var(--pf-code-string);
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-comment,
+:root[data-theme="professional"] .pf-md-code .hljs-quote {
+	color: var(--pf-code-comment);
+	font-style: italic;
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-number,
+:root[data-theme="professional"] .pf-md-code .hljs-symbol,
+:root[data-theme="professional"] .pf-md-code .hljs-bullet,
+:root[data-theme="professional"] .pf-md-code .hljs-link {
+	color: var(--pf-code-number);
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-title,
+:root[data-theme="professional"] .pf-md-code .hljs-section,
+:root[data-theme="professional"] .pf-md-code .hljs-function .hljs-title {
+	color: var(--pf-code-title);
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-type,
+:root[data-theme="professional"] .pf-md-code .hljs-built_in,
+:root[data-theme="professional"] .pf-md-code .hljs-class .hljs-title,
+:root[data-theme="professional"] .pf-md-code .hljs-params {
+	color: var(--pf-code-type);
+}
+
+:root[data-theme="professional"] .pf-md-code .hljs-variable,
+:root[data-theme="professional"] .pf-md-code .hljs-template-variable,
+:root[data-theme="professional"] .pf-md-code .hljs-subst,
+:root[data-theme="professional"] .pf-md-code .hljs-attr {
+	color: hsl(var(--foreground) / 0.85);
+}
+
+.pf-md-quote {
+	border-left: 2px solid hsl(var(--primary));
+	padding: 0.25rem 0 0.25rem 1rem;
+	color: hsl(var(--muted-foreground));
+	font-style: italic;
+}
+
+.pf-md-hr {
+	border: 0;
+	height: 1px;
+	background: hsl(var(--border));
+}
+
+.pf-md-table-wrap {
+	overflow-x: auto;
+	border: 1px solid hsl(var(--border));
+	border-radius: 0.625rem;
+}
+
+.pf-md-table-wrap table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 0.875rem;
+}
+
+.pf-md-th {
+	padding: 0.625rem 0.875rem;
+	text-align: left;
+	font-weight: 600;
+	color: hsl(var(--foreground));
+	background: hsl(var(--muted) / 0.7);
+	border-bottom: 1px solid hsl(var(--border));
+	white-space: nowrap;
+}
+
+.pf-md-td {
+	padding: 0.625rem 0.875rem;
+	border-bottom: 1px solid hsl(var(--border) / 0.6);
+	color: hsl(var(--muted-foreground));
+}
+
+.pf-md-table-wrap tr:last-child .pf-md-td {
+	border-bottom: 0;
+}
+
+.pf-md-img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border: 1px solid hsl(var(--border));
+	border-radius: 0.75rem;
+}
+
+/* ============================================
+   JOURNEY TIMELINE
+   The date column, the gap it sits across and the rail are all derived from
+   the same two tokens, so the marker cannot drift out of the gutter when the
+   column width changes.
+   ============================================ */
+.pf-journey-entry {
+	--pf-journey-date: 0rem;
+	--pf-journey-gap: 1.5rem;
+}
+
+.pf-journey-date {
+	padding-left: var(--pf-journey-gap);
+	line-height: 1.5rem;
+}
+
+.pf-journey-body {
+	padding-left: var(--pf-journey-gap);
+}
+
+.pf-journey-marker {
+	position: absolute;
+	left: 0;
+	top: 0.4375rem;
+	height: 0.625rem;
+	width: 0.625rem;
+	border-radius: 9999px;
+}
+
+.pf-journey-rail {
+	position: absolute;
+	left: calc(var(--pf-journey-gap) - 0.3125rem);
+	top: 1.5rem;
+	bottom: 0;
+	width: 1px;
+	background-color: hsl(var(--border));
+}
+
+@media (min-width: 768px) {
+	.pf-journey-entry {
+		--pf-journey-date: 7rem;
+		--pf-journey-gap: 2.5rem;
+	}
+
+	.pf-journey-date {
+		padding-left: 0;
+		text-align: right;
+	}
+
+	.pf-journey-body {
+		padding-left: 0;
+	}
+
+	.pf-journey-marker {
+		left: calc(var(--pf-journey-date) + 0.625rem);
+	}
+
+	.pf-journey-rail {
+		left: calc(var(--pf-journey-date) + 0.9375rem);
+	}
+}

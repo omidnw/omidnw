@@ -41,7 +41,26 @@ import {
 	addCyberpunkAnimations,
 } from "@/lib/markdown-processor";
 
+// Professional-theme variant of this route
+import ProfessionalBlogDetail from "@/components/themes/professional/ProfessionalBlogDetail";
+import { useTheme } from "@/contexts/ThemeContext";
+
+/**
+ * Route entry point. Picks the variant for the active theme, then hands off —
+ * the two implementations are separate components so neither one's hooks are
+ * shared or conditionally called.
+ */
 export default function BlogPost() {
+	const { isProfessional } = useTheme();
+	if (isProfessional) {
+		return <ProfessionalBlogDetail />;
+	}
+
+	return <BlogPostMatrix />;
+}
+
+/** The CyberPunk article page, unchanged. */
+function BlogPostMatrix() {
 	const [match, params] = useRoute("/blog/:slug");
 	const [post, setPost] = useState<BlogPostData | null>(null);
 	const [processedContent, setProcessedContent] = useState<string>("");
