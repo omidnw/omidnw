@@ -1058,3 +1058,6 @@
   :root[data-theme="professional"] .pf-globe-atmosphere::before { filter: blur(16px); }
   :root[data-theme="professional"] .pf-globe-atmosphere::after { filter: blur(12px); }
 }
+
+/* The original picture reserves the exact Hero footprint during lazy WebGL loading. */
+.pf-globe-3d canvas { display: block; opacity: var(--pf-globe-opacity, .95); }

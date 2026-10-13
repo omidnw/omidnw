@@ -1,7 +1,7 @@
 import { m } from "framer-motion";
 import { Link } from "wouter";
 import { ArrowRight, ArrowUpRight, Mail } from "lucide-react";
-import { pictureSource } from "@/lib/images";
+import HeroGlobe3D from "./HeroGlobe3D";
 import { RESUME_FILENAME } from "@/lib/social";
 
 /**
@@ -35,8 +35,6 @@ const TECH = [
 	"Docker",
 	"AI / LLMs",
 ];
-
-const GLOBE = pictureSource("/images/futuristic-earth.png");
 
 const MOTTO = "Engineering · Reliability · Through Better Software";
 
@@ -118,38 +116,11 @@ export default function ProfessionalHero() {
 					</ul>
 				</div>
 
-				{/* Globe column. Present but quiet: an edge-faded night render that
-				    breathes very slowly, and yields its motion to the visitor's
-				    reduced-motion preference (both the CSS animation below and the
-				    MotionConfig in ProfessionalHome honour it).
-
-				    Decorative: it carries no data the copy depends on and naming the
-				    continents on it would read as a location claim, so it is hidden
-				    from assistive technology rather than described. */}
+				{/* Decorative 3D Earth with the original artwork retained as fallback. */}
 				<div className="pf-globe relative -mx-6 flex flex-col items-center justify-center sm:-mx-2 lg:mx-0">
 					<div className="pf-globe-art relative isolate w-full max-w-[26rem] sm:max-w-[30rem] lg:max-w-[40rem]">
 						<div className="pf-globe-atmosphere" aria-hidden="true" />
-						<m.picture
-							className="relative z-10 block w-full"
-							initial={{ opacity: 0, scale: 0.985 }}
-							animate={{ opacity: 1, scale: 1 }}
-							transition={{ duration: 0.8, ease: "easeOut" }}
-						>
-							{/* `<source>` must precede `<img>` inside `<picture>`. */}
-							<source
-								type="image/webp"
-								srcSet={GLOBE.srcSet}
-								sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem"
-							/>
-							<img
-								{...GLOBE}
-								sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem"
-								alt=""
-								aria-hidden="true"
-								draggable={false}
-								className="pf-globe-img block w-full select-none"
-							/>
-						</m.picture>
+						<HeroGlobe3D />
 					</div>
 
 					{/* Motto. One mono line beneath the globe rather than a stack beside it, so it
