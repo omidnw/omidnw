@@ -3,6 +3,29 @@
   "updated": "2026-11-01",
   "entries": [
     {
+      "path": "20261101-23ee-adaptive-globe-render-budget.md",
+      "id": "exp-20261101-23ee",
+      "title": "Adapt globe quality to sustained render submission cost",
+      "description": "Preserve full quality on fast devices and reduce resolution only after repeated slow submissions.",
+      "type": "performance",
+      "status": "verified",
+      "confidence": "high",
+      "created": "2026-11-01",
+      "area": [
+        "performance",
+        "webgl"
+      ],
+      "tags": [
+        "threejs",
+        "adaptive-quality"
+      ],
+      "files": [
+        "client/src/lib/globe-render-budget.ts",
+        "client/src/components/themes/professional/HeroGlobe3D.tsx"
+      ],
+      "updated": "2026-11-01"
+    },
+    {
       "path": "20261101-7923-github-pages-crawlable-route-html.md",
       "id": "exp-20261101-7923",
       "title": "Generate real route HTML for GitHub Pages indexing",

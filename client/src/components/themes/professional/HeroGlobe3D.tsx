@@ -1,3 +1,4 @@
+import { GlobeRenderBudget } from "@/lib/globe-render-budget";
 import { useEffect, useRef, useState } from "react";
 import { startVisibleGlobe } from "@/lib/start-visible-globe";
 import { pictureSource } from "@/lib/images";
@@ -47,6 +48,7 @@ export default function HeroGlobe3D() {
 				const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 				let visible = true, frame = 0, previous = 0, elapsed = 0;
 				let frameInterval = 1000 / 30;
+				let renderBudget: GlobeRenderBudget | undefined;
 				let targetX = 0, targetY = 0;
 				let dragPointer: number | null = null;
 				let lastX = 0, lastY = 0, lastInteraction = 0;
@@ -69,7 +71,17 @@ export default function HeroGlobe3D() {
 				renderer.debug.onShaderError = fail;
 				const render = () => {
 					if (stopped || !visible || document.hidden || renderer.domElement.style.visibility === "hidden") return;
-					try { world.updateSolarLighting(Date.now(), camera); renderer.render(world.scene, camera); } catch { fail(); }
+					try {
+						const start = performance.now();
+						world.updateSolarLighting(Date.now(), camera);
+						renderer.render(world.scene, camera);
+						if (renderBudget?.observe(performance.now() - start)) {
+							frameInterval = renderBudget.frameInterval;
+							renderer.setPixelRatio(renderBudget.pixelRatio);
+							renderer.setSize(element.clientWidth, element.clientHeight);
+							world.setPixelRatio(renderBudget.pixelRatio);
+						}
+					} catch { fail(); }
 				};
 				const resize = () => {
 					const width = element.clientWidth, height = element.clientHeight;
@@ -80,6 +92,7 @@ export default function HeroGlobe3D() {
 					const mobile = window.innerWidth < 768;
 					frameInterval = 1000 / (mobile ? 20 : 30);
 					const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.5);
+					renderBudget = new GlobeRenderBudget(dpr, frameInterval);
 					renderer.setPixelRatio(dpr); renderer.setSize(width, height);
 					world.setPixelRatio(dpr);
 					render();
