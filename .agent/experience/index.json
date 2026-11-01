@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "updated": "2026-11-01",
+  "entries": [
+    {
+      "path": "20261101-7923-github-pages-crawlable-route-html.md",
+      "id": "exp-20261101-7923",
+      "title": "Generate real route HTML for GitHub Pages indexing",
+      "description": "Valid SPA routes served HTTP 404; build now emits route directories, content and matching canonicals.",
+      "type": "bugfix",
+      "status": "verified",
+      "confidence": "high",
+      "created": "2026-11-01",
+      "area": [
+        "seo",
+        "deployment"
+      ],
+      "tags": [
+        "github-pages",
+        "prerender"
+      ],
+      "files": [
+        "scripts/prerender.ts",
+        "scripts/static-pages.tsx",
+        "client/src/hooks/useContentSEO.ts"
+      ],
+      "updated": "2026-11-01"
+    }
+  ]
+}

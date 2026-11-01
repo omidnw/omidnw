@@ -5,9 +5,10 @@
 	"license": "MIT",
 	"scripts": {
 		"dev": "vite",
-		"build": "vite build && cp dist/public/index.html dist/public/404.html",
+		"build": "vite build && bun run scripts/prerender.ts",
 		"preview": "vite preview",
-		"check": "tsc"
+		"check": "tsc",
+		"test:seo": "bun test scripts/static-pages.test.ts"
 	},
 	"dependencies": {
 		"@hookform/resolvers": "^5.4.0",

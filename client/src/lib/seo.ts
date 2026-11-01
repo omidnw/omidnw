@@ -7,6 +7,7 @@ export interface SEOData {
 	ogImage?: string;
 	twitterImage?: string;
 	type?: "website" | "article" | "profile";
+	robots?: "index, follow" | "noindex, follow";
 	structuredData?: any;
 }
 
@@ -200,6 +201,7 @@ export const SEO_CONFIGS: Record<string, SEOData> = {
 		type: "website",
 	},
 	notFound: {
+		robots: "noindex, follow",
 		title: "Page Not Found | Omid Reza Keshtkar",
 		description:
 			"The requested page could not be found. Explore the portfolio of Omid Reza Keshtkar.",
@@ -221,7 +223,7 @@ export function generateMetaTags(
 	const seoData = { ...SEO_CONFIGS[pageKey], ...customData };
 	const canonicalUrl =
 		seoData.canonicalUrl ||
-		`${BASE_SEO.siteUrl}${pageKey === "home" ? "" : `/${pageKey}`}`;
+		`${BASE_SEO.siteUrl}${pageKey === "home" ? "/" : `/${pageKey}/`}`;
 	const ogImage = seoData.ogImage || BASE_SEO.defaultImage;
 	const twitterImage = seoData.twitterImage || ogImage;
 
@@ -232,7 +234,7 @@ export function generateMetaTags(
 		<meta name="description" content="${seoData.description}" />
 		<meta name="keywords" content="${seoData.keywords.join(", ")}" />
 		<meta name="author" content="${BASE_SEO.author}" />
-		<meta name="robots" content="index, follow" />
+		<meta name="robots" content="${seoData.robots || "index, follow"}" />
 		<meta name="language" content="English" />
 		<link rel="canonical" href="${canonicalUrl}" />
 
@@ -280,6 +282,10 @@ export function useSEO(pageKey: string, customData?: Partial<SEOData>) {
 
 		// Set document title
 		document.title = seoData.title;
+		const robots = document.querySelector('meta[name="robots"]') || document.createElement("meta");
+		robots.setAttribute("name", "robots");
+		robots.setAttribute("content", seoData.robots || "index, follow");
+		if (!robots.parentNode) document.head.appendChild(robots);
 
 		// Set meta description
 		const metaDescription = document.querySelector('meta[name="description"]');
@@ -307,7 +313,7 @@ export function useSEO(pageKey: string, customData?: Partial<SEOData>) {
 		const canonical = document.querySelector('link[rel="canonical"]');
 		const canonicalUrl =
 			seoData.canonicalUrl ||
-			`${BASE_SEO.siteUrl}${pageKey === "home" ? "" : `/${pageKey}`}`;
+			`${BASE_SEO.siteUrl}${pageKey === "home" ? "/" : `/${pageKey}/`}`;
 		if (canonical) {
 			canonical.setAttribute("href", canonicalUrl);
 		} else {
@@ -363,8 +369,12 @@ export function useSEO(pageKey: string, customData?: Partial<SEOData>) {
 			}`
 		);
 		setTwitterTag("twitter:creator", BASE_SEO.twitterHandle);
+		setTwitterTag("twitter:url", canonicalUrl);
 
 		// Add structured data
+		if (!seoData.structuredData) {
+			document.querySelectorAll('script[type="application/ld+json"]').forEach((script) => script.remove());
+		}
 		if (seoData.structuredData) {
 			const existingScript = document.querySelector(
 				'script[type="application/ld+json"]'

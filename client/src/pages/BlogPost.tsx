@@ -1,3 +1,4 @@
+import { useContentSEO } from "@/hooks/useContentSEO";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRoute } from "wouter";
 import { LazyMotion, m, domMax } from "framer-motion";
@@ -51,6 +52,7 @@ import { useTheme } from "@/contexts/ThemeContext";
  * shared or conditionally called.
  */
 export default function BlogPost() {
+	useContentSEO("blog");
 	const { isProfessional } = useTheme();
 	if (isProfessional) {
 		return <ProfessionalBlogDetail />;

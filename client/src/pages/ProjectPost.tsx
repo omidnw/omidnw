@@ -1,3 +1,4 @@
+import { useContentSEO } from "@/hooks/useContentSEO";
 import React, { useState, useEffect, useCallback } from "react";
 import { useRoute } from "wouter";
 import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
@@ -61,6 +62,7 @@ import { useTheme } from "@/contexts/ThemeContext";
  * shared or conditionally called.
  */
 export default function ProjectPost() {
+	useContentSEO("projects");
 	const { isProfessional } = useTheme();
 	if (isProfessional) {
 		return <ProfessionalProjectDetail />;
