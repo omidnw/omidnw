@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { startVisibleGlobe } from "@/lib/start-visible-globe";
 import { pictureSource } from "@/lib/images";
 
 const fallback = pictureSource("/images/futuristic-earth.png");
@@ -182,14 +183,14 @@ export default function HeroGlobe3D() {
 				if (!stopped) setReady(false);
 			}
 		}
-		void initialize();
-		return () => { stopped = true; controller.abort(); teardown?.(); disposeTexture(); };
+		const cancelStart = startVisibleGlobe(element, () => { void initialize(); });
+		return () => { cancelStart(); stopped = true; controller.abort(); teardown?.(); disposeTexture(); };
 	}, []);
 	return (
 		<div className="pf-globe-3d relative z-10 w-full" aria-hidden="true">
 			<picture className="block w-full" style={{ visibility: ready ? "hidden" : "visible" }}>
 				<source type="image/webp" srcSet={fallback.srcSet} sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem" />
-				<img {...fallback} alt="" draggable={false} loading="eager" fetchPriority="high" decoding="async" className="pf-globe-img block w-full select-none" />
+				<img {...fallback} alt="" draggable={false} loading="eager" fetchPriority="auto" decoding="async" className="pf-globe-img block w-full select-none" />
 			</picture>
 			<div ref={host} className="absolute inset-0 overflow-hidden" />
 		</div>

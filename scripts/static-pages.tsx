@@ -87,6 +87,7 @@ export function renderPageHtml(template: string, page: StaticPage): string {
 		preload.setAttribute("imagesrcset", globe.srcSet);
 		preload.setAttribute("imagesizes", "(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem");
 		preload.setAttribute("fetchpriority", "high");
+		preload.setAttribute("media", "(min-width: 768px)");
 		document.head.append(preload);
 	}
 	document.title = page.seo.title;
