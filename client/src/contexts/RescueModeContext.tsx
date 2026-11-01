@@ -25,6 +25,7 @@ const saveToLocalStorage = (key: string, value: any) => {
 };
 
 const loadFromLocalStorage = <T,>(key: string, defaultValue: T): T => {
+	if (typeof window === "undefined") return defaultValue;
 	try {
 		const item = localStorage.getItem(key);
 		return item ? JSON.parse(item) : defaultValue;

@@ -9,7 +9,7 @@ import remarkHtml from "remark-html";
 import { BASE_SEO, SEO_CONFIGS, type SEOData } from "../client/src/lib/seo";
 import { navigationItems } from "../client/src/lib/navigation";
 import ProfessionalAboutPage from "../client/src/components/themes/professional/ProfessionalAboutPage";
-import ProfessionalAbout from "../client/src/components/themes/professional/ProfessionalAbout";
+import App from "../client/src/App";
 import { pictureSource } from "../client/src/lib/images";
 import { EMAIL, socialLinks } from "../client/src/lib/social";
 
@@ -51,7 +51,7 @@ export async function getStaticPages(root: string): Promise<StaticPage[]> {
 	const blogs = await readArticles(path.join(root, "client/src/blogs"), "blog");
 	const list = (pages: StaticPage[]) => <ul>{pages.map((page) => <li key={page.pathname}><a href={page.pathname}>{page.seo.title.split(" | ")[0]}</a><p>{page.seo.description}</p></li>)}</ul>;
 	return [
-		{ pathname: "/", seo: SEO_CONFIGS.home, body: renderToStaticMarkup(<><h1>{BASE_SEO.author}</h1><p>{SEO_CONFIGS.home.description}</p><Router ssrPath="/"><ProfessionalAbout /></Router><h2>Selected Work</h2>{list(projects)}</>) },
+		{ pathname: "/", seo: SEO_CONFIGS.home, body: renderToStaticMarkup(<Router ssrPath="/"><App /></Router>) },
 		{ pathname: "/about", seo: SEO_CONFIGS.about, body: renderToStaticMarkup(<Router ssrPath="/about"><ProfessionalAboutPage /></Router>) },
 		{ pathname: "/projects", seo: SEO_CONFIGS.projects, body: renderToStaticMarkup(<><h1>Selected Work</h1><p>{SEO_CONFIGS.projects.description}</p>{list(projects)}</>) },
 		{ pathname: "/blog", seo: SEO_CONFIGS.blog, body: renderToStaticMarkup(<><h1>Blog</h1><p>{SEO_CONFIGS.blog.description}</p>{blogs.length ? list(blogs) : <p>No articles published yet.</p>}</>) },
@@ -69,6 +69,15 @@ export function renderPageHtml(template: string, page: StaticPage): string {
 		if (!element) { element = document.createElement("meta"); element.setAttribute(attribute, key); document.head.append(element); }
 		element.setAttribute("content", value);
 	};
+	const logo = pictureSource("/images/ork-logo.png");
+	const logoPreload = document.createElement("link");
+	logoPreload.setAttribute("rel", "preload");
+	logoPreload.setAttribute("as", "image");
+	logoPreload.setAttribute("href", logo.src);
+	logoPreload.setAttribute("imagesrcset", logo.srcSet);
+	logoPreload.setAttribute("imagesizes", "56px");
+	logoPreload.setAttribute("fetchpriority", "high");
+	document.head.append(logoPreload);
 	if (page.pathname === "/") {
 		const globe = pictureSource("/images/futuristic-earth.png");
 		const preload = document.createElement("link");
@@ -98,8 +107,12 @@ export function renderPageHtml(template: string, page: StaticPage): string {
 	const nav = renderToStaticMarkup(<nav aria-label="Main navigation">{navigationItems.map((item) => <a className="inline-block p-3 underline" key={item.path} href={item.path}>{item.name}</a>)}</nav>);
 	document.documentElement.dataset.theme = "professional";
 	document.documentElement.classList.add("dark");
-	document.getElementById("root")!.innerHTML = `${nav}<main class="pf-shell pf-inner-page pb-12">${page.body}</main>`;
-	document.querySelectorAll("main h1").forEach((heading) => heading.classList.add("pf-heading"));
+	document.getElementById("root")!.innerHTML = page.pathname === "/"
+		? page.body
+		: `${nav}<main class="pf-shell pf-inner-page pb-12">${page.body}</main>`;
+	if (page.pathname !== "/") {
+		document.querySelectorAll("main h1").forEach((heading) => heading.classList.add("pf-heading"));
+	}
 	const html = dom.serialize();
 	dom.window.close();
 	return html;

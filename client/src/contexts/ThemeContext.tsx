@@ -216,6 +216,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 	children,
 }) => {
 	const [theme, setTheme] = useState<Theme>(() => {
+		// The static build renders the default dark theme without browser storage.
+		if (typeof window === "undefined") return "dark";
 		// Check localStorage first
 		const savedTheme = localStorage.getItem("theme") as Theme | null;
 		if (savedTheme) return savedTheme;
@@ -234,7 +236,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 		// Absent or unrecognised value means Professional: the site's default
 		// look. Anyone who has previously chosen CyberPunk keeps it, because a
 		// stored value is always honoured.
-		const saved = localStorage.getItem(SITE_THEME_STORAGE_KEY);
+		const saved = typeof window === "undefined" ? null : localStorage.getItem(SITE_THEME_STORAGE_KEY);
 		return isSiteTheme(saved) ? saved : "professional";
 	});
 

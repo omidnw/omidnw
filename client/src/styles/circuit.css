@@ -37,21 +37,25 @@
 	opacity: 0.5;
 }
 
-/* ---------- Travelling signals ---------- */
+/* ---------- Stationary signal highlights ---------- */
 .circuit-signals path {
 	fill: none;
 	stroke: hsl(var(--primary));
 	stroke-width: 1.5;
 	stroke-linecap: round;
-	/* A short dash followed by a long gap reads as a single pulse in transit. */
+	/* Keep the circuit texture, animating opacity instead of repainting dash positions. */
 	stroke-dasharray: 26 620;
 	opacity: 0.9;
-	animation: circuit-flow linear infinite;
+	animation: circuit-signal-pulse ease-in-out infinite;
 }
 
-@keyframes circuit-flow {
-	to {
-		stroke-dashoffset: -646;
+@keyframes circuit-signal-pulse {
+	0%,
+	100% {
+		opacity: 0.15;
+	}
+	50% {
+		opacity: 0.65;
 	}
 }
 

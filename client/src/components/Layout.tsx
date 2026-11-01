@@ -135,10 +135,11 @@ const PageTransition = React.memo(
 		const { isProfessional } = useTheme();
 		const reduceMotion = useReducedMotion() && isProfessional;
 
+		// Keep prerendered Professional content visible before JavaScript loads.
 		return (
 			<motion.div
 				key={location}
-				initial={reduceMotion ? false : { opacity: 0, y: 20 }}
+				initial={isProfessional ? false : { opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				exit={{ opacity: 0, y: -20 }}
 				transition={{ duration: reduceMotion ? 0 : 0.3 }}

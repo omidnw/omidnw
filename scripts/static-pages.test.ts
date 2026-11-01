@@ -22,14 +22,44 @@ describe("crawlable static pages", () => {
 			expect(document.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe(`https://omidrezakeshtkar.dev${page.pathname === "/" ? "/" : `${page.pathname}/`}`);
 			expect(document.querySelector("main h1")?.textContent?.length).toBeGreaterThan(2);
 			expect(document.querySelector("main")?.textContent?.length).toBeGreaterThan(80);
-			expect(document.querySelectorAll('nav a[href]').length).toBe(5);
-			expect(document.querySelectorAll('link[rel="preload"][as="image"]').length).toBe(page.pathname === "/" ? 1 : 0);
+			expect(document.querySelectorAll('nav[aria-label="Main navigation"] a[href]').length).toBe(5);
+			expect(document.querySelectorAll('link[rel="preload"][as="image"]').length).toBe(page.pathname === "/" ? 2 : 1);
 			expect(document.querySelector('meta[property="og:url"]')?.getAttribute("content")).toBe(document.querySelector('link[rel="canonical"]')?.getAttribute("href"));
 			if (page.pathname !== "/") expect(document.querySelector('script[type="application/ld+json"]')?.textContent ?? "").not.toContain('"@type":"Person","name":"OmidReza Keshtkar","alternateName"');
 			titles.add(document.title);
 			dom.window.close();
 		}
 		expect(titles.size).toBe(pages.length);
+	});
+	it("includes the actual home header and hero before client JavaScript runs", async () => {
+		const [home] = await getStaticPages(root);
+		const dom = new JSDOM(renderPageHtml(template, home));
+		const document = dom.window.document;
+		expect(document.querySelector('#root header img[alt="ORK"]')?.getAttribute("fetchpriority")).toBe("high");
+		expect(document.querySelector(".pf-landing-hero h1")?.textContent).toContain("KESHTKAR");
+		expect(document.querySelector(".pf-globe-3d picture img")).not.toBeNull();
+		expect(document.querySelector(".pf-layout-content > div")?.getAttribute("style")).toContain("opacity:1");
+		dom.window.close();
+	});
+	it("serves the existing font families locally with valid font binaries", () => {
+		const css = readFileSync(path.join(root, "client/src/styles/fonts.css"), "utf8");
+		expect(css).not.toContain("https://fonts.");
+		for (const family of ["Geist", "Geist Mono", "Orbitron", "Share Tech Mono"]) {
+			expect(css).toContain(`font-family: '${family}'`);
+		}
+		for (const [, url] of css.matchAll(/src: url\(([^)]+)\)/g)) {
+			expect(url.startsWith("/fonts/")).toBe(true);
+			expect(readFileSync(path.join(root, "client/public", url)).subarray(0, 4).toString()).toBe("wOF2");
+		}
+		const dom = new JSDOM(template);
+		const preloads = dom.window.document.querySelectorAll('link[rel="preload"][as="font"]');
+		expect(preloads.length).toBe(2);
+		for (const preload of preloads) {
+			expect(css).toContain(preload.getAttribute("href")!);
+			expect(preload.hasAttribute("crossorigin")).toBe(true);
+		}
+		expect(template).not.toContain("fonts.googleapis.com");
+		dom.window.close();
 	});
 	it("excludes drafts and README and escapes author-supplied metadata", async () => {
 		writeFileSync(path.join(fixture, "README.md"), "Writing instructions");

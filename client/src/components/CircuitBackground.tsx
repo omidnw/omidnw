@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils";
 
 interface Trace {
 	d: string;
-	/** Seconds for one full signal pass. */
+	/** Seconds for one full highlight pulse. */
 	duration: number;
 	/** Negative delays stagger the signals so they never pulse in unison. */
 	delay: number;
@@ -119,13 +119,14 @@ export default function CircuitBackground({
 					))}
 				</g>
 
-				{/* Signals travelling along the same paths. */}
+				{/* Opacity-only highlights keep motion off the SVG dash geometry. */}
 				<g className="circuit-signals">
-					{TRACES.map((trace) => (
+					{TRACES.map((trace, index) => (
 						<path
 							key={`signal-${trace.d}`}
 							d={trace.d}
 							style={{
+								strokeDashoffset: -(index * 47),
 								animationDuration: `${trace.duration}s`,
 								animationDelay: `${trace.delay}s`,
 							}}

@@ -27,6 +27,34 @@
       "updated": "2026-11-01"
     },
     {
+      "path": "20261101-bae5-visible-home-prerender-local-fonts.md",
+      "id": "exp-20261101-bae5",
+      "title": "Render visible home content and serve fonts locally",
+      "description": "Address delayed mobile logo LCP and repainting SVG signals using first-response content and local fonts.",
+      "type": "performance",
+      "status": "verified",
+      "confidence": "high",
+      "created": "2026-11-01",
+      "area": [
+        "performance",
+        "fonts",
+        "prerender"
+      ],
+      "tags": [
+        "lcp",
+        "ssr",
+        "fonts",
+        "svg"
+      ],
+      "files": [
+        "scripts/static-pages.tsx",
+        "client/src/components/Layout.tsx",
+        "client/src/styles/fonts.css",
+        "client/src/styles/circuit.css"
+      ],
+      "updated": "2026-11-01"
+    },
+    {
       "path": "20261101-cde8-reduce-initial-portfolio-payload.md",
       "id": "exp-20261101-cde8",
       "title": "Defer idle music and non-home portfolio code",

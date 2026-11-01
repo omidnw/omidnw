@@ -84,6 +84,9 @@ export default function ProfessionalHeader({
 							{...LOGO}
 							sizes="56px"
 							alt="ORK"
+							fetchPriority="high"
+							loading="eager"
+							decoding="async"
 							className="h-7 w-auto shrink-0 select-none sm:h-8"
 							draggable={false}
 						/>
