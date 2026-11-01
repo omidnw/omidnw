@@ -4,11 +4,12 @@ import { motion, useReducedMotion } from "framer-motion";
 // import { Canvas } from "@react-three/fiber";
 // import { Stars, Float } from "@react-three/drei";
 import CircuitBackground from "@/components/CircuitBackground";
-import CyberpunkTerminal from "@/components/CyberpunkTerminal";
-import CyberpunkHeader from "@/components/themes/cyberpunk/CyberpunkHeader";
 import ProfessionalFooter from "@/components/themes/professional/ProfessionalFooter";
 import ProfessionalHeader from "@/components/themes/professional/ProfessionalHeader";
 import { useTheme } from "@/contexts/ThemeContext";
+
+const CyberpunkTerminal = React.lazy(() => import("@/components/CyberpunkTerminal"));
+const CyberpunkHeader = React.lazy(() => import("@/components/themes/cyberpunk/CyberpunkHeader"));
 
 interface LayoutProps {
 	children: React.ReactNode;
@@ -152,6 +153,10 @@ PageTransition.displayName = "PageTransition";
 
 export default function Layout({ children }: LayoutProps) {
 	const [isTerminalOpen, setIsTerminalOpen] = useState(false);
+	const [hasOpenedTerminal, setHasOpenedTerminal] = useState(false);
+	useEffect(() => {
+		if (isTerminalOpen) setHasOpenedTerminal(true);
+	}, [isTerminalOpen]);
 	const [isMac, setIsMac] = useState(false);
 	const [location] = useLocation();
 	const { isProfessional } = useTheme();
@@ -222,10 +227,12 @@ export default function Layout({ children }: LayoutProps) {
 					onTerminalOpen={() => setIsTerminalOpen(true)}
 				/>
 			) : (
-				<CyberpunkHeader
-					onTerminalOpen={() => setIsTerminalOpen(true)}
-					isMac={isMac}
-				/>
+				<React.Suspense fallback={null}>
+					<CyberpunkHeader
+						onTerminalOpen={() => setIsTerminalOpen(true)}
+						isMac={isMac}
+					/>
+				</React.Suspense>
 			)}
 
 			<main
@@ -246,10 +253,18 @@ export default function Layout({ children }: LayoutProps) {
 			{isProfessional ? <ProfessionalFooter /> : null}
 
 			{/* Cyberpunk Terminal */}
-			<CyberpunkTerminal
-				isOpen={isTerminalOpen}
-				onClose={() => setIsTerminalOpen(false)}
-			/>
+			{(isTerminalOpen || hasOpenedTerminal) && (
+				<React.Suspense fallback={
+					<div role="status" className="fixed bottom-4 right-4 z-50 rounded-lg border border-border bg-background px-4 py-3 text-sm text-foreground">
+						Loading terminal…
+					</div>
+				}>
+					<CyberpunkTerminal
+						isOpen={isTerminalOpen}
+						onClose={() => setIsTerminalOpen(false)}
+					/>
+				</React.Suspense>
+			)}
 		</div>
 	);
 }

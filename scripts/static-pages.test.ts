@@ -23,6 +23,7 @@ describe("crawlable static pages", () => {
 			expect(document.querySelector("main h1")?.textContent?.length).toBeGreaterThan(2);
 			expect(document.querySelector("main")?.textContent?.length).toBeGreaterThan(80);
 			expect(document.querySelectorAll('nav a[href]').length).toBe(5);
+			expect(document.querySelectorAll('link[rel="preload"][as="image"]').length).toBe(page.pathname === "/" ? 1 : 0);
 			expect(document.querySelector('meta[property="og:url"]')?.getAttribute("content")).toBe(document.querySelector('link[rel="canonical"]')?.getAttribute("href"));
 			if (page.pathname !== "/") expect(document.querySelector('script[type="application/ld+json"]')?.textContent ?? "").not.toContain('"@type":"Person","name":"OmidReza Keshtkar","alternateName"');
 			titles.add(document.title);

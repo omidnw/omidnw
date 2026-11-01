@@ -10,6 +10,7 @@ import { BASE_SEO, SEO_CONFIGS, type SEOData } from "../client/src/lib/seo";
 import { navigationItems } from "../client/src/lib/navigation";
 import ProfessionalAboutPage from "../client/src/components/themes/professional/ProfessionalAboutPage";
 import ProfessionalAbout from "../client/src/components/themes/professional/ProfessionalAbout";
+import { pictureSource } from "../client/src/lib/images";
 import { EMAIL, socialLinks } from "../client/src/lib/social";
 
 export interface StaticPage {
@@ -68,6 +69,17 @@ export function renderPageHtml(template: string, page: StaticPage): string {
 		if (!element) { element = document.createElement("meta"); element.setAttribute(attribute, key); document.head.append(element); }
 		element.setAttribute("content", value);
 	};
+	if (page.pathname === "/") {
+		const globe = pictureSource("/images/futuristic-earth.png");
+		const preload = document.createElement("link");
+		preload.setAttribute("rel", "preload");
+		preload.setAttribute("as", "image");
+		preload.setAttribute("href", globe.src);
+		preload.setAttribute("imagesrcset", globe.srcSet);
+		preload.setAttribute("imagesizes", "(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem");
+		preload.setAttribute("fetchpriority", "high");
+		document.head.append(preload);
+	}
 	document.title = page.seo.title;
 	meta("name", "title", page.seo.title);
 	meta("name", "description", page.seo.description);

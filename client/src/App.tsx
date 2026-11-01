@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Switch, Route, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -6,21 +7,23 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import Layout from "@/components/Layout";
 import Home from "@/pages/Home";
-import About from "@/pages/About";
-import Blog from "@/pages/Blog";
-import Projects from "@/pages/Projects";
-import Contact from "@/pages/Contact";
-import Terminal from "@/pages/Terminal";
-import BlogPost from "@/pages/BlogPost";
-import ProjectPost from "@/pages/ProjectPost";
 import NotFound from "@/pages/not-found";
 import { MusicPlayerProvider } from "@/contexts/MusicPlayerContext";
 import { RescueModeProvider } from "@/contexts/RescueModeContext";
 import RescueModeOverlay from "@/components/RescueModeOverlay";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 
+const About = lazy(() => import("@/pages/About"));
+const Blog = lazy(() => import("@/pages/Blog"));
+const Projects = lazy(() => import("@/pages/Projects"));
+const Contact = lazy(() => import("@/pages/Contact"));
+const Terminal = lazy(() => import("@/pages/Terminal"));
+const BlogPost = lazy(() => import("@/pages/BlogPost"));
+const ProjectPost = lazy(() => import("@/pages/ProjectPost"));
+
 function Router() {
 	return (
+		<Suspense fallback={<div role="status" aria-label="Loading page" className="min-h-80" />}>
 		<Switch>
 			<Route path="/" component={Home} />
 			<Route path="/about" component={About} />
@@ -33,6 +36,7 @@ function Router() {
 			{/* Fallback to 404 */}
 			<Route component={NotFound} />
 		</Switch>
+		</Suspense>
 	);
 }
 

@@ -8,8 +8,8 @@ export default function HeroGlobe3D() {
 	const host = useRef<HTMLDivElement>(null);
 	const [ready, setReady] = useState(false);
 	useEffect(() => {
-		const element = host.current;
-		if (!element) return;
+		if (!host.current) return;
+		const element: HTMLDivElement = host.current;
 		const controller = new AbortController();
 		let stopped = false;
 		let teardown: (() => void) | undefined;
@@ -29,7 +29,7 @@ export default function HeroGlobe3D() {
 				surfaceTexture.colorSpace = THREE.NoColorSpace;
 				surfaceTexture.wrapS = THREE.RepeatWrapping;
 				if (stopped) { disposeTexture(); return; }
-				const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: "low-power" });
+				const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: window.innerWidth >= 1024, powerPreference: "low-power" });
 				teardown = () => { renderer.dispose(); renderer.domElement.remove(); };
 				renderer.setClearColor(0, 0);
 				renderer.domElement.setAttribute("aria-hidden", "true");
@@ -45,6 +45,7 @@ export default function HeroGlobe3D() {
 				const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
 				const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)");
 				let visible = true, frame = 0, previous = 0, elapsed = 0;
+				let frameInterval = 1000 / 30;
 				let targetX = 0, targetY = 0;
 				let dragPointer: number | null = null;
 				let lastX = 0, lastY = 0, lastInteraction = 0;
@@ -75,7 +76,9 @@ export default function HeroGlobe3D() {
 					const ratio = width / height;
 					camera.left = -1.1 * ratio; camera.right = 1.1 * ratio;
 					camera.updateProjectionMatrix();
-					const dpr = Math.min(window.devicePixelRatio || 1, width < 768 ? 1.25 : 1.75);
+					const mobile = window.innerWidth < 768;
+					frameInterval = 1000 / (mobile ? 20 : 30);
+					const dpr = Math.min(window.devicePixelRatio || 1, mobile ? 1 : 1.5);
 					renderer.setPixelRatio(dpr); renderer.setSize(width, height);
 					world.setPixelRatio(dpr);
 					render();
@@ -83,6 +86,10 @@ export default function HeroGlobe3D() {
 				const tick = (now: number) => {
 					frame = 0;
 					if (stopped || !visible || document.hidden || motion.matches) return;
+					if (previous && now - previous < frameInterval) {
+						frame = requestAnimationFrame(tick);
+						return;
+					}
 					const delta = previous ? Math.min((now - previous) / 1000, .1) : 0;
 					previous = now; elapsed += delta;
 					// Bound the artistic angle without changing orientation or geographic solar time.
@@ -153,6 +160,9 @@ export default function HeroGlobe3D() {
 					renderer.domElement.removeEventListener("webglcontextrestored", restored);
 					world.dispose(); renderer.dispose(); renderer.domElement.remove();
 				};
+				// Compile shaders asynchronously before the first visible render when supported.
+				await renderer.compileAsync(world.scene, camera);
+				if (stopped) return;
 				observer.observe(element); sizing.observe(element);
 				motion.addEventListener("change", synchronize);
 				finePointer.addEventListener("change", pointerModeChanged);
@@ -179,7 +189,7 @@ export default function HeroGlobe3D() {
 		<div className="pf-globe-3d relative z-10 w-full" aria-hidden="true">
 			<picture className="block w-full" style={{ visibility: ready ? "hidden" : "visible" }}>
 				<source type="image/webp" srcSet={fallback.srcSet} sizes="(min-width: 1024px) 40rem, (min-width: 640px) 30rem, 26rem" />
-				<img {...fallback} alt="" draggable={false} className="pf-globe-img block w-full select-none" />
+				<img {...fallback} alt="" draggable={false} loading="eager" fetchPriority="high" decoding="async" className="pf-globe-img block w-full select-none" />
 			</picture>
 			<div ref={host} className="absolute inset-0 overflow-hidden" />
 		</div>

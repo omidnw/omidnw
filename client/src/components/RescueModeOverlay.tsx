@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { LazyMotion, m, AnimatePresence, domMax } from "framer-motion";
-import CyberpunkTerminal from "./CyberpunkTerminal";
 import SuccessRecoveryOverlay from "./SuccessRecoveryOverlay";
 import { useRescueMode } from "@/contexts/RescueModeContext";
+
+const CyberpunkTerminal = React.lazy(() => import("./CyberpunkTerminal"));
 
 export default function RescueModeOverlay() {
 	const { isRescueMode, rescueStartTime } = useRescueMode();
@@ -173,10 +174,12 @@ export default function RescueModeOverlay() {
 						</m.div>
 
 						{/* Auto-opened Terminal */}
-						<CyberpunkTerminal
-							isOpen={terminalOpen}
-							onClose={() => {}} // Prevent manual closing in rescue mode
-						/>
+						<React.Suspense fallback={null}>
+							<CyberpunkTerminal
+								isOpen={terminalOpen}
+								onClose={() => {}} // Prevent manual closing in rescue mode
+							/>
+						</React.Suspense>
 
 						{/* Corner Status */}
 						<div

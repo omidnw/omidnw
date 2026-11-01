@@ -65,7 +65,7 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
 	defaultSrc = "/cyberpunk-music.mp3",
 }) => {
 	const audioRef = useRef<HTMLAudioElement | null>(null);
-	const [isLoading, setIsLoading] = useState(true);
+	const [isLoading, setIsLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [duration, setDuration] = useState(0);
 
@@ -147,12 +147,15 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
 		if (typeof window !== "undefined") {
 			let audio = audioRef.current;
 			if (!audio) {
-				audio = new Audio(audioSrc);
+				audio = new Audio();
+				audio.preload = autoPlay ? "auto" : "none";
+				audio.src = audioSrc;
 				audioRef.current = audio;
-			} else if (audio.src !== audioSrc) {
+			} else if (audio.src !== new URL(audioSrc, window.location.href).href) {
 				audio.src = audioSrc;
 			}
 
+			audio.preload = autoPlay ? "auto" : "none";
 			audio.loop = loop;
 			audio.volume = isMuted ? 0 : volume;
 			audio.muted = isMuted;
@@ -243,9 +246,11 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
 
 			if (audio.readyState >= 2) {
 				handleLoadedMetadata();
-			} else {
+			} else if (autoPlay) {
 				setIsLoading(true);
 				audio.load();
+			} else {
+				setIsLoading(false);
 			}
 
 			return () => {
@@ -284,7 +289,10 @@ export const MusicPlayerProvider: React.FC<MusicPlayerProviderProps> = ({
 		if (audioRef.current) {
 			const audio = audioRef.current;
 			if (audio.paused && !isPlaying) {
+				audio.preload = "auto";
+				setIsLoading(true);
 				audio.play().catch((e) => {
+					setIsLoading(false);
 					if (e.name !== "NotAllowedError") {
 						setError("Playback failed. User interaction may be required.");
 						console.error("Playback error:", e);

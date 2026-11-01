@@ -25,6 +25,32 @@
         "client/src/hooks/useContentSEO.ts"
       ],
       "updated": "2026-11-01"
+    },
+    {
+      "path": "20261101-cde8-reduce-initial-portfolio-payload.md",
+      "id": "exp-20261101-cde8",
+      "title": "Defer idle music and non-home portfolio code",
+      "description": "Reduce entry JavaScript 69.7 percent and avoid loading music before playback.",
+      "type": "performance",
+      "status": "verified",
+      "confidence": "high",
+      "created": "2026-11-01",
+      "area": [
+        "frontend",
+        "performance"
+      ],
+      "tags": [
+        "vite",
+        "audio",
+        "threejs"
+      ],
+      "files": [
+        "client/src/App.tsx",
+        "client/src/components/Layout.tsx",
+        "client/src/contexts/MusicPlayerContext.tsx",
+        "client/src/components/themes/professional/HeroGlobe3D.tsx"
+      ],
+      "updated": "2026-11-01"
     }
   ]
 }
